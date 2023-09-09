@@ -6,4 +6,10 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="IRepositories\" />
+    <Folder Include="DbContexts\" />
+    <Folder Include="Repositories\" />
+  </ItemGroup>
+
 </Project>
