@@ -1,7 +1,7 @@
 ﻿using GameStore.Domain.Commons;
 using System.Linq.Expressions;
 
-namespace GameStore.Data.IRepositories
+namespace GameStore.Data.Repositories
 {
     public interface IRepository<TEntity> where TEntity : Auditable
     {
