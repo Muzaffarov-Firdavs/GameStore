@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using GameStore.Domain.Commons;
+using System.Linq.Expressions;
 
 namespace GameStore.Data.IRepositories
 {
-    internal class IRepository
+    public interface IRepository<TEntity> where TEntity : Auditable
     {
+        ValueTask<TEntity> InsertAsync(TEntity entity);
+        ValueTask<TEntity> UpdateAsync(TEntity entity);
+        ValueTask<bool> DeleteAsync(TEntity entity);
+        ValueTask<TEntity> SelectAsync(Expression<Func<TEntity, bool>> expression);
+        IQueryable<TEntity> SelectAll(Expression<Func<TEntity, bool>> expression);
     }
 }
