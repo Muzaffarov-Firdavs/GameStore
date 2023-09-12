@@ -20,7 +20,7 @@ namespace GameStore.Data.Repositories
 
         public async ValueTask DeleteAsync(TEntity entity)
         {
-            _dbSet.Remove(entity);
+            entity.IsDeleted = true;
         }
 
         public async ValueTask<TEntity> InsertAsync(TEntity entity)

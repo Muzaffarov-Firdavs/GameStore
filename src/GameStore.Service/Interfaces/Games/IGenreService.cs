@@ -8,6 +8,6 @@ namespace GameStore.Service.Interfaces.Games
         ValueTask<GenreResultDto> ModifyAsync(long id, GenreUpdateDto dto);
         ValueTask<bool> RemoveByIdAsync(long id);
         ValueTask<GenreResultDto> RetrieveByIdAsync(long id);
-        ValueTask<IEnumerable<GenreResultDto>> RetrieveAllAsync();
+        ValueTask<IEnumerable<GenreResultDto>> RetrieveAllAsync(string search = null);
     }
 }
