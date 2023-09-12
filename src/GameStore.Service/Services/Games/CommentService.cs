@@ -1,33 +1,82 @@
-﻿using GameStore.Service.DTOs.Comments;
+﻿using AutoMapper;
+using GameStore.Data.Repositories;
+using GameStore.Data.UnitOfWorks;
+using GameStore.Domain.Entities.Games;
+using GameStore.Service.Commons.Exceptions;
+using GameStore.Service.DTOs.Comments;
+using GameStore.Service.DTOs.Genres;
 using GameStore.Service.Interfaces.Games;
+using Microsoft.EntityFrameworkCore;
 
 namespace GameStore.Service.Services.Games
 {
     public class CommentService : ICommentService
     {
-        public ValueTask<CommentResultDto> AddAsync(CommentCreationDto dto)
+        private readonly IMapper _mapper;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IRepository<Comment> _repository;
+
+        public CommentService(IMapper mapper, IUnitOfWork unitOfWork, IRepository<Comment> repository)
         {
-            throw new NotImplementedException();
+            _mapper = mapper;
+            _unitOfWork = unitOfWork;
+            _repository = repository;
         }
 
-        public ValueTask<CommentResultDto> ModifyAsync(long id, CommentUpdateDto dto)
+        public async ValueTask<CommentResultDto> AddAsync(CommentCreationDto dto)
         {
-            throw new NotImplementedException();
+            var mappedComment = _mapper.Map<Comment>(dto);
+            mappedComment.CreatedAt = DateTime.UtcNow;
+
+            await _unitOfWork.CreateTransactionAsync();
+            var result = await _repository.InsertAsync(mappedComment);
+            await _unitOfWork.SaveAsync();
+            await _unitOfWork.CommitAsync();
+            return _mapper.Map<CommentResultDto>(result);
         }
 
-        public ValueTask<bool> RemoveByIdAsync(long id)
+        public async ValueTask<CommentResultDto> ModifyAsync(long id, CommentUpdateDto dto)
         {
-            throw new NotImplementedException();
+            var comment = await _repository.SelectAsync(p => p.Id == id && !p.IsDeleted);
+            if (comment == null)
+                throw new CustomException(404, "Comment is not found.");
+
+            var mappedComment = _mapper.Map(dto, comment);
+            mappedComment.UpdatedAt = DateTime.UtcNow;
+
+            var result = _repository.UpdateAsync(mappedComment);
+            await _unitOfWork.SaveAsync();
+            return _mapper.Map<CommentResultDto>(result);
         }
 
-        public ValueTask<IEnumerable<CommentResultDto>> RetrieveAllAsync()
+        public async ValueTask<bool> RemoveByIdAsync(long id)
         {
-            throw new NotImplementedException();
+            var comment = await _repository.SelectAsync(p => p.Id == id && !p.IsDeleted);
+            if (comment == null)
+                throw new CustomException(404, "Comment is not found.");
+
+            await _repository.DeleteAsync(comment);
+            await _unitOfWork.SaveAsync();
+            return true;
         }
 
-        public ValueTask<CommentResultDto> RetrieveByIdAsync(long id)
+        public async ValueTask<IEnumerable<CommentResultDto>> RetrieveAllAsync(string search = null)
         {
-            throw new NotImplementedException();
+            var comments = await _repository
+                .SelectAll(p => p.Text.Contains(search) && !p.IsDeleted)
+                .ToListAsync();
+
+            IEnumerable<CommentResultDto> result = new List<CommentResultDto>();
+            return _mapper.Map(comments, result);
+        }
+
+        public async ValueTask<CommentResultDto> RetrieveByIdAsync(long id)
+        {
+            var comment = await _repository.SelectAsync(p => p.Id == id && !p.IsDeleted);
+            if (comment == null)
+                throw new CustomException(404, "Comment is not found.");
+
+            return _mapper.Map<CommentResultDto>(comment);
         }
     }
 }
