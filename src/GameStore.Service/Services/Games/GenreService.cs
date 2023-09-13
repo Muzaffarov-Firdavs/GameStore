@@ -46,11 +46,9 @@ namespace GameStore.Service.Services.Games
 
             var mappedGenre = _mapper.Map(dto, genre);
             mappedGenre.UpdatedAt = DateTime.UtcNow;
-
-            var result = _repository.UpdateAsync(mappedGenre);
             await _unitOfWork.SaveAsync();
 
-            return _mapper.Map<GenreResultDto>(result);
+            return _mapper.Map<GenreResultDto>(mappedGenre);
         }
 
         public async ValueTask<bool> RemoveByIdAsync(long id)
@@ -66,12 +64,13 @@ namespace GameStore.Service.Services.Games
 
         public async ValueTask<IEnumerable<GenreResultDto>> RetrieveAllAsync(string search = null)
         {
-            var genres = await _repository
-                .SelectAll(p => p.Name.Contains(search) && !p.IsDeleted)
-                .ToListAsync();
+            var genres = await _repository.SelectAll(p => !p.IsDeleted).ToListAsync();
 
-            IEnumerable<GenreResultDto> result = new List<GenreResultDto>();
-            return _mapper.Map(genres, result);
+            if (!string.IsNullOrWhiteSpace(search))
+                genres = genres.FindAll(p => p.Name.ToLower()
+                .Contains(search.ToLower()));
+
+            return _mapper.Map< IEnumerable<GenreResultDto>>(genres);
         }
 
         public async ValueTask<GenreResultDto> RetrieveByIdAsync(long id)
