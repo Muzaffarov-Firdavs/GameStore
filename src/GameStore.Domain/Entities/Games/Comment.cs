@@ -12,6 +12,7 @@ namespace GameStore.Domain.Entities.Games
         public long UserId { get; set; }
         public User User { get; set; }
 
+        public long GameId { get; set; }
         public virtual Game Game { get; set; }
     }
 }

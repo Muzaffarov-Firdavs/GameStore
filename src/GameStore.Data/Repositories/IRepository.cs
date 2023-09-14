@@ -8,7 +8,9 @@ namespace GameStore.Data.Repositories
         ValueTask<TEntity> InsertAsync(TEntity entity);
         ValueTask<TEntity> UpdateAsync(TEntity entity);
         ValueTask DeleteAsync(TEntity entity);
-        ValueTask<TEntity> SelectAsync(Expression<Func<TEntity, bool>> expression);
-        IQueryable<TEntity> SelectAll(Expression<Func<TEntity, bool>> expression = null);
+        ValueTask<TEntity> SelectAsync(
+            Expression<Func<TEntity, bool>> expression, string[] includes = null);
+        IQueryable<TEntity> SelectAll(
+            Expression<Func<TEntity, bool>> expression = null, string[] includes = null);
     }
 }

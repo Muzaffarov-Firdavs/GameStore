@@ -29,17 +29,28 @@ namespace GameStore.Data.Repositories
             return result.Entity;
         }
 
-        public IQueryable<TEntity> SelectAll(Expression<Func<TEntity, bool>> expression = null)
+        public IQueryable<TEntity> SelectAll(
+            Expression<Func<TEntity, bool>> expression = null, string[] includes = null)
         {
-            if(expression != null)
-                return _dbSet.Where(expression);
+            IQueryable<TEntity> query = expression is null ? _dbSet : _dbSet.Where(expression);
 
-            return _dbSet;
+            if (includes is not null)
+                foreach (string include in includes)
+                    query = query.Include(include);
+
+            return query;
         }
 
-        public async ValueTask<TEntity> SelectAsync(Expression<Func<TEntity, bool>> expression)
+        public async ValueTask<TEntity> SelectAsync(
+            Expression<Func<TEntity, bool>> expression, string[] includes = null)
         {
-            return await _dbSet.FirstOrDefaultAsync(expression);
+            var query = _dbSet.Where(expression);
+
+            if (includes is not null)
+                foreach (string include in includes)
+                    query = query.Include(include);
+
+            return await query.FirstOrDefaultAsync();
         }
 
         public async ValueTask<TEntity> UpdateAsync(TEntity entity)
