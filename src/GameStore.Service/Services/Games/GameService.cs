@@ -2,6 +2,7 @@
 using GameStore.Data.Repositories;
 using GameStore.Data.UnitOfWorks;
 using GameStore.Domain.Entities.Games;
+using GameStore.Domain.Entities.Users;
 using GameStore.Service.Commons.Exceptions;
 using GameStore.Service.DTOs.Games;
 using GameStore.Service.Interfaces.Games;
@@ -14,21 +15,31 @@ namespace GameStore.Service.Services.Games
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IRepository<Game> _repository;
+        private readonly IRepository<User> _userRepository;
 
-        public GameService(IMapper mapper, IUnitOfWork unitOfWork, IRepository<Game> repository)
+
+        public GameService(IMapper mapper,
+            IUnitOfWork unitOfWork, 
+            IRepository<Game> repository,
+            IRepository<User> userRepository)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _repository = repository;
+            _userRepository = userRepository;
         }
 
         public async ValueTask<GameResultDto> AddAsync(GameCreationDto dto)
         {
+            var user = await _userRepository.SelectAsync(u => u.Id == dto.UserId && !u.IsDeleted);
+            if (user == null)
+                throw new CustomException(404, "User is not found");
+
             var mappedGame = _mapper.Map<Game>(dto);
             mappedGame.CreatedAt = DateTime.UtcNow;
 
             await _unitOfWork.CreateTransactionAsync();
-            var result = _repository.InsertAsync(mappedGame);
+            var result = await _repository.InsertAsync(mappedGame);
             await _unitOfWork.SaveAsync();
             await _unitOfWork.CommitAsync();
             return _mapper.Map<GameResultDto>(result);
@@ -42,10 +53,8 @@ namespace GameStore.Service.Services.Games
 
             var mappedGame = _mapper.Map(dto, game);
             mappedGame.UpdatedAt = DateTime.UtcNow;
-
-            var result = _repository.UpdateAsync(mappedGame);
             await _unitOfWork.SaveAsync();
-            return _mapper.Map<GameResultDto>(result);
+            return _mapper.Map<GameResultDto>(mappedGame);
         }
 
         public async ValueTask<bool> RemoveByIdAsync(long id)
@@ -61,12 +70,13 @@ namespace GameStore.Service.Services.Games
 
         public async ValueTask<IEnumerable<GameResultDto>> RetrieveAllAsync(string search = null)
         {
-            var games = await _repository
-                .SelectAll(p => p.Name.Contains(search) && !p.IsDeleted)
-                .ToListAsync();
+            var games = await _repository.SelectAll(p => !p.IsDeleted).ToListAsync();
 
-            IEnumerable<GameResultDto> result = new List<GameResultDto>();
-            return _mapper.Map(games, result);
+            if (!string.IsNullOrWhiteSpace(search))
+                games = games.FindAll(p => p.Name.ToLower()
+                .Contains(search.ToLower()));
+
+            return _mapper.Map<IEnumerable<GameResultDto>>(games);
         }
 
         public async ValueTask<GameResultDto> RetrieveByIdAsync(long id)

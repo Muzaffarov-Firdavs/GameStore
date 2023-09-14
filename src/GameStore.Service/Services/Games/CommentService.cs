@@ -4,7 +4,6 @@ using GameStore.Data.UnitOfWorks;
 using GameStore.Domain.Entities.Games;
 using GameStore.Service.Commons.Exceptions;
 using GameStore.Service.DTOs.Comments;
-using GameStore.Service.DTOs.Genres;
 using GameStore.Service.Interfaces.Games;
 using Microsoft.EntityFrameworkCore;
 
@@ -43,10 +42,8 @@ namespace GameStore.Service.Services.Games
 
             var mappedComment = _mapper.Map(dto, comment);
             mappedComment.UpdatedAt = DateTime.UtcNow;
-
-            var result = _repository.UpdateAsync(mappedComment);
             await _unitOfWork.SaveAsync();
-            return _mapper.Map<CommentResultDto>(result);
+            return _mapper.Map<CommentResultDto>(mappedComment);
         }
 
         public async ValueTask<bool> RemoveByIdAsync(long id)
@@ -62,12 +59,13 @@ namespace GameStore.Service.Services.Games
 
         public async ValueTask<IEnumerable<CommentResultDto>> RetrieveAllAsync(string search = null)
         {
-            var comments = await _repository
-                .SelectAll(p => p.Text.Contains(search) && !p.IsDeleted)
-                .ToListAsync();
+            var comments = await _repository.SelectAll(p => !p.IsDeleted).ToListAsync();
 
-            IEnumerable<CommentResultDto> result = new List<CommentResultDto>();
-            return _mapper.Map(comments, result);
+            if (!string.IsNullOrWhiteSpace(search))
+                comments = comments.FindAll(p => p.Text.ToLower()
+                .Contains(search.ToLower()));
+
+            return _mapper.Map<IEnumerable<CommentResultDto>>(comments);
         }
 
         public async ValueTask<CommentResultDto> RetrieveByIdAsync(long id)

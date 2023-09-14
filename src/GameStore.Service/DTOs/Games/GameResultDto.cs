@@ -10,7 +10,7 @@ namespace GameStore.Service.DTOs.Games
         public string Description { get; set; }
         public decimal Price { get; set; }
 
-        public virtual ICollection<GenreResultDto> Genres { get; set; }
-        public virtual ICollection<CommentResultDto> Comments { get; set; }
+        public List<GenreResultDto> Genres { get; set; }
+        public List<CommentResultDto> Comments { get; set; }
     }
 }

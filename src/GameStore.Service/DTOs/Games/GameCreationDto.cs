@@ -1,7 +1,4 @@
-﻿using GameStore.Domain.Entities.Games;
-using GameStore.Domain.Entities.Users;
-
-namespace GameStore.Service.DTOs.Games
+﻿namespace GameStore.Service.DTOs.Games
 {
     public class GameCreationDto
     {
@@ -9,7 +6,7 @@ namespace GameStore.Service.DTOs.Games
         public string Description { get; set; }
         public decimal Price { get; set; }
 
-        public ICollection<Genre> Genres { get; set; }
+        public List<long> GenresIds { get; set; }
 
         public long UserId { get; set; }
     }
