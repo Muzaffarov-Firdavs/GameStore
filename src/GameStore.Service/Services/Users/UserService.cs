@@ -24,9 +24,12 @@ namespace GameStore.Service.Services.Users
 
         public async ValueTask<UserResultDto> AddAsync(UserCreationDto dto)
         {
+            if (dto.Password != dto.ConfirmPassoword)
+                throw new CustomException(422, "Password and confirmed password do not match.");
+
             var genre = await _repository
                 .SelectAsync(p => p.Email.ToLower() == dto.Email.ToLower()
-                && p.Username.ToLower() == dto.Username.ToLower()
+                || p.Username.ToLower() == dto.Username.ToLower()
                 && !p.IsDeleted);
             if (genre != null)
                 throw new CustomException(409, "User already exists.");
