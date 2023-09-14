@@ -16,17 +16,21 @@ namespace GameStore.Service.Services.Games
         private readonly IUnitOfWork _unitOfWork;
         private readonly IRepository<Game> _repository;
         private readonly IRepository<User> _userRepository;
+        private readonly IRepository<Genre> _genreRepository;
+
 
 
         public GameService(IMapper mapper,
-            IUnitOfWork unitOfWork, 
+            IUnitOfWork unitOfWork,
             IRepository<Game> repository,
-            IRepository<User> userRepository)
+            IRepository<User> userRepository,
+            IRepository<Genre> genreRepository)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _repository = repository;
             _userRepository = userRepository;
+            _genreRepository = genreRepository;
         }
 
         public async ValueTask<GameResultDto> AddAsync(GameCreationDto dto)
@@ -36,6 +40,8 @@ namespace GameStore.Service.Services.Games
                 throw new CustomException(404, "User is not found");
 
             var mappedGame = _mapper.Map<Game>(dto);
+            mappedGame.Genres = await _genreRepository.SelectAll(p =>
+                !p.IsDeleted && dto.GenresIds.Contains(p.Id)).ToListAsync();
             mappedGame.CreatedAt = DateTime.UtcNow;
 
             await _unitOfWork.CreateTransactionAsync();
@@ -52,6 +58,8 @@ namespace GameStore.Service.Services.Games
                 throw new CustomException(404, "Game is not found.");
 
             var mappedGame = _mapper.Map(dto, game);
+            mappedGame.Genres = await _genreRepository.SelectAll(p =>
+                !p.IsDeleted && dto.GenresIds.Contains(p.Id)).ToListAsync();
             mappedGame.UpdatedAt = DateTime.UtcNow;
             await _unitOfWork.SaveAsync();
             return _mapper.Map<GameResultDto>(mappedGame);
@@ -70,7 +78,10 @@ namespace GameStore.Service.Services.Games
 
         public async ValueTask<IEnumerable<GameResultDto>> RetrieveAllAsync(string search = null)
         {
-            var games = await _repository.SelectAll(p => !p.IsDeleted).ToListAsync();
+            var games = await _repository.SelectAll(p => !p.IsDeleted)
+                .Include(p => p.Genres)
+                .Include(p => p.Comments)
+                .ToListAsync();
 
             if (!string.IsNullOrWhiteSpace(search))
                 games = games.FindAll(p => p.Name.ToLower()
