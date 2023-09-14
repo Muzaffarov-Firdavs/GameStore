@@ -12,6 +12,7 @@ namespace GameStore.Domain.Entities.Games
         public virtual ICollection<Genre> Genres { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }
 
+        public long UserId { get; set; }
         public virtual User User { get; set; }
     }
 }
