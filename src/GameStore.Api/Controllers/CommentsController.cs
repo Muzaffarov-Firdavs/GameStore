@@ -21,7 +21,7 @@ namespace GameStore.Api.Controllers
             => Ok(await _commentService.ModifyAsync(id, dto));
 
         [HttpDelete("id")]
-        public async Task<IActionResult> DaleteByIdAsync(long id)
+        public async Task<IActionResult> DeleteByIdAsync(long id)
             => Ok(await _commentService.RemoveByIdAsync(id));
 
         [HttpGet("id")]
