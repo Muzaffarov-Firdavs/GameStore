@@ -1,4 +1,5 @@
-﻿using GameStore.Domain.Entities.Games;
+﻿using GameStore.Domain.Entities.Files;
+using GameStore.Domain.Entities.Games;
 using GameStore.Domain.Entities.Orders;
 using GameStore.Domain.Entities.Users;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +22,7 @@ namespace GameStore.Data.DbContexts
         public virtual DbSet<ContactInformation> ContactInformations { get; set; }
         public virtual DbSet<Order> Orders { get; set; }
         public virtual DbSet<OrderItem> OrderItems { get; set; }
+        public virtual DbSet<Image> Images { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
