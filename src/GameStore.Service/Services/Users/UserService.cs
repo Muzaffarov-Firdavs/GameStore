@@ -2,7 +2,9 @@
 using GameStore.Data.Repositories;
 using GameStore.Data.UnitOfWorks;
 using GameStore.Domain.Entities.Users;
+using GameStore.Service.Commons.Configurations;
 using GameStore.Service.Commons.Exceptions;
+using GameStore.Service.Commons.Extensions;
 using GameStore.Service.DTOs.Users;
 using GameStore.Service.Interfaces.Users;
 using Microsoft.EntityFrameworkCore;
@@ -68,9 +70,11 @@ namespace GameStore.Service.Services.Users
             return true;
         }
 
-        public async ValueTask<IEnumerable<UserResultDto>> RetrieveAllAsync(string search = null)
+        public async ValueTask<IEnumerable<UserResultDto>> RetrieveAllAsync(PaginationParams @params, string search = null)
         {
-            var users = await _repository.SelectAll(p => !p.IsDeleted).ToListAsync();
+            var users = await _repository.SelectAll(p => !p.IsDeleted)
+                .ToPagedList(@params)
+                .ToListAsync();
 
             if (!string.IsNullOrWhiteSpace(search))
                 users = users.FindAll(p =>

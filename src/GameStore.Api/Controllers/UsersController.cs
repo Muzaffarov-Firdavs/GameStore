@@ -1,4 +1,5 @@
-﻿using GameStore.Service.DTOs.Users;
+﻿using GameStore.Service.Commons.Configurations;
+using GameStore.Service.DTOs.Users;
 using GameStore.Service.Interfaces.Users;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,7 +30,7 @@ namespace GameStore.Api.Controllers
             => Ok(await _userService.RetrieveByIdAsync(id));
 
         [HttpGet]
-        public async Task<IActionResult> GetAllAsync(string? search = null)
-            => Ok(await _userService.RetrieveAllAsync(search));
+        public async Task<IActionResult> GetAllAsync([FromQuery] PaginationParams @params, string? search = null)
+            => Ok(await _userService.RetrieveAllAsync(@params, search));
     }
 }
