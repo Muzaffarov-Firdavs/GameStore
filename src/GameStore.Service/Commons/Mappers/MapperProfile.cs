@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using GameStore.Domain.Entities.Games;
+using GameStore.Domain.Entities.Orders;
 using GameStore.Domain.Entities.Users;
+using GameStore.Service.DTOs.Carts;
 using GameStore.Service.DTOs.Comments;
 using GameStore.Service.DTOs.Games;
 using GameStore.Service.DTOs.Genres;
@@ -27,6 +29,11 @@ namespace GameStore.Service.Commons.Mappers
             CreateMap<Comment, CommentResultDto>().ReverseMap();
             CreateMap<Comment, CommentUpdateDto>().ReverseMap();
             CreateMap<Comment, CommentCreationDto>().ReverseMap();
+
+            CreateMap<Cart, CartResultDto>().ReverseMap();
+            CreateMap<CartItem, CartItemResultDto>().ReverseMap();
+            CreateMap<CartItem, CartItemUpdateDto>().ReverseMap();
+            CreateMap<CartItem, CartItemCreationDto>().ReverseMap();
         }
     }
 }
