@@ -18,8 +18,6 @@ namespace GameStore.Service.Services.Games
         private readonly IRepository<User> _userRepository;
         private readonly IRepository<Genre> _genreRepository;
 
-
-
         public GameService(IMapper mapper,
             IUnitOfWork unitOfWork,
             IRepository<Game> repository,
@@ -92,7 +90,8 @@ namespace GameStore.Service.Services.Games
 
         public async ValueTask<GameResultDto> RetrieveByIdAsync(long id)
         {
-            var game = await _repository.SelectAsync(p => p.Id == id && !p.IsDeleted);
+            var game = await _repository.SelectAsync(p => p.Id == id && !p.IsDeleted,
+                includes: new string[] {"Genres", "Comments"});
             if (game == null)
                 throw new CustomException(404, "Game is not found.");
 

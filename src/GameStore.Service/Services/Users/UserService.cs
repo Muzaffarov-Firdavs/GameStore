@@ -17,8 +17,8 @@ namespace GameStore.Service.Services.Users
 
         public UserService(IMapper mapper, IUnitOfWork unitOfWork, IRepository<User> repository)
         {
-            this._mapper = mapper;
-            this._unitOfWork = unitOfWork;
+            _mapper = mapper;
+            _unitOfWork = unitOfWork;
             _repository = repository;
         }
 
