@@ -97,5 +97,16 @@ namespace GameStore.Service.Services.Games
 
             return _mapper.Map<GameResultDto>(game);
         }
+     
+        public async ValueTask<IEnumerable<GameResultDto>> RetrieveAllByGenreAsync(long genreId)
+        {
+            var genre = await _genreRepository.SelectAsync(p => !p.IsDeleted && p.Id == genreId,
+                new string[] { "Games" });
+            if (genre == null)
+                throw new CustomException(404, "Genre is not found.");
+
+            var results = genre.Games.Where(p => !p.IsDeleted);
+            return _mapper.Map<IEnumerable<GameResultDto>>(results);
+        }
     }
 }

@@ -32,6 +32,10 @@ namespace GameStore.Api.Controllers
         public async Task<IActionResult> GetAllAsync(string? search = null)
             => Ok(await _gameService.RetrieveAllAsync(search));
 
+        [HttpGet("by-genre-id")]
+        public async Task<IActionResult> GetAllByGenreId(long genreId)
+            => Ok(await _gameService.RetrieveAllByGenreAsync(genreId));
+
     }
 
 }
