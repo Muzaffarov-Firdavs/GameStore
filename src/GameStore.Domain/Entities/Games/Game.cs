@@ -1,4 +1,5 @@
 ﻿using GameStore.Domain.Commons;
+using GameStore.Domain.Entities.Files;
 using GameStore.Domain.Entities.Users;
 
 namespace GameStore.Domain.Entities.Games
@@ -14,5 +15,8 @@ namespace GameStore.Domain.Entities.Games
 
         public long UserId { get; set; }
         public virtual User User { get; set; }
+
+        public long ImageId { get; set; }
+        public virtual Image Image { get; set; }
     }
 }
