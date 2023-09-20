@@ -1,4 +1,6 @@
-﻿using GameStore.Service.DTOs.Games;
+﻿using GameStore.Service.Commons.Extensions;
+using GameStore.Service.DTOs.Files;
+using GameStore.Service.DTOs.Games;
 using GameStore.Service.Interfaces.Games;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,8 +15,11 @@ namespace GameStore.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostAsync(GameCreationDto dto)
-            => Ok(await _gameService.AddAsync(dto));
+        public async Task<IActionResult> PostAsync([FromForm] GameCreationDto dto, [FromForm] SingleFile file)
+        {
+            var image = await file.File.ToImageAsync();
+            return Ok(await _gameService.AddAsync(dto, image));
+        }
 
         [HttpPut("id")]
         public async Task<IActionResult> PutAsync(long id, GameUpdateDto dto)
