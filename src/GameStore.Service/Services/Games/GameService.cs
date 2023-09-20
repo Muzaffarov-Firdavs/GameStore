@@ -62,7 +62,8 @@ namespace GameStore.Service.Services.Games
 
         public async ValueTask<GameResultDto> ModifyAsync(long id, GameUpdateDto dto)
         {
-            var game = await _repository.SelectAsync(p => p.Id == id && !p.IsDeleted);
+            var game = await _repository.SelectAsync(p => p.Id == id && !p.IsDeleted,
+                includes: new string[] {"Genres", "Comments", "Image"});
             if (game == null)
                 throw new CustomException(404, "Game is not found.");
 
@@ -90,6 +91,7 @@ namespace GameStore.Service.Services.Games
             var games = await _repository.SelectAll(p => !p.IsDeleted)
                 .Include(p => p.Genres)
                 .Include(p => p.Comments)
+                .Include(p => p.Image)
                 .ToListAsync();
 
             if (!string.IsNullOrWhiteSpace(search))
@@ -102,7 +104,7 @@ namespace GameStore.Service.Services.Games
         public async ValueTask<GameResultDto> RetrieveByIdAsync(long id)
         {
             var game = await _repository.SelectAsync(p => p.Id == id && !p.IsDeleted,
-                includes: new string[] {"Genres", "Comments"});
+                includes: new string[] {"Genres", "Comments", "Image"});
             if (game == null)
                 throw new CustomException(404, "Game is not found.");
 
@@ -112,7 +114,7 @@ namespace GameStore.Service.Services.Games
         public async ValueTask<IEnumerable<GameResultDto>> RetrieveAllByGenreAsync(long genreId)
         {
             var genre = await _genreRepository.SelectAsync(p => !p.IsDeleted && p.Id == genreId,
-                new string[] { "Games" });
+                new string[] { "Games", "Games.Image" });
             if (genre == null)
                 throw new CustomException(404, "Genre is not found.");
 
