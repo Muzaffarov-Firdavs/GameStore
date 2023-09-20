@@ -1,16 +1,12 @@
 ﻿using AutoMapper;
-using GameStore.Data.DbContexts;
 using GameStore.Data.Repositories;
 using GameStore.Data.UnitOfWorks;
 using GameStore.Domain.Entities.Games;
-using GameStore.Service.Commons.Exceptions;
 using GameStore.Service.DTOs.Genres;
 using GameStore.Service.Interfaces.Games;
 using GameStore.Service.Services.Games;
-using Microsoft.EntityFrameworkCore.Storage;
 using Moq;
 using System.Linq.Expressions;
-using System.Runtime.CompilerServices;
 
 namespace GameStore.Tests.Games
 {
@@ -40,9 +36,26 @@ namespace GameStore.Tests.Games
                 Id = 1,
                 Name = "Action",
             };
-            
-            _repositoryMock.Setup(p => p.InsertAsync(It.IsAny<Genre>()))
-                .ReturnsAsync(expectedGenre);
+
+            _repositoryMock
+                .Setup(r => r.SelectAsync(
+                    It.IsAny<Expression<Func<Genre, bool>>>(), It.IsAny<string[]>()))
+                .ReturnsAsync((Expression<Func<Genre, bool>> predicate, string[] includes) => null);
+
+
+            _mapperMock.Setup(m => m.Map<Genre>(genreCreationDto))
+                .Returns(new Genre { Name = "Action" });
+
+            _unitOfWorkMock.Setup(u => u.CreateTransactionAsync());
+
+            _repositoryMock.Setup(r => r.InsertAsync(It.IsAny<Genre>()))
+                .ReturnsAsync(new Genre { Id = 1, Name = "Action" });
+
+            _unitOfWorkMock.Setup(u => u.SaveAsync());
+            _unitOfWorkMock.Setup(u => u.CommitAsync());
+
+            _mapperMock.Setup(m => m.Map<GenreResultDto>(It.IsAny<Genre>()))
+               .Returns(new GenreResultDto { Id = 1, Name = "Action" });
 
             // Act
             var result = await _genreService.AddAsync(genreCreationDto);
