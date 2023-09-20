@@ -1,0 +1,26 @@
+﻿@using GameStore.Service.DTOs.Games;
+@model IEnumerable<GameResultDto>
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@foreach (var item in Model)
+{
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h3 class="card-title">@item.Image.FilePath </h3>
+                    <h5>Price: <span class="text-success">$@item.Price</span></h5>
+                        <h5>Name: <span class="text-secondary">@item.Name</span></h5>
+                        @foreach (var genre in @item.Genres)
+                        {
+                            <h5>Genre: <span class="text-secondary"></span>@genre.Name</h5>
+                        }
+                    <h5>Developer(s): <span class="text-secondary">developer</span></h5>
+                    <p class="card-text">@item.Description</p>
+                </div>
+            </div>
+        </div>
+    </div>
+}
