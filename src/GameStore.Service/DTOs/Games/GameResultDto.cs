@@ -1,4 +1,5 @@
 ﻿using GameStore.Service.DTOs.Comments;
+using GameStore.Service.DTOs.Files;
 using GameStore.Service.DTOs.Genres;
 
 namespace GameStore.Service.DTOs.Games
@@ -10,6 +11,7 @@ namespace GameStore.Service.DTOs.Games
         public string Description { get; set; }
         public decimal Price { get; set; }
 
+        public ImageResultDto Image { get; set; }
         public List<GenreResultDto> Genres { get; set; }
         public List<CommentResultDto> Comments { get; set; }
     }
