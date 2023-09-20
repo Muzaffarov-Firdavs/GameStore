@@ -7,6 +7,6 @@ namespace GameStore.Service.Interfaces.Files
     public interface IImageService
     {
         ValueTask<Image> UploadAsync(ImageCreationDto dto);
-        ValueTask<bool> DeleteAsync(long id);
+        ValueTask<bool> RemoveAsync(long id);
     }
 }

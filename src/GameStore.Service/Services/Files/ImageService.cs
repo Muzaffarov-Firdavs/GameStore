@@ -19,7 +19,7 @@ namespace GameStore.Service.Services.Files
             _repository = repository;
         }
 
-        public async ValueTask<bool> DeleteAsync(long id)
+        public async ValueTask<bool> RemoveAsync(long id)
         {
             var image = await _repository.SelectAsync(p => p.Id == id && !p.IsDeleted);
             if (image == null)
@@ -33,7 +33,7 @@ namespace GameStore.Service.Services.Files
 
         public async ValueTask<Image> UploadAsync(ImageCreationDto dto)
         {
-            string path = Path.Combine(EnvironmentHelper.WebRootPath, "Files");
+            string path = Path.Combine(EnvironmentHelper.WebRootPath, "Files/Images");
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
 
