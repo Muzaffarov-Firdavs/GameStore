@@ -4,7 +4,9 @@ using GameStore.Data.UnitOfWorks;
 using GameStore.Domain.Entities.Games;
 using GameStore.Domain.Entities.Users;
 using GameStore.Service.Commons.Exceptions;
+using GameStore.Service.DTOs.Files;
 using GameStore.Service.DTOs.Games;
+using GameStore.Service.Interfaces.Files;
 using GameStore.Service.Interfaces.Games;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,12 +16,14 @@ namespace GameStore.Service.Services.Games
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IImageService _imageService;
         private readonly IRepository<Game> _repository;
         private readonly IRepository<User> _userRepository;
         private readonly IRepository<Genre> _genreRepository;
 
         public GameService(IMapper mapper,
             IUnitOfWork unitOfWork,
+            IImageService imageService,
             IRepository<Game> repository,
             IRepository<User> userRepository,
             IRepository<Genre> genreRepository)
@@ -27,20 +31,27 @@ namespace GameStore.Service.Services.Games
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _repository = repository;
+            _imageService = imageService;
             _userRepository = userRepository;
             _genreRepository = genreRepository;
         }
 
-        public async ValueTask<GameResultDto> AddAsync(GameCreationDto dto)
+        public async ValueTask<GameResultDto> AddAsync(GameCreationDto dto, ImageCreationDto imageDto)
         {
             var user = await _userRepository.SelectAsync(u => u.Id == dto.UserId && !u.IsDeleted);
             if (user == null)
                 throw new CustomException(404, "User is not found");
 
+            // Save image in static files
+            var image = await _imageService.UploadAsync(imageDto);
+
             var mappedGame = _mapper.Map<Game>(dto);
+            mappedGame.ImageId = image.Id;
+            mappedGame.CreatedAt = DateTime.UtcNow;
+
+            // Connect genres with exsisting game
             mappedGame.Genres = await _genreRepository.SelectAll(p =>
                 !p.IsDeleted && dto.GenresIds.Contains(p.Id)).ToListAsync();
-            mappedGame.CreatedAt = DateTime.UtcNow;
 
             await _unitOfWork.CreateTransactionAsync();
             var result = await _repository.InsertAsync(mappedGame);

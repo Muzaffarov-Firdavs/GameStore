@@ -1,10 +1,11 @@
-﻿using GameStore.Service.DTOs.Games;
+﻿using GameStore.Service.DTOs.Files;
+using GameStore.Service.DTOs.Games;
 
 namespace GameStore.Service.Interfaces.Games
 {
     public interface IGameService
     {
-        ValueTask<GameResultDto> AddAsync(GameCreationDto dto);
+        ValueTask<GameResultDto> AddAsync(GameCreationDto dto, ImageCreationDto imageDto);
         ValueTask<GameResultDto> ModifyAsync(long id, GameUpdateDto dto);
         ValueTask<bool> RemoveByIdAsync(long id);
         ValueTask<GameResultDto> RetrieveByIdAsync(long id);
