@@ -40,7 +40,7 @@ body {
 .aspect-ratio-container {
     position: relative;
     width: 100%;
-    padding-top: 75%; /* 4:3 aspect ratio (change as needed) */
+    padding-top: 75%; 
     overflow: hidden;
 }
 
@@ -56,7 +56,7 @@ body {
     position: relative;
     width: 100%;
     height: 0;
-    padding-bottom: 75%; /* 4:3 aspect ratio (change as needed) */
+    padding-bottom: 75%; 
     overflow: hidden;
 }
 
@@ -67,4 +67,33 @@ body {
     width: 100%;
     height: 100%;
     object-fit: cover;
+}
+
+.move-margin {
+    margin-top: 20px;
+    margin-right: 75px;
+    margin-left: 75px;
+}
+
+.btn-success.ms-5 {
+    font-size: 40px; 
+    padding: 0px 45px; 
+}
+
+.card-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.hidden-corners-button {
+    background-color: #007bff; /* Button background color */
+    color: #fff; /* Button text color */
+    border: none; /* Remove button border */
+    padding: 0px 20px; /* Add padding to the button */
+    border-radius: 50px; /* Use a large border radius to create a circular shape */
+}
+
+.thin-version {
+    font-weight: 300;
 }

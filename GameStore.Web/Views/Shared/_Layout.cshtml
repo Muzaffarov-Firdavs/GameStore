@@ -8,61 +8,63 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/GameStore.Web.styles.css" asp-append-version="true" />
 </head>
-<body class="bg-dark">
+<body class="bg-black">
     @* <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Game Store</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+    <div class="container-fluid">
+    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Game Store</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+    aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+    <ul class="navbar-nav flex-grow-1">
+    <li class="nav-item">
+    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+    </li>
+    <li class="nav-item">
+    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    </li>
+    </ul>
+    </div>
+    </div>
+    </nav>
+    </header> *@
+    <div class="container">
+        <nav class="navbar navbar-expand-sm navbar-dark bg-black">
+            <div class="container">
+                <a asp-controller="Home" asp-action="Index" class="navbar-brand">Games Store</a>
+                <button class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                    <ul class="navbar-nav ml-auto">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a asp-controller="Home" asp-action="Index" class="nav-link">Games</a>
+                        </li>
+                        <li class="nav-item active">
+                            <a href="#" class="nav-link">Community</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a href="#" class="nav-link">About</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">Support</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                    <ul class="navbar-nav float-right">
+                        <li class="nav-item">
+                            <a href="SignIn.html" class="nav-link float-right">Sign in</a>
                         </li>
                     </ul>
                 </div>
             </div>
         </nav>
-    </header> *@
-    <nav class="navbar navbar-expand-sm navbar-dark bg-black">
-        <div class="container">
-            <a href="index.html" class="navbar-brand">Games Store</a>
-            <button class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarCollapse">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item">
-                        <a href="index.html" class="nav-link">Games</a>
-                    </li>
-                    <li class="nav-item active">
-                        <a href="#.html" class="nav-link">Community</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#.html" class="nav-link">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#.html" class="nav-link">Support</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="collapse navbar-collapse" id="navbarCollapse">
-                <ul class="navbar-nav float-right">
-                    <li class="nav-item">
-                        <a href="SignIn.html" class="nav-link float-right">Sign in</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-    
-    <div class="clr"><p></p></div>
+    </div>
+
+    <div class="clr"></div>
 
     <div class="container bg-dark">
         <main role="main" class="pb-3">
@@ -70,25 +72,29 @@
         </main>
     </div>
 
-    <footer id="main-footer" class="border-top footer text-muted bg-black">
-        <div class="container">
-            <div class="row">
-                <div class="col">
-                    <p>
-                        Game Store
-                    </p>
-                </div>
-                <div class="col">
-                </div>
-                <div class="col float-right">
-                    <p>
-                        Copyright &copy;
-                        <span id="year"></span>
-                    </p>
+    <div class="clr"></div>
+
+    <div class="container">
+        <footer id="main-footer" class="border-top footer text-muted bg-black">
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+                        <p>
+                            Game Store
+                        </p>
+                    </div>
+                    <div class="col">
+                    </div>
+                    <div class="col float-right">
+                        <p>
+                            Copyright &copy;
+                            <span id="year"></span>
+                        </p>
+                    </div>
                 </div>
             </div>
-        </div>
-    </footer>
+        </footer>
+    </div>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

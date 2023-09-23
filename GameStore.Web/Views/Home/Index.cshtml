@@ -4,6 +4,8 @@
     ViewData["Title"] = "Home Page";
 }
 
+<br />
+
 @foreach (var item in Model)
 {
     <div class="card text-white bg-dark border-0 box" style="width: 27rem;">
@@ -22,7 +24,7 @@
                     <h3></h3>
                 </div>
                 <div class="col">
-                    <a href="#" class="btn btn-success ms-5">BUY</a>
+                    <a href="#" class="btn btn-success">BUY</a>
                 </div>
             </div>
             <div class="row">
@@ -34,6 +36,7 @@
                 }
                 <h6 class="">@item.Name</h6>
             </div>
+            <a asp-controller="Games" asp-action="Details" asp-route-id="@item?.Id">Detail</a> |
         </div>
     </div>
 }

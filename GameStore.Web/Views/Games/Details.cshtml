@@ -1,0 +1,43 @@
+﻿@using GameStore.Service.DTOs.Games;
+@model GameResultDto
+
+@{
+    ViewData["Title"] = "Details";
+}
+<br />
+
+<div class="move-margin">
+    <div class="card text-white bg-dark border-0 box" style="width: 71rem;">
+        <div class="image-container">
+            <img class="card-img-top" src="../../Images/@Model.Image.FileName" alt="@Model.Image.FileName">
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col">
+                    <p class="text-price lead card-text">@Model.Name</p>
+                    <p class="display-6">$@Model.Price</p>
+                </div>
+                <div class="col">
+                </div>
+                <div class="col">
+                    <a href="#" class="btn btn-success ms-5">BUY</a>
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                @foreach (var genre in @Model.Genres)
+                {
+                    <div class="col">
+                        <button class="hidden-corners-button">@genre.Name</button>
+                    </div>
+                }
+            </div>
+            <br />
+            <div class="row">
+                <h6 class="thin-version">@Model.Description</h6>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="clr"></div>
