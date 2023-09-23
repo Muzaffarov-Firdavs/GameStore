@@ -12,3 +12,59 @@ body {
 .navbar .nav-item.active {
     border-left: #444 3px solid;
 }
+
+.game-image {
+    display: block;
+    margin: auto;
+    display: inline-block;
+}
+
+.clr {
+    clear: both;
+    background-color: #444;
+}
+
+.box {
+    width: 33.3%;
+    float: left;
+    padding: 10px;
+}
+
+.text-price {
+    padding-top: 0px;
+    font-family: sans-serif;
+    font-size: 2.5em;
+    font-weight: 100;
+}
+
+.aspect-ratio-container {
+    position: relative;
+    width: 100%;
+    padding-top: 75%; /* 4:3 aspect ratio (change as needed) */
+    overflow: hidden;
+}
+
+.aspect-ratio-container img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+}
+
+.image-container {
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-bottom: 75%; /* 4:3 aspect ratio (change as needed) */
+    overflow: hidden;
+}
+
+.image-container img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}

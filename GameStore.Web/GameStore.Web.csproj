@@ -20,8 +20,4 @@
     <ProjectReference Include="..\src\GameStore.Service\GameStore.Service.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="wwwroot\Images\" />
-  </ItemGroup>
-
 </Project>

@@ -8,8 +8,8 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/GameStore.Web.styles.css" asp-append-version="true" />
 </head>
-<body>
-    <header>
+<body class="bg-dark">
+    @* <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Game Store</a>
@@ -29,10 +29,10 @@
                 </div>
             </div>
         </nav>
-    </header>
+    </header> *@
     <nav class="navbar navbar-expand-sm navbar-dark bg-black">
         <div class="container">
-            <a href="index.html" class="navbar-brand">Glozzom</a>
+            <a href="index.html" class="navbar-brand">Games Store</a>
             <button class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -42,22 +42,29 @@
                         <a href="index.html" class="nav-link">Games</a>
                     </li>
                     <li class="nav-item active">
-                        <a href="about.html" class="nav-link">Community</a>
+                        <a href="#.html" class="nav-link">Community</a>
                     </li>
                     <li class="nav-item">
-                        <a href="services.html" class="nav-link">About</a>
+                        <a href="#.html" class="nav-link">About</a>
                     </li>
                     <li class="nav-item">
-                        <a href="blog.html" class="nav-link">Support</a>
+                        <a href="#.html" class="nav-link">Support</a>
                     </li>
+                </ul>
+            </div>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav float-right">
                     <li class="nav-item">
-                        <a href="contact.html" class="nav-link">Sign in</a>
+                        <a href="SignIn.html" class="nav-link float-right">Sign in</a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
-    <div class="container">
+    
+    <div class="clr"><p></p></div>
+
+    <div class="container bg-dark">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
@@ -68,8 +75,10 @@
             <div class="row">
                 <div class="col">
                     <p>
-                        Game Store 
+                        Game Store
                     </p>
+                </div>
+                <div class="col">
                 </div>
                 <div class="col float-right">
                     <p>
@@ -80,11 +89,7 @@
             </div>
         </div>
     </footer>
-    @* <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2023 - GameStore.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer> *@
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
