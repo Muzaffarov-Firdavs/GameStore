@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\Files\**" />
+    <Content Remove="wwwroot\Files\**" />
+    <EmbeddedResource Remove="wwwroot\Files\**" />
+    <None Remove="wwwroot\Files\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
 	  <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.10">
@@ -21,8 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\Files\" />
-    <Folder Include="wwwroot\Files\Images\" />
+    <Folder Include="wwwroot\Images\" />
   </ItemGroup>
 
 </Project>
