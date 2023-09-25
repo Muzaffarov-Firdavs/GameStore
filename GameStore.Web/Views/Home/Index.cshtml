@@ -13,9 +13,12 @@
 @foreach (var item in Model)
 {
     <div class="card text-white bg-dark border-0 box" style="width: 27rem;">
-        <div class="image-container">
-            <a href="games/details/@item.Id"><img class="card-img-top" src="Images/@item.Image.FileName" alt="Game image cap"></a>
-        </div>
+        @if (item.Image != null)
+        {
+            <div class="image-container">
+                <a href="games/details/@item.Id"><img class="card-img-top" src="Images/@item.Image.FileName" alt="Game image cap"></a>
+            </div>
+        }
         <div class="card-body">
             <div class="row">
                 <div class="col">
