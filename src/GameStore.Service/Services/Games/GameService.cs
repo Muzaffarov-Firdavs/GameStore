@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using GameStore.Data.Repositories;
 using GameStore.Data.UnitOfWorks;
+using GameStore.Domain.Entities.Files;
 using GameStore.Domain.Entities.Games;
 using GameStore.Domain.Entities.Users;
 using GameStore.Service.Commons.Exceptions;
@@ -38,15 +39,18 @@ namespace GameStore.Service.Services.Games
 
         public async ValueTask<GameResultDto> AddAsync(GameCreationDto dto, ImageCreationDto imageDto)
         {
-            var user = await _userRepository.SelectAsync(u => u.Id == dto.UserId && !u.IsDeleted);
-            if (user == null)
-                throw new CustomException(404, "User is not found");
+            // 3rd module requirement.
+            //var user = await _userRepository.SelectAsync(u => u.Id == dto.UserId && !u.IsDeleted);
+            //if (user == null)
+            //    throw new CustomException(404, "User is not found");
 
             // Save image in static files
-            var image = await _imageService.UploadAsync(imageDto);
+            Image image = null;
+            if (imageDto != null)
+                image = await _imageService.UploadAsync(imageDto);
 
             var mappedGame = _mapper.Map<Game>(dto);
-            mappedGame.ImageId = image.Id;
+            mappedGame.ImageId = image is not null ? image.Id : null;
             mappedGame.CreatedAt = DateTime.UtcNow;
 
             // Connect genres with exsisting game
@@ -63,7 +67,7 @@ namespace GameStore.Service.Services.Games
         public async ValueTask<GameResultDto> ModifyAsync(long id, GameUpdateDto dto)
         {
             var game = await _repository.SelectAsync(p => p.Id == id && !p.IsDeleted,
-                includes: new string[] {"Genres", "Comments", "Image"});
+                includes: new string[] { "Genres", "Comments", "Image" });
             if (game == null)
                 throw new CustomException(404, "Game is not found.");
 
@@ -104,13 +108,13 @@ namespace GameStore.Service.Services.Games
         public async ValueTask<GameResultDto> RetrieveByIdAsync(long id)
         {
             var game = await _repository.SelectAsync(p => p.Id == id && !p.IsDeleted,
-                includes: new string[] {"Genres", "Comments", "Image"});
+                includes: new string[] { "Genres", "Comments", "Image" });
             if (game == null)
                 throw new CustomException(404, "Game is not found.");
 
             return _mapper.Map<GameResultDto>(game);
         }
-     
+
         public async ValueTask<IEnumerable<GameResultDto>> RetrieveAllByGenreAsync(long genreId)
         {
             var genre = await _genreRepository.SelectAsync(p => !p.IsDeleted && p.Id == genreId,
