@@ -33,7 +33,7 @@ namespace GameStore.Service.Services.Files
 
         public async ValueTask<Image> UploadAsync(ImageCreationDto dto)
         {
-            string path = Path.Combine(EnvironmentHelper.WebRootPath, "Files/Images");
+            string path = Path.Combine(EnvironmentHelper.WebRootPath, "Images");
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
 

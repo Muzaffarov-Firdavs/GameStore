@@ -1,46 +1,42 @@
-﻿@page
-@using GameStore.Service.DTOs.Games;
-@model GameCreationDto
+﻿@model GameStore.Service.ViewModels.CreateGameViewModel;
 
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" />
-                <span asp-validation-for="Price" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-            <div class="form-group">
-                <label asp-for="GenresIds" class="control-label"></label>
-                <select asp-for="GenresIds" class="form-control">
-                    <option value="">Select a Todo List</option>
-                    @foreach (var genre in ViewBag.Genres)
-                    {
-                        <option value="@genre.Id">@genre.Name</option>
-                    }
-                </select>
-                <span asp-validation-for="GenresIds" class="text-danger"></span>
-            </div>
-        </form>
+<form asp-action="Create" method="post" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+
+    <div class="form-group">
+        <label asp-for="Name" class="control-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
     </div>
-</div>
 
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-}
+    <div class="form-group">
+        <label asp-for="Description" class="control-label">Description</label>
+        <input asp-for="Description" class="form-control" />
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Price" class="control-label">Price</label>
+        <input asp-for="Price" class="form-control" />
+        <span asp-validation-for="Price" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="GenresIds" class="control-label">Genres</label>
+        <select asp-for="GenresIds" asp-items="ViewBag.Genres as SelectList" class="form-control" multiple>
+        </select>
+        <span asp-validation-for="GenresIds" class="text-danger"></span>
+    </div>
+
+    <h2>Upload Image</h2>
+
+    <div class="form-group">
+        <label for="ImageFile">Select Image File:</label>
+        <input type="file" name="ImageFile" class="form-control" required />
+        <span asp-validation-for="ImageFile" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <input type="submit" value="Create" class="btn btn-primary" />
+    </div>
+</form>

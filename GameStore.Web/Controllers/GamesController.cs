@@ -1,7 +1,10 @@
-﻿using GameStore.Service.DTOs.Files;
+﻿using GameStore.Service.Commons.Extensions;
+using GameStore.Service.DTOs.Files;
 using GameStore.Service.DTOs.Games;
 using GameStore.Service.Interfaces.Games;
+using GameStore.Service.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace GameStore.Web.Controllers
 {
@@ -16,10 +19,8 @@ namespace GameStore.Web.Controllers
             _genreService = genreService;
         }
 
-        public async Task<IActionResult> Index()
+        public ActionResult Index()
         {
-            ViewBag.Genres = await _genreService.RetrieveAllAsync();
-
             return View();
         }
 
@@ -28,17 +29,28 @@ namespace GameStore.Web.Controllers
             return View(await _gameService.RetrieveByIdAsync(id));
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            ViewBag.Genres = await _genreService.RetrieveAllAsync();
+
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(GameCreationDto dto, ImageCreationDto image)
+        public async Task<IActionResult> Create(CreateGameViewModel viewModel/*GameCreationDto dto, ImageCreationDto? image = null*/)
         {
-            var result = await _gameService.AddAsync(dto, image);
-            return View(result);
+            var dto = new GameCreationDto
+            {
+                Name = viewModel.Name,
+                Price = viewModel.Price,
+                Description = viewModel.Description,
+                GenresIds = viewModel.GenresIds
+            };
+            var image = await viewModel.ImageFile.ToImageAsync();
+
+            await _gameService.AddAsync(dto, image);
+            return RedirectToAction("Index", "Home");
         }
 
         public ActionResult Edit(int id)

@@ -46,7 +46,7 @@ namespace GameStore.Service.Services.Games
 
             // Save image in static files
             Image image = null;
-            if (imageDto != null)
+            if (imageDto.File is not null ||  imageDto.FileName is not null)
                 image = await _imageService.UploadAsync(imageDto);
 
             var mappedGame = _mapper.Map<Game>(dto);
