@@ -10,7 +10,7 @@
 {
     <div class="card text-white bg-dark border-0 box" style="width: 27rem;">
         <div class="image-container">
-            <img class="card-img-top" src="Images/@item.Image.FileName" alt="Game image cap">
+            <a href="games/details/@item.Id"><img class="card-img-top" src="Images/@item.Image.FileName" alt="Game image cap"></a>
         </div>
         <div class="card-body">
             <div class="row">
@@ -36,7 +36,6 @@
                 }
                 <h6 class="">@item.Name</h6>
             </div>
-            <a asp-controller="Games" asp-action="Details" asp-route-id="@item?.Id">Detail</a> |
         </div>
     </div>
 }
