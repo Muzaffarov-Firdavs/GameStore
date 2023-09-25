@@ -87,13 +87,18 @@ body {
 }
 
 .hidden-corners-button {
-    background-color: #007bff; /* Button background color */
-    color: #fff; /* Button text color */
-    border: none; /* Remove button border */
-    padding: 0px 20px; /* Add padding to the button */
-    border-radius: 50px; /* Use a large border radius to create a circular shape */
+    background-color: #007bff; 
+    color: #fff; 
+    border: none;
+    padding: 0px 20px;
+    border-radius: 50px;
 }
 
 .thin-version {
     font-weight: 300;
+}
+
+.btn.btn-success.float-end {
+    padding: 5px 30px; 
+    font-size: 16px;
 }
