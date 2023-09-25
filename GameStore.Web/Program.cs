@@ -1,4 +1,5 @@
 using GameStore.Data.DbContexts;
+using GameStore.Service.Commons.Helpers;
 using GameStore.Web.Configurations;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,6 +17,9 @@ builder.Services.AddCustomService();
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
+
+// Get wwwroot path
+EnvironmentHelper.WebRootPath = Path.GetFullPath("wwwroot");
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
