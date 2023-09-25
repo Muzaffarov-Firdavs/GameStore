@@ -1,5 +1,6 @@
-﻿using GameStore.Service.Interfaces.Games;
-using Microsoft.AspNetCore.Http;
+﻿using GameStore.Service.DTOs.Files;
+using GameStore.Service.DTOs.Games;
+using GameStore.Service.Interfaces.Games;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameStore.Web.Controllers
@@ -7,14 +8,18 @@ namespace GameStore.Web.Controllers
     public class GamesController : Controller
     {
         private readonly IGameService _gameService;
+        private readonly IGenreService _genreService;
 
-        public GamesController(IGameService gameService)
+        public GamesController(IGameService gameService, IGenreService genreService)
         {
             _gameService = gameService;
+            _genreService = genreService;
         }
 
-        public ActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            ViewBag.Genres = await _genreService.RetrieveAllAsync();
+
             return View();
         }
 
@@ -23,23 +28,17 @@ namespace GameStore.Web.Controllers
             return View(await _gameService.RetrieveByIdAsync(id));
         }
 
-        public ActionResult Create()
+        public IActionResult Create()
         {
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<IActionResult> Create(GameCreationDto dto, ImageCreationDto image)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            var result = await _gameService.AddAsync(dto, image);
+            return View(result);
         }
 
         public ActionResult Edit(int id)
