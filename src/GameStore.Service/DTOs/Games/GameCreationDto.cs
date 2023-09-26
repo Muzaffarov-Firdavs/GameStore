@@ -8,7 +8,6 @@ namespace GameStore.Service.DTOs.Games
         public string Name { get; set; }
         [Required]
         public string Description { get; set; }
-        [Required]
         public decimal Price { get; set; }
         public List<long> GenresIds { get; set; }
 

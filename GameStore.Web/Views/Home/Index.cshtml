@@ -10,7 +10,6 @@
     {
         <p class="text-white">
             &#128269 @Html.TextBox("search")
-            @* <input type="submit" value="Search" /> *@
         </p>
     }
 </div>
@@ -32,7 +31,14 @@
         <div class="card-body">
             <div class="row">
                 <div class="col">
-                    <p class="text-price lead">$@item.Price</p>
+                    @if (item.Price == 0 || item.Price == null)
+                    {
+                        <p class="text-price lead">Free</p>
+                    }
+                    else
+                    {
+                        <p class="text-price lead">$@item.Price</p>
+                    }
                 </div>
                 <div class="col">
                     <h3></h3>
@@ -45,12 +51,12 @@
                 </div>
             </div>
             <div class="row">
-                @foreach (var genre in @item.Genres)
-                {
-                    <div class="col">
-                        <p class="card-text">@genre.Name</p>
-                    </div>
+                @{
+                    var genreNames = string.Join(" / ", item.Genres.Select(genre => genre.Name));
                 }
+                <div class="col">
+                    <p class="card-text">@genreNames</p>
+                </div>
                 <h6 class="">@item.Name</h6>
             </div>
         </div>
@@ -58,24 +64,3 @@
 }
 
 <div class="clr"></div>
-
-@section Scripts {
-    <script type="text/javascript">
-        $(document).ready(function () {
-            // Add custom validation rules
-            $.validator.addMethod("minlength", function (value, element, param) {
-                return value.length >= param;
-            });
-
-            // Set the validation rules for the search input field
-            $("#search").rules("add", {
-                required: true,
-                minlength: 3, // Minimum length required
-                messages: {
-                    required: "Please enter a search term.",
-                    minlength: "Search term must be at least 3 characters."
-                }
-            });
-        });
-    </script>
-}

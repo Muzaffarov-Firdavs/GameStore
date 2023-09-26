@@ -24,14 +24,12 @@
                 </div>
             </div>
             <hr />
-            <div class="row">
-                @foreach (var genre in @Model.Genres)
+            <p>
+                @foreach (var genre in Model.Genres)
                 {
-                    <div class="col">
-                        <button class="hidden-corners-button">@genre.Name</button>
-                    </div>
+                    <button class="hidden-corners-button">@genre.Name</button>
                 }
-            </div>
+            </p>
             <br />
             <div class="row">
                 <h6 class="thin-version">@Model.Description</h6>
