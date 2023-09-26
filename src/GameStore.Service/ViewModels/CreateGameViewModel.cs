@@ -1,5 +1,4 @@
-﻿using GameStore.Service.Commons.Attributes;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 
 namespace GameStore.Service.ViewModels
@@ -8,7 +7,7 @@ namespace GameStore.Service.ViewModels
     {
         [Required]
         public string Name { get; set; }
-        [DescriptionCkeck]
+        [Required]
         public string Description { get; set; }
         [Required]
         public decimal Price { get; set; }

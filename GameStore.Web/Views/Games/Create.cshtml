@@ -3,42 +3,55 @@
 <form asp-action="Create" method="post" enctype="multipart/form-data">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-    <div class="form-group">
-        <label asp-for="Name" class="control-label"></label>
-        <input asp-for="Name" class="form-control" />
-        <span asp-validation-for="Name" class="text-danger"></span>
+    <div class="box">
+
+
+        <div class="form-group">
+            <label asp-for="Name" class="control-label text-white"></label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Description" class="control-label text-white">Description</label>
+            <input asp-for="Description" class="form-control" />
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Price" class="control-label text-white">Price</label>
+            <input asp-for="Price" class="form-control" />
+            <span asp-validation-for="Price" class="text-danger"></span>
+        </div>
+
+        <div class="form-group box">
+            <label class="control-label">Genres</label>
+            @foreach (var genre in ViewBag.Genres)
+            {
+                <div class="form-check">
+                    <input type="checkbox" name="GenresIds" value="@genre.Id" class="form-check-input" />
+                    <label class="form-check-label text-white">@genre.Name</label>
+                </div>
+            }
+            <span asp-validation-for="GenresIds" class="text-danger"></span>
+        </div>
+
+        <div class="clr"></div>
+
+        <h2 class="text-white">Upload Image</h2>
+
+        <div class="form-group">
+            <label for="ImageFile">Select Image File:</label>
+            <input type="file" name="ImageFile" class="form-control" required />
+            <span asp-validation-for="ImageFile" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <input type="submit" value="Create" class="btn btn-primary" />
+        </div>
+
     </div>
 
-    <div class="form-group">
-        <label asp-for="Description" class="control-label">Description</label>
-        <input asp-for="Description" class="form-control" />
-        <span asp-validation-for="Description" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Price" class="control-label">Price</label>
-        <input asp-for="Price" class="form-control" />
-        <span asp-validation-for="Price" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="GenresIds" class="control-label">Genres</label>
-        <select asp-for="GenresIds" asp-items="ViewBag.Genres as SelectList" class="form-control" multiple>
-        </select>
-        <span asp-validation-for="GenresIds" class="text-danger"></span>
-    </div>
-
-    <h2>Upload Image</h2>
-
-    <div class="form-group">
-        <label for="ImageFile">Select Image File:</label>
-        <input type="file" name="ImageFile" class="form-control" required />
-        <span asp-validation-for="ImageFile" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <input type="submit" value="Create" class="btn btn-primary" />
-    </div>
 </form>
 
 
