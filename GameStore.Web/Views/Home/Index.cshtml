@@ -1,10 +1,20 @@
 ﻿@using GameStore.Service.DTOs.Games;
 @model IEnumerable<GameResultDto>
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
 
 <br />
+<div class="float-end">
+    @using (Html.BeginForm())
+    {
+        <p class="text-white">
+            &#128269 @Html.TextBox("search")
+            @* <input type="submit" value="Search" /> *@
+        </p>
+    }
+</div>
+<div class="clr"></div>
 <a href="games/create" class="btn btn-success float-end">Add Game</a>
 <br />
 
@@ -48,3 +58,24 @@
 }
 
 <div class="clr"></div>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // Add custom validation rules
+            $.validator.addMethod("minlength", function (value, element, param) {
+                return value.length >= param;
+            });
+
+            // Set the validation rules for the search input field
+            $("#search").rules("add", {
+                required: true,
+                minlength: 3, // Minimum length required
+                messages: {
+                    required: "Please enter a search term.",
+                    minlength: "Search term must be at least 3 characters."
+                }
+            });
+        });
+    </script>
+}

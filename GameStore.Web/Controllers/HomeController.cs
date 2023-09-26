@@ -1,22 +1,21 @@
 ﻿using GameStore.Service.Interfaces.Games;
 using GameStore.Web.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 
 namespace GameStore.Web.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
         private readonly IGameService _gameService;
 
-        public HomeController(ILogger<HomeController> logger, IGameService gameService)
+        public HomeController(IGameService gameService)
         {
-            _logger = logger;
             _gameService = gameService;
         }
 
-        public async Task<IActionResult> Index(string search)
+        public async Task<IActionResult> Index([MinLength(3)]string search)
         {
             var games = await _gameService.RetrieveAllAsync(search);
             return View(games);
