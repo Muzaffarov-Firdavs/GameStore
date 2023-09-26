@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameStore.Service", "src\Ga
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameStore.Tests", "tests\GameStore.Tests\GameStore.Tests.csproj", "{27F3BF55-DF54-4D4A-AC45-A5556660A89A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameStore.Web", "GameStore.Web\GameStore.Web.csproj", "{B4E319B1-9439-4DC3-98BB-8F8499355891}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameStore.Web", "src\GameStore.Web\GameStore.Web.csproj", "{B4E319B1-9439-4DC3-98BB-8F8499355891}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
