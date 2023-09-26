@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Castle.Core.Resource;
 using GameStore.Data.Repositories;
 using GameStore.Data.UnitOfWorks;
 using GameStore.Domain.Entities.Games;
@@ -7,7 +6,6 @@ using GameStore.Service.Commons.Exceptions;
 using GameStore.Service.DTOs.Genres;
 using GameStore.Service.Interfaces.Games;
 using GameStore.Service.Services.Games;
-using Moq;
 using System.Linq.Expressions;
 
 namespace GameStore.Tests.Games
@@ -99,7 +97,7 @@ namespace GameStore.Tests.Games
         {
             // Arrange
             var exsistedGenre = new Genre { Id = 1, Name = "RPG", CreatedAt = DateTime.UtcNow };
-            
+
             var genreUpdateDto = new GenreUpdateDto { Name = "Action" };
 
             _repositoryMock
@@ -131,7 +129,7 @@ namespace GameStore.Tests.Games
         public async Task ModifyAsync_ShouldThrowNotFoundException()
         {
             // Arrange
-            var exsistedGenre = new Genre { Id = 2, Name = "RPG", CreatedAt = DateTime.UtcNow };
+            var existedGenre = new Genre { Id = 2, Name = "RPG", CreatedAt = DateTime.UtcNow };
 
             var genreUpdateDto = new GenreUpdateDto { Name = "Action" };
 
@@ -148,5 +146,71 @@ namespace GameStore.Tests.Games
             Assert.Equal(404, exception.Code);
             Assert.Equal("Genre not found.", exception.Message);
         }
+
+        [Fact]
+        public async Task RemoveByIdAsync_ShouldReturnTrue()
+        {
+            // Arrange
+            var existedGenre = new Genre { Id = 1, Name = "Action" };
+            long id = 1;
+
+            _repositoryMock
+                .Setup(r => r.SelectAsync(
+                    It.IsAny<Expression<Func<Genre, bool>>>(), It.IsAny<string[]>()))
+                .ReturnsAsync((Expression<Func<Genre, bool>> predicate, string[] includes) => existedGenre);
+
+            _repositoryMock.Setup(r => r.DeleteAsync(existedGenre));
+            _unitOfWorkMock.Setup(u => u.SaveAsync());
+            // Act
+            var result = await _genreService.RemoveByIdAsync(id);
+
+            // Assert
+            Assert.True(result);
+        }
+
+        [Fact]
+        public async Task RemoveByIdAsync_ShouldThrowNotFoundException()
+        {
+            // Arrange
+            long id = 1;
+
+            _repositoryMock
+                .Setup(r => r.SelectAsync(
+                    It.IsAny<Expression<Func<Genre, bool>>>(), It.IsAny<string[]>()))
+                .ReturnsAsync((Expression<Func<Genre, bool>> predicate, string[] includes) => null);
+
+            // Act
+            var exception = await Assert.ThrowsAsync<CustomException>(
+                async () => await _genreService.RemoveByIdAsync(1));
+
+            // Assert
+            Assert.Equal(404, exception.Code);
+            Assert.Equal("Genre not found.", exception.Message);
+        }
+
+        //[Fact]
+        //public async Task RetrieveAllAsync_ShouldReturnFilteredResults()
+        //{
+        //    // Arrange
+        //    var genres = new List<Genre>()
+        //    {
+        //        new Genre {Id = 1, Name = "Action" },
+        //        new Genre {Id = 2, Name = "RPG" },
+        //        new Genre {Id = 3, Name = "Strategy" },
+        //        new Genre {Id = 4, Name = "Thinkable" },
+        //        new Genre {Id = 5, Name = "Race" },
+        //        new Genre {Id = 6, Name = "Warfare" },
+        //        new Genre {Id = 7, Name = "Fire" },
+        //    };
+
+        //    var query = genres.AsQueryable();
+
+        //    string search = "act";
+        //    _repositoryMock
+        //        .Setup(r => r.SelectAll(
+        //            It.IsAny<Expression<Func<Genre, bool>>>(), It.IsAny<string[]>()))
+        //        .ReturnsAsync((Expression<Func<Genre, bool>> predicate, string[] includes) => genres.AsQueryable());
+
+        //}
     }
 }
