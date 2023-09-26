@@ -1,5 +1,9 @@
 ﻿@model GameStore.Service.ViewModels.CreateGameViewModel;
 
+@{
+    ViewData["Title"] = "Create";
+}
+
 <form asp-action="Create" method="post" enctype="multipart/form-data">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 

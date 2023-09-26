@@ -16,9 +16,9 @@ namespace GameStore.Web.Controllers
             _gameService = gameService;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string search)
         {
-            var games = await _gameService.RetrieveAllAsync();
+            var games = await _gameService.RetrieveAllAsync(search);
             return View(games);
         }
 

@@ -75,23 +75,18 @@ namespace GameStore.Web.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        public ActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            return View();
+            var viewResult = await _gameService.RetrieveByIdAsync(id);
+            return View(viewResult);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<IActionResult> Delete(int id, GameResultDto dto)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            await _gameService.RemoveByIdAsync(id);
+            return RedirectToAction("Index", "Home");
         }
     }
 }
