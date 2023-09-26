@@ -1,6 +1,7 @@
 using GameStore.Data.DbContexts;
 using GameStore.Service.Commons.Helpers;
 using GameStore.Web.Configurations;
+using GameStore.Web.Models.Data;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -39,5 +40,7 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+SeedData.EnsurePopulated(app);
 
 app.Run();
