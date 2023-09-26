@@ -38,7 +38,7 @@ namespace GameStore.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateGameViewModel viewModel/*GameCreationDto dto, ImageCreationDto? image = null*/)
+        public async Task<IActionResult> Create(CreateGameViewModel viewModel)
         {
             var dto = new GameCreationDto
             {
@@ -53,23 +53,26 @@ namespace GameStore.Web.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        public ActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            return View();
+            ViewBag.Genres = await _genreService.RetrieveAllAsync();
+            var result = await _gameService.RetrieveByIdAsync(id);
+            var viewResult = new GameUpdateDto
+            {
+                Name = result.Name,
+                Description = result.Description,
+                Price = result.Price,
+                GenresIds = result.Genres.Select(x => x.Id).ToList()
+            };
+            return View(viewResult);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<IActionResult> Edit(int id, GameUpdateDto dto)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            await _gameService.ModifyAsync(id, dto);
+            return RedirectToAction("Index", "Home");
         }
 
         public ActionResult Delete(int id)
