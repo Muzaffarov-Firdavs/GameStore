@@ -11,7 +11,8 @@
     {
         <div class="float-end">
             <p class="text-white">
-                &#128269 @Html.TextBox("search")
+                &#128269 @Html.TextBox("search", null, new { pattern = "^.{3,}$", title = "Search term must be at least 3 characters long." })
+                <span class="field-validation-valid text-danger" data_valmsg_for="search"></span>
             </p>
         </div>
         <div>
@@ -82,6 +83,12 @@
 <div class="clr"></div>
 
 
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+@* 
 @section scripts {
     <script>
         $(document).ready(function () {
@@ -114,3 +121,4 @@
         });
     </script>
 }
+ *@
