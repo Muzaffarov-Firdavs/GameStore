@@ -5,15 +5,31 @@
 }
 
 <br />
-<div class="float-end">
-    @using (Html.BeginForm())
+<div class="genre-filter text-white">
+    
+    @using (Html.BeginForm("Index", "Home", FormMethod.Get))
     {
-        <p class="text-white">
-            &#128269 @Html.TextBox("search")
-        </p>
+        <div class="float-end">
+            <p class="text-white">
+                &#128269 @Html.TextBox("search")
+            </p>
+        </div>
+        <div>
+            <button id="filterButton" class="btn btn-dark">&#43;Add genre</button>
+            <label>|</label>
+            @foreach (var genre in ViewBag.Genres)
+            {
+                <label>
+                    <input type="radio" name="genreId" value="@genre.Id" />
+                    @genre.Name
+                </label>
+            }
+        </div>
     }
 </div>
+
 <div class="clr"></div>
+
 <a href="games/create" class="btn btn-success float-end">Add Game</a>
 <br />
 
@@ -64,3 +80,37 @@
 }
 
 <div class="clr"></div>
+
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            // Hide all games initially
+            $(".card").hide();
+
+            // Show all games when the page loads
+            $(".card").fadeIn(500);
+
+            // Handle filter button click
+            $("#filterButton").click(function () {
+                var selectedGenres = [];
+                // Get the selected genre values
+                $("input[name='genres']:checked").each(function () {
+                    selectedGenres.push($(this).val());
+                });
+
+                if (selectedGenres.length === 0) {
+                    // If no genres are selected, show all games
+                    $(".card").fadeIn(500);
+                } else {
+                    // Hide all games
+                    $(".card").hide();
+                    // Show games that match the selected genres
+                    selectedGenres.forEach(function (genreId) {
+                        $(".card[data-genre='" + genreId + "']").fadeIn(500);
+                    });
+                }
+            });
+        });
+    </script>
+}
