@@ -109,11 +109,12 @@ namespace GameStore.Service.Services.Games
                 return _mapper.Map<IEnumerable<GameResultDto>>(games);
             }
 
+            games = games.FindAll(p => p.Name.ToLower().Contains(search.ToLower()));
+
             if (genreId != 0)
             {
                 Genre genre = await _genreRepository.SelectAsync(p => p.Id == genreId);
-                games = games.FindAll(p => p.Name.ToLower()
-                .Contains(search.ToLower()) 
+                games = games.FindAll(p => p.Name.ToLower().Contains(search.ToLower()) 
                 && p.Genres.Contains(genre));
             }
 
