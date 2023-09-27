@@ -1,10 +1,8 @@
 ﻿using GameStore.Service.Commons.Extensions;
-using GameStore.Service.DTOs.Files;
 using GameStore.Service.DTOs.Games;
 using GameStore.Service.Interfaces.Games;
 using GameStore.Service.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace GameStore.Web.Controllers
 {

@@ -21,13 +21,7 @@ namespace GameStore.Web.Controllers
         {
             ViewBag.Genres = await _genreService.RetrieveAllAsync();
 
-            if (genreId != 0)
-            {
-                var genreGames = await _gameService.RetrieveAllByGenreAsync(genreId);
-                return View(genreGames);
-            }
-
-            var games = await _gameService.RetrieveAllAsync(search);
+            var games = await _gameService.RetrieveAllAsync(search, genreId);
             return View(games);
         }
 
