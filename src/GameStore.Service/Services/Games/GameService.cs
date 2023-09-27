@@ -39,7 +39,7 @@ namespace GameStore.Service.Services.Games
 
         public async ValueTask<GameResultDto> AddAsync(GameCreationDto dto, ImageCreationDto imageDto)
         {
-            // 3rd module requirement.
+            // TODO: 3rd module requirement.
             //var user = await _userRepository.SelectAsync(u => u.Id == dto.UserId && !u.IsDeleted);
             //if (user == null)
             //    throw new CustomException(404, "User is not found");
@@ -90,7 +90,8 @@ namespace GameStore.Service.Services.Games
             return true;
         }
 
-        public async ValueTask<IEnumerable<GameResultDto>> RetrieveAllAsync(string search = null)
+        public async ValueTask<IEnumerable<GameResultDto>> RetrieveAllAsync(
+                string search = null, long genreId = 0)
         {
             var games = await _repository.SelectAll(p => !p.IsDeleted)
                 .Include(p => p.Genres)
@@ -98,9 +99,23 @@ namespace GameStore.Service.Services.Games
                 .Include(p => p.Image)
                 .ToListAsync();
 
-            if (!string.IsNullOrWhiteSpace(search))
+            if (string.IsNullOrWhiteSpace(search))
+            {
+                if (genreId != 0)
+                {
+                    Genre genre = await _genreRepository.SelectAsync(p => p.Id == genreId);
+                    games = games.FindAll(p => p.Genres.Contains(genre));
+                }
+                return _mapper.Map<IEnumerable<GameResultDto>>(games);
+            }
+
+            if (genreId != 0)
+            {
+                Genre genre = await _genreRepository.SelectAsync(p => p.Id == genreId);
                 games = games.FindAll(p => p.Name.ToLower()
-                .Contains(search.ToLower()));
+                .Contains(search.ToLower()) 
+                && p.Genres.Contains(genre));
+            }
 
             return _mapper.Map<IEnumerable<GameResultDto>>(games);
         }
