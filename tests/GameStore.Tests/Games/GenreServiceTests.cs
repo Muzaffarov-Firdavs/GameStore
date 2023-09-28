@@ -6,6 +6,8 @@ using GameStore.Service.Commons.Exceptions;
 using GameStore.Service.DTOs.Genres;
 using GameStore.Service.Interfaces.Games;
 using GameStore.Service.Services.Games;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace GameStore.Tests.Games
@@ -188,29 +190,96 @@ namespace GameStore.Tests.Games
             Assert.Equal("Genre not found.", exception.Message);
         }
 
-        //[Fact]
-        //public async Task RetrieveAllAsync_ShouldReturnFilteredResults()
-        //{
-        //    // Arrange
-        //    var genres = new List<Genre>()
-        //    {
-        //        new Genre {Id = 1, Name = "Action" },
-        //        new Genre {Id = 2, Name = "RPG" },
-        //        new Genre {Id = 3, Name = "Strategy" },
-        //        new Genre {Id = 4, Name = "Thinkable" },
-        //        new Genre {Id = 5, Name = "Race" },
-        //        new Genre {Id = 6, Name = "Warfare" },
-        //        new Genre {Id = 7, Name = "Fire" },
-        //    };
+        [Fact]
+        public async Task RetrieveAllAsync_ShouldReturnFilteredResults()
+        {
+            // Arrange
+            IEnumerable<GenreResultDto> expectedResults = new List<GenreResultDto>()
+            {
+                new GenreResultDto {Id = 1, Name = "Action" },
+                new GenreResultDto {Id = 2, Name = "RPG" },
+                new GenreResultDto {Id = 3, Name = "Strategy" },
+                new GenreResultDto {Id = 4, Name = "Thinkable" },
+                new GenreResultDto {Id = 5, Name = "Race" },
+                new GenreResultDto {Id = 6, Name = "Warfare" },
+                new GenreResultDto {Id = 7, Name = "Fire" }
+            };
 
-        //    var query = genres.AsQueryable();
+            var genres = new List<Genre>()
+            {
+                new Genre {Id = 1, Name = "Action" },
+                new Genre {Id = 2, Name = "RPG" },
+                new Genre {Id = 3, Name = "Strategy" },
+                new Genre {Id = 4, Name = "Thinkable" },
+                new Genre {Id = 5, Name = "Race" },
+                new Genre {Id = 6, Name = "Warfare" },
+                new Genre {Id = 7, Name = "Fire" },
+            }.AsQueryable();
 
-        //    string search = "act";
-        //    _repositoryMock
-        //        .Setup(r => r.SelectAll(
-        //            It.IsAny<Expression<Func<Genre, bool>>>(), It.IsAny<string[]>()))
-        //        .ReturnsAsync((Expression<Func<Genre, bool>> predicate, string[] includes) => genres.AsQueryable());
+            _repositoryMock
+                .Setup(r => r.SelectAll(
+                    It.IsAny<Expression<Func<Genre, bool>>>(), It.IsAny<string[]>()))
+                .Returns((Expression<Func<Genre, bool>> predicate, string[] includes) => genres.ToListAsync());
 
-        //}
+            _mapperMock.Setup(m => m.Map<IEnumerable<GenreResultDto>>(It.IsAny<IEnumerable<Genre>>()))
+                .Returns(It.IsAny<IEnumerable<GenreResultDto>>());
+
+            // Act
+            var results = await _genreService.RetrieveAllAsync();
+
+            // Assert
+            Assert.NotNull(results);
+            Assert.Equal(expectedResults, results);
+            //foreach (var result in results)
+            //{
+            //    Assert.Contains(search, result.Name);
+            //}
+        }
+
+        // TODO: Create new option of retrieveAll method.
+
+        [Fact]
+        public async Task RetrieveByIdAsync_ShouldReturnResult()
+        {
+            // Arrage
+            var existedGenre = new Genre { Id = 1, Name = "Action" };
+            long id = 1;
+
+            _repositoryMock
+                .Setup(r => r.SelectAsync(
+                    It.IsAny<Expression<Func<Genre, bool>>>(), It.IsAny<string[]>()))
+                .ReturnsAsync((Expression<Func<Genre, bool>> predicate, string[] includes) => existedGenre);
+
+            _mapperMock.Setup(m => m.Map<GenreResultDto>(It.IsAny<Genre>()))
+               .Returns(new GenreResultDto { Id = 1, Name = "Action"});
+
+            // Act 
+            var result = await _genreService.RetrieveByIdAsync(id);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(existedGenre.Id, result.Id);
+            Assert.Equal(existedGenre.Name, result.Name);
+        }
+
+        [Fact]
+        public async Task RetrieveByIdAsync_ShouldThrowException()
+        {
+            // Arrange
+            long id = 1;
+
+            _repositoryMock
+                .Setup(r => r.SelectAsync(
+                    It.IsAny<Expression<Func<Genre, bool>>>(), It.IsAny<string[]>()))
+                .ReturnsAsync((Expression<Func<Genre, bool>> predicate, string[] includes) => null);
+
+            // Act 
+            var exception = await Assert.ThrowsAsync<CustomException>(
+                async () => await _genreService.RetrieveByIdAsync(id));
+
+            // Assert
+            Assert.Equal(404, exception.Code);
+            Assert.Equal("Genre not found.", exception.Message);
+        }
     }
 }

@@ -70,7 +70,7 @@ namespace GameStore.Service.Services.Games
                 genres = genres.FindAll(p => p.Name.ToLower()
                 .Contains(search.ToLower()));
 
-            return _mapper.Map< IEnumerable<GenreResultDto>>(genres);
+            return _mapper.Map<IEnumerable<GenreResultDto>>(genres);
         }
 
         public async ValueTask<GenreResultDto> RetrieveByIdAsync(long id)
