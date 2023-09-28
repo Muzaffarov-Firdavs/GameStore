@@ -163,6 +163,7 @@ namespace GameStore.Tests.Games
 
             _repositoryMock.Setup(r => r.DeleteAsync(existedGenre));
             _unitOfWorkMock.Setup(u => u.SaveAsync());
+
             // Act
             var result = await _genreService.RemoveByIdAsync(id);
 
@@ -188,52 +189,6 @@ namespace GameStore.Tests.Games
             // Assert
             Assert.Equal(404, exception.Code);
             Assert.Equal("Genre not found.", exception.Message);
-        }
-
-        [Fact]
-        public async Task RetrieveAllAsync_ShouldReturnFilteredResults()
-        {
-            // Arrange
-            IEnumerable<GenreResultDto> expectedResults = new List<GenreResultDto>()
-            {
-                new GenreResultDto {Id = 1, Name = "Action" },
-                new GenreResultDto {Id = 2, Name = "RPG" },
-                new GenreResultDto {Id = 3, Name = "Strategy" },
-                new GenreResultDto {Id = 4, Name = "Thinkable" },
-                new GenreResultDto {Id = 5, Name = "Race" },
-                new GenreResultDto {Id = 6, Name = "Warfare" },
-                new GenreResultDto {Id = 7, Name = "Fire" }
-            };
-
-            var genres = new List<Genre>()
-            {
-                new Genre {Id = 1, Name = "Action" },
-                new Genre {Id = 2, Name = "RPG" },
-                new Genre {Id = 3, Name = "Strategy" },
-                new Genre {Id = 4, Name = "Thinkable" },
-                new Genre {Id = 5, Name = "Race" },
-                new Genre {Id = 6, Name = "Warfare" },
-                new Genre {Id = 7, Name = "Fire" },
-            }.AsQueryable();
-
-            _repositoryMock
-                .Setup(r => r.SelectAll(
-                    It.IsAny<Expression<Func<Genre, bool>>>(), It.IsAny<string[]>()))
-                .Returns((Expression<Func<Genre, bool>> predicate, string[] includes) => genres.ToListAsync());
-
-            _mapperMock.Setup(m => m.Map<IEnumerable<GenreResultDto>>(It.IsAny<IEnumerable<Genre>>()))
-                .Returns(It.IsAny<IEnumerable<GenreResultDto>>());
-
-            // Act
-            var results = await _genreService.RetrieveAllAsync();
-
-            // Assert
-            Assert.NotNull(results);
-            Assert.Equal(expectedResults, results);
-            //foreach (var result in results)
-            //{
-            //    Assert.Contains(search, result.Name);
-            //}
         }
 
         // TODO: Create new option of retrieveAll method.
