@@ -19,21 +19,18 @@ namespace GameStore.Service.Services.Games
         private readonly IUnitOfWork _unitOfWork;
         private readonly IImageService _imageService;
         private readonly IRepository<Game> _repository;
-        private readonly IRepository<User> _userRepository;
         private readonly IRepository<Genre> _genreRepository;
 
         public GameService(IMapper mapper,
             IUnitOfWork unitOfWork,
             IImageService imageService,
             IRepository<Game> repository,
-            IRepository<User> userRepository,
             IRepository<Genre> genreRepository)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _repository = repository;
             _imageService = imageService;
-            _userRepository = userRepository;
             _genreRepository = genreRepository;
         }
 
@@ -46,14 +43,14 @@ namespace GameStore.Service.Services.Games
 
             // Save image in static files
             Image image = null;
-            if (imageDto.File is not null ||  imageDto.FileName is not null)
+            if (imageDto is not null)
                 image = await _imageService.UploadAsync(imageDto);
 
             var mappedGame = _mapper.Map<Game>(dto);
             mappedGame.ImageId = image is not null ? image.Id : null;
             mappedGame.CreatedAt = DateTime.UtcNow;
 
-            // Connect genres with exsisting game
+            // Connect genres with game
             mappedGame.Genres = await _genreRepository.SelectAll(p =>
                 !p.IsDeleted && dto.GenresIds.Contains(p.Id)).ToListAsync();
 
@@ -72,8 +69,11 @@ namespace GameStore.Service.Services.Games
                 throw new CustomException(404, "Game is not found.");
 
             var mappedGame = _mapper.Map(dto, game);
+
+            // Connect genres with exsisting game
             mappedGame.Genres = await _genreRepository.SelectAll(p =>
                 !p.IsDeleted && dto.GenresIds.Contains(p.Id)).ToListAsync();
+
             mappedGame.UpdatedAt = DateTime.UtcNow;
             await _unitOfWork.SaveAsync();
             return _mapper.Map<GameResultDto>(mappedGame);

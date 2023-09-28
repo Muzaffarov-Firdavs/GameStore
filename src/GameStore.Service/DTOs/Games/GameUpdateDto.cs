@@ -1,6 +1,4 @@
-﻿using GameStore.Service.DTOs.Genres;
-
-namespace GameStore.Service.DTOs.Games
+﻿namespace GameStore.Service.DTOs.Games
 {
     public class GameUpdateDto
     {
