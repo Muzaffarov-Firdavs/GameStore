@@ -92,8 +92,16 @@ body {
     border: none;
     padding: 0px 20px;
     border-radius: 50px;
-    /*margin-right: 2px;*/
     margin-bottom: 0px;
+}
+
+
+.edit-button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 0px 20px;
+    border-radius: 20px;
 }
 
 .thin-version {
