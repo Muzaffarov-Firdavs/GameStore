@@ -1,6 +1,7 @@
 using GameStore.Data.DbContexts;
 using GameStore.Service.Commons.Helpers;
 using GameStore.Web.Configurations;
+using GameStore.Web.Middlewares;
 using GameStore.Web.Models.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,12 +9,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 
 builder.Services.AddCustomService();
+builder.Services.AddWeb(builder.Configuration);
 
 builder.Services.AddControllersWithViews();
 
@@ -32,9 +33,11 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
 
+app.UseMiddleware<TokenRedirectMiddleware>();
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
