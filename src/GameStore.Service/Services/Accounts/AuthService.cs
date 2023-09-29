@@ -1,5 +1,5 @@
-﻿using GameStore.Domain.Enums;
-using GameStore.Service.DTOs.Accounts;
+﻿using GameStore.Domain.Entities.Users;
+using GameStore.Domain.Enums;
 using GameStore.Service.Interfaces.Accounts;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -18,12 +18,11 @@ namespace GameStore.Service.Services.Accounts
             this._configuration = config.GetSection("Jwt");
         }
 
-        // TODO: put another model instead of dto.
-        public string GenerateToken(AccountLoginDto user, Role role)
+        public string GenerateToken(User user, Role role)
         {
             var claims = new[]
             {
-                //new Claim("Id", user.Id.ToString()),
+                new Claim("Id", user.Id.ToString()),
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.Role, $"{role}")
             };

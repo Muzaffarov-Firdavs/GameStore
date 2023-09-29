@@ -1,10 +1,10 @@
-﻿using GameStore.Domain.Enums;
-using GameStore.Service.DTOs.Accounts;
+﻿using GameStore.Domain.Entities.Users;
+using GameStore.Domain.Enums;
 
 namespace GameStore.Service.Interfaces.Accounts
 {
     public interface IAuthService
     {
-        public string GenerateToken(AccountLoginDto human, Role role);
+        public string GenerateToken(User user, Role role);
     }
 }
