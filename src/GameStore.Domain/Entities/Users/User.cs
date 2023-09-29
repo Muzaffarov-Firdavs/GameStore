@@ -13,7 +13,7 @@ namespace GameStore.Domain.Entities.Users
         public string Email { get; set; }
         public string Password { get; set; }
         public string Salt { get; set; }
-        public Role Role { get; set; } = Role.Admin;
+        public Role Role { get; set; } = Role.User;
 
         public virtual ICollection<Game> Games { get; set; }
         public virtual ICollection<Order> Orders { get; set; }
