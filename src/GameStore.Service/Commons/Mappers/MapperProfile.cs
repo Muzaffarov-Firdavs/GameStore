@@ -3,6 +3,7 @@ using GameStore.Domain.Entities.Files;
 using GameStore.Domain.Entities.Games;
 using GameStore.Domain.Entities.Orders;
 using GameStore.Domain.Entities.Users;
+using GameStore.Service.DTOs.Accounts;
 using GameStore.Service.DTOs.Carts;
 using GameStore.Service.DTOs.Comments;
 using GameStore.Service.DTOs.Files;
@@ -19,6 +20,7 @@ namespace GameStore.Service.Commons.Mappers
             CreateMap<User, UserUpdateDto>().ReverseMap();
             CreateMap<User, UserResultDto>().ReverseMap();
             CreateMap<User, UserCreationDto>().ReverseMap();
+            CreateMap<User, AccountRegisterDto>().ReverseMap();
 
             CreateMap<Game, GameResultDto>().ReverseMap();
             CreateMap<Game, GameUpdateDto>().ReverseMap();
