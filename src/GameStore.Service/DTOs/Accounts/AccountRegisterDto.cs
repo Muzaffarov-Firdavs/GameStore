@@ -19,7 +19,5 @@ namespace GameStore.Service.DTOs.Accounts
         [Required]
         public string Password { get; set; }
 
-        [Required]
-        public string ConfirmPassword { get; set; }
     }
 }
