@@ -23,6 +23,7 @@ namespace GameStore.Service.Services.Accounts
             var claims = new[]
             {
                 new Claim("Id", user.Id.ToString()),
+                new Claim("FirstName", user.FirstName),
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.Role, $"{role}")
             };
