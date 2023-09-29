@@ -5,6 +5,7 @@ using GameStore.Domain.Entities.Games;
 using GameStore.Service.DTOs.Genres;
 using GameStore.Service.Interfaces.Games;
 using GameStore.Service.Services.Games;
+using MockQueryable.Moq;
 using System.Linq.Expressions;
 
 namespace GameStore.Tests.Games
@@ -28,7 +29,7 @@ namespace GameStore.Tests.Games
         public async Task RetrieveAllAsync_ShouldReturnFilteredResults()
         {
             // Arrange
-            IEnumerable<GenreResultDto> expectedResults = new List<GenreResultDto>()
+            var resultDtos = new List<GenreResultDto>()
             {
                 new GenreResultDto {Id = 1, Name = "Action" },
                 new GenreResultDto {Id = 2, Name = "RPG" },
@@ -48,22 +49,24 @@ namespace GameStore.Tests.Games
                 new Genre {Id = 5, Name = "Race" },
                 new Genre {Id = 6, Name = "Warfare" },
                 new Genre {Id = 7, Name = "Fire" },
-            }.AsQueryable();
+            };
+
+            var mockGenres = genres.AsQueryable().BuildMock();
 
             _repositoryMock
                 .Setup(r => r.SelectAll(
                     It.IsAny<Expression<Func<Genre, bool>>>(), It.IsAny<string[]>()))
-                .Returns((genres));
+                .Returns((mockGenres));
 
             _mapperMock.Setup(m => m.Map<IEnumerable<GenreResultDto>>(It.IsAny<IEnumerable<Genre>>()))
-                .Returns(It.IsAny<IEnumerable<GenreResultDto>>());
+                .Returns(resultDtos);
 
             // Act
             var results = await _genreService.RetrieveAllAsync();
 
             // Assert
             Assert.NotNull(results);
-            Assert.Equal(expectedResults, results);
+            Assert.Equal(resultDtos, results);
             //foreach (var result in results)
             //{
             //    Assert.Contains(search, result.Name);
