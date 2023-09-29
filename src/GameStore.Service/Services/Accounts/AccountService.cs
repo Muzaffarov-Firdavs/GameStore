@@ -52,9 +52,19 @@ namespace GameStore.Service.Services.Accounts
             return result != null;
         }
 
-        public Task<string> LoginAsync(AccountLoginDto accountLoginDto)
+        public async Task<string> LoginAsync(AccountLoginDto accountLoginDto)
         {
-            throw new NotImplementedException();
+            var user = await _repository.SelectAsync(p => !p.IsDeleted
+                && p.Email.ToLower() == accountLoginDto.Email.ToLower());
+            if (user is null)
+                throw new CustomException(404, "No user with this email is found!");
+
+            var verifyResult = PasswordHasher.Verify(accountLoginDto.Password, user.Salt, user.Password);
+            if (!verifyResult)
+                throw new CustomException(404, "Incorrect password!");
+            
+            string token = _authService.GenerateToken(user, user.Role);
+            return token;
         }
     }
 }
