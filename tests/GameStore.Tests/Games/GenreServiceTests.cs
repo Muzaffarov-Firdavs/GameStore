@@ -6,9 +6,7 @@ using GameStore.Service.Commons.Exceptions;
 using GameStore.Service.DTOs.Genres;
 using GameStore.Service.Interfaces.Games;
 using GameStore.Service.Services.Games;
-using Microsoft.EntityFrameworkCore;
 using MockQueryable.Moq;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace GameStore.Tests.Games
@@ -290,7 +288,7 @@ namespace GameStore.Tests.Games
                 .ReturnsAsync((Expression<Func<Genre, bool>> predicate, string[] includes) => existedGenre);
 
             _mapperMock.Setup(m => m.Map<GenreResultDto>(It.IsAny<Genre>()))
-               .Returns(new GenreResultDto { Id = 1, Name = "Action"});
+               .Returns(new GenreResultDto { Id = 1, Name = "Action" });
 
             // Act 
             var result = await _genreService.RetrieveByIdAsync(id);
