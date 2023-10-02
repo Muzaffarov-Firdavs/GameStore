@@ -58,7 +58,7 @@ namespace GameStore.Web.Controllers
             {
                 Expires = DateTime.Now.AddDays(-1)
             });
-            return RedirectToAction("login", "accounts", new { area = "" });
+            return RedirectToAction("Index", "Home");
         }
     }
 }

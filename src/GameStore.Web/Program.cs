@@ -4,7 +4,6 @@ using GameStore.Web.Configurations;
 using GameStore.Web.Middlewares;
 using GameStore.Web.Models.Data;
 using Microsoft.EntityFrameworkCore;
-using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,10 +15,13 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddCustomService();
 builder.Services.AddWeb(builder.Configuration);
-
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
+
+// Add HttpContextHelper
+app.InitAccessor();
 
 // Get wwwroot path
 EnvironmentHelper.WebRootPath = Path.GetFullPath("wwwroot");
@@ -36,16 +38,17 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
+// Add custom middleware
 app.UseMiddleware<TokenRedirectMiddleware>();
 
 
-app.UseStatusCodePages(async context =>
-{
-    if (context.HttpContext.Response.StatusCode == (int)HttpStatusCode.Unauthorized)
-    {
-        context.HttpContext.Response.Redirect("login");
-    }
-});
+//app.UseStatusCodePages(async context =>
+//{
+//    if (context.HttpContext.Response.StatusCode == (int)HttpStatusCode.Unauthorized)
+//    {
+//        context.HttpContext.Response.Redirect("login");
+//    }
+//});
 
 app.UseAuthentication();
 app.UseAuthorization();

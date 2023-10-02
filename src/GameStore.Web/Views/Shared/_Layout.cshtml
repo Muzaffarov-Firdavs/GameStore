@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using GameStore.Service.Commons.Helpers;
+@using GameStore.Web.Middlewares;
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -38,9 +40,21 @@
                 </div>
                 <div class="collapse navbar-collapse" id="navbarCollapse">
                     <ul class="navbar-nav float-right">
-                        <li class="nav-item">
-                            <a href="@Url.Action("Login", "Accounts")" class="nav-link float-end">Sign in</a>
-                        </li>
+                        @if (HttpContextHelper.UserId is not null)
+                        {
+                            <li class="nav-item">
+                                <a class ="nav-link float-end">@HttpContextHelper.UserId.ToString()</a>
+                            </li>
+                            <li class="nav-item">
+                                <a asp-controller="accounts" asp-action="logout" class="nav-link float-end">Log out</a>
+                            </li>
+                        }
+                        @if (HttpContextHelper.UserId is null)
+                        {
+                            <li class="nav-item">
+                                <a href="@Url.Action("Login", "Accounts")" class="nav-link float-end">Sign in</a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
