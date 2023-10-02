@@ -50,5 +50,15 @@ namespace GameStore.Web.Controllers
 
             return Login();
         }
+
+        [HttpGet("logout")]
+        public IActionResult LogOut()
+        {
+            HttpContext.Response.Cookies.Append("X-Access-Token", "", new CookieOptions()
+            {
+                Expires = DateTime.Now.AddDays(-1)
+            });
+            return RedirectToAction("login", "accounts", new { area = "" });
+        }
     }
 }
