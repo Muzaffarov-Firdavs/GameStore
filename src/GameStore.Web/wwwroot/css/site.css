@@ -112,3 +112,148 @@ body {
     padding: 5px 30px; 
     font-size: 16px;
 }
+
+/*    account page   */
+
+
+.w-450px {
+    width: 450px !important;
+}
+
+.h-470px {
+    height: 475px !important;
+}
+
+.required:after {
+    content: "*";
+    position: relative;
+    font-size: inherit;
+    color: #F1416C;
+    padding-left: 0.25rem;
+    font-weight: bold;
+}
+
+.form-label {
+    margin-bottom: 0.5rem;
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: #3F4254;
+}
+
+.col-form-label {
+    padding-top: calc(0.75rem + 1px);
+    padding-bottom: calc(0.75rem + 1px);
+    margin-bottom: 0;
+    font-size: inherit;
+    font-weight: 500;
+    line-height: 1.5;
+    color: #3F4254;
+}
+
+.col-form-label-lg {
+    padding-top: calc(0.825rem + 1px);
+    padding-bottom: calc(0.825rem + 1px);
+    font-size: 1.15rem;
+}
+
+.col-form-label-sm {
+    padding-top: calc(0.55rem + 1px);
+    padding-bottom: calc(0.55rem + 1px);
+    font-size: 0.925rem;
+}
+
+
+.form-control.form-control-solid {
+    background-color: #F5F8FA;
+    border-color: #F5F8FA;
+    color: #5E6278;
+    transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+    .form-control.form-control-solid::placeholder {
+        color: #A1A5B7;
+    }
+
+    .form-control.form-control-solid::-moz-placeholder {
+        color: #A1A5B7;
+        opacity: 1;
+    }
+
+    .dropdown.show > .form-control.form-control-solid, .form-control.form-control-solid:active, .form-control.form-control-solid.active, .form-control.form-control-solid:focus, .form-control.form-control-solid.focus {
+        background-color: #eef3f7;
+        border-color: #eef3f7;
+        color: #5E6278;
+        transition: color 0.2s ease, background-color 0.2s ease;
+    }
+
+.form-control.form-control-white {
+    background-color: #ffffff;
+    border-color: #ffffff;
+}
+
+    .dropdown.show > .form-control.form-control-white, .form-control.form-control-white:active, .form-control.form-control-white.active, .form-control.form-control-white:focus, .form-control.form-control-white.focus {
+        background-color: #ffffff;
+        border-color: #ffffff;
+    }
+
+.form-control.form-control-flush {
+    border: 0;
+    background-color: transparent;
+    outline: none !important;
+    box-shadow: none;
+    border-radius: 0;
+}
+
+.btn-registan {
+    color: #ffffff;
+    background-color: forestgreen;
+    border-color: forestgreen;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+
+.btn-primary:hover {
+    color: #000000;
+    background-color: #26adf8;
+    border-color: #1aa8f8;
+}
+
+.btn-check:focus + .btn-primary, .btn-primary:focus {
+    color: #000000;
+    background-color: #26adf8;
+    border-color: #1aa8f8;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 0 0.25rem rgba(0, 134, 210, 0.5);
+}
+
+.btn-check:checked + .btn-primary, .btn-check:active + .btn-primary, .btn-primary:active, .btn-primary.active, .show > .btn-primary.dropdown-toggle {
+    color: #000000;
+    background-color: #33b1f9;
+    border-color: #1aa8f8;
+}
+
+    .btn-check:checked + .btn-primary:focus, .btn-check:active + .btn-primary:focus, .btn-primary:active:focus, .btn-primary.active:focus, .show > .btn-primary.dropdown-toggle:focus {
+        box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125), 0 0 0 0.25rem rgba(0, 134, 210, 0.5);
+    }
+
+.btn-primary:disabled, .btn-primary.disabled {
+    color: #000000;
+    background-color: #009EF7;
+    border-color: #009EF7;
+}
+
+.bring-center {
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+}
+
+.border-box-input {
+    box-sizing:border-box;
+}
+
+.back-side {
+    background-image: url(../static-images/img-background.jpg);
+    /* background-color: black; */
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
