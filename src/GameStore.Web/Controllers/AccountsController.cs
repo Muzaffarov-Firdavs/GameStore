@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GameStore.Web.Controllers
 {
+    [Route("Accounts")]
     public class AccountsController : Controller
     {
         private readonly IAccountService _accountService;
@@ -12,11 +13,12 @@ namespace GameStore.Web.Controllers
             _accountService = accountService;
         }
 
-        [HttpGet("register")]
+        [HttpGet]
+        [Route("Register")]
         public ViewResult Register() => View("Register");
 
         [HttpPost("register")]
-        public async Task<IActionResult> RegisterAsync(AccountRegisterDto dto)
+        public async Task<IActionResult> Register(AccountRegisterDto dto)
         {
             if (ModelState.IsValid)
             {
@@ -28,11 +30,12 @@ namespace GameStore.Web.Controllers
             return Register();
         }
 
-        [HttpGet("login")]
+        [HttpGet]
+        [Route("Login")]
         public ViewResult Login() => View("Login");
 
         [HttpPost("login")]
-        public async Task<IActionResult> LoginAsync(AccountLoginDto dto)
+        public async Task<IActionResult> Login(AccountLoginDto dto)
         {
             if (ModelState.IsValid)
             {
