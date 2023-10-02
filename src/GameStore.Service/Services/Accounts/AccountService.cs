@@ -55,7 +55,7 @@ namespace GameStore.Service.Services.Accounts
         public async Task<string> LoginAsync(AccountLoginDto accountLoginDto)
         {
             var user = await _repository.SelectAsync(p => !p.IsDeleted
-                && p.Email.ToLower() == accountLoginDto.Email.ToLower());
+                && p.Username.ToLower() == accountLoginDto.Username.ToLower());
             if (user is null)
                 throw new CustomException(404, "No user with this email is found!");
 
