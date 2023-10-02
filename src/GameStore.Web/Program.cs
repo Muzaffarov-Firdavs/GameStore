@@ -4,6 +4,7 @@ using GameStore.Web.Configurations;
 using GameStore.Web.Middlewares;
 using GameStore.Web.Models.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +37,15 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseMiddleware<TokenRedirectMiddleware>();
+
+
+app.UseStatusCodePages(async context =>
+{
+    if (context.HttpContext.Response.StatusCode == (int)HttpStatusCode.Unauthorized)
+    {
+        context.HttpContext.Response.Redirect("login");
+    }
+});
 
 app.UseAuthentication();
 app.UseAuthorization();
