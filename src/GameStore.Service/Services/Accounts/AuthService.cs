@@ -24,7 +24,7 @@ namespace GameStore.Service.Services.Accounts
             {
                 new Claim("Id", user.Id.ToString()),
                 new Claim("FirstName", user.FirstName),
-                new Claim(ClaimTypes.Email, user.Email),
+                new Claim("LastName", user.LastName),
                 new Claim(ClaimTypes.Role, $"{role}")
             };
 

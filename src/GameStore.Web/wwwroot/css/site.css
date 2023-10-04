@@ -257,3 +257,9 @@ body {
     background-repeat: no-repeat;
     background-size: cover;
 }
+
+/*   Finishing login pages.*/
+
+.nav-link i.fa-sign-out {
+    color: white;
+}

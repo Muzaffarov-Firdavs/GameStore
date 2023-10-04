@@ -43,10 +43,10 @@
                         @if (HttpContextHelper.UserId is not null)
                         {
                             <li class="nav-item">
-                                <a class ="nav-link float-end">@HttpContextHelper.UserId.ToString()</a>
+                                <a class ="nav-link float-end">@HttpContextHelper.FirstName @HttpContextHelper.LastName</a>
                             </li>
                             <li class="nav-item">
-                                <a asp-controller="accounts" asp-action="logout" class="nav-link float-end">Log out</a>
+                                <a asp-controller="accounts" asp-action="logout" class="nav-link float-end">SIGN OUT</a>
                             </li>
                         }
                         @if (HttpContextHelper.UserId is null)
