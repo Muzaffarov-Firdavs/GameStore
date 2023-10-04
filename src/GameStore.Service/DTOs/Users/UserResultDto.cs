@@ -1,4 +1,6 @@
-﻿namespace GameStore.Service.DTOs.Users
+﻿using GameStore.Service.DTOs.Files;
+
+namespace GameStore.Service.DTOs.Users
 {
     public class UserResultDto
     {
@@ -7,5 +9,7 @@
         public string LastName { get; set; }
         public string Username { get; set; }
         public string Email { get; set; }
+
+        public ImageResultDto Image { get; set; }
     }
 }
