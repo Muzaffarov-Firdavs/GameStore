@@ -1,11 +1,16 @@
 ﻿using AutoMapper;
 using GameStore.Data.Repositories;
 using GameStore.Data.UnitOfWorks;
+using GameStore.Domain.Entities.Files;
+using GameStore.Domain.Entities.Games;
 using GameStore.Domain.Entities.Users;
 using GameStore.Service.Commons.Configurations;
 using GameStore.Service.Commons.Exceptions;
 using GameStore.Service.Commons.Extensions;
+using GameStore.Service.Commons.Helpers;
+using GameStore.Service.DTOs.Files;
 using GameStore.Service.DTOs.Users;
+using GameStore.Service.Interfaces.Files;
 using GameStore.Service.Interfaces.Users;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,32 +20,34 @@ namespace GameStore.Service.Services.Users
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IImageService _imageService;
         private readonly IRepository<User> _repository;
 
-        public UserService(IMapper mapper, IUnitOfWork unitOfWork, IRepository<User> repository)
+        public UserService(IMapper mapper,
+            IUnitOfWork unitOfWork,
+            IImageService imageService,
+            IRepository<User> repository)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _repository = repository;
+            _imageService = imageService;
         }
 
         public async ValueTask<UserResultDto> AddAsync(UserCreationDto dto)
         {
-            if (dto.Password != dto.ConfirmPassoword)
-                throw new CustomException(422, "Password and confirmed password do not match.");
-
-            var genre = await _repository
+            var user = await _repository
                 .SelectAsync(p => p.Email.ToLower() == dto.Email.ToLower()
                 || p.Username.ToLower() == dto.Username.ToLower()
                 && !p.IsDeleted);
-            if (genre != null)
+            if (user != null)
                 throw new CustomException(409, "User already exists.");
 
-            var mappedGenre = _mapper.Map<User>(dto);
-            mappedGenre.CreatedAt = DateTime.UtcNow;
+            var mappedUser = _mapper.Map<User>(dto);
+            mappedUser.CreatedAt = DateTime.UtcNow;
 
             await _unitOfWork.CreateTransactionAsync();
-            var result = await _repository.InsertAsync(mappedGenre);
+            var result = await _repository.InsertAsync(mappedUser);
             await _unitOfWork.SaveAsync();
             await _unitOfWork.CommitAsync();
             return _mapper.Map<UserResultDto>(result);
@@ -90,6 +97,23 @@ namespace GameStore.Service.Services.Users
             var user = await _repository.SelectAsync(p => p.Id == id && !p.IsDeleted);
             if (user == null)
                 throw new CustomException(404, "User is not found.");
+
+            return _mapper.Map<UserResultDto>(user);
+        }
+
+        public async ValueTask<UserResultDto> AddImageToProfileAsync(ImageCreationDto imageDto)
+        {
+            var user = await _repository.SelectAsync(p => p.Id == HttpContextHelper.UserId && !p.IsDeleted);
+            if (user == null)
+                throw new CustomException(404, "User is not found.");
+
+            Image image = null;
+            if (imageDto is not null)
+                image = await _imageService.UploadAsync(imageDto);
+
+            user.ImageId = image is not null ? image.Id : null;
+            user.UpdatedAt = DateTime.UtcNow;
+            await _unitOfWork.SaveAsync();
 
             return _mapper.Map<UserResultDto>(user);
         }
