@@ -17,11 +17,6 @@ namespace GameStore.Web.Controllers
             _genreService = genreService;
         }
 
-        public ActionResult Index()
-        {
-            return View();
-        }
-
         public async Task<IActionResult> Details(int id)
         {
             return View(await _gameService.RetrieveByIdAsync(id));
