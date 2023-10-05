@@ -9,43 +9,24 @@
     ViewData["Title"] = "upload avatar";
 }
 
-@*
-<div>
-    <br /><br /><br /><br />
-</div>
-<div class="card w-450px h-400px mt-20 mb-100 " style="margin-left:auto; margin-right:auto; box-shadow: 0px 0px 15px gray; background-color: #D3D3D3">
-    <form asp-controller="users" asp-action="uploadavatar" class="container">
-
-        <div class="text-center mb-11">
-            <br />
-            <p class="fs-4 fw-bolder mb-3">
-                Change avatar:
-            </p>
-        </div>
-        <div class="testimonial avatar-back">
-            <img src="~/static-images/default.jpg" alt="avatar" />
-        </div>
-
-    </form>
-
-    <!--end::Form-->
-</div>
-
-<br /><br /><br />
-
-<div class="clr"></div> *@
 
 <div class="card w-450px h-400px mb-100 " style="margin-left:auto; margin-right:auto; box-shadow: 0px 0px 15px gray; background-color: #D3D3D3">
-    <form asp-controller="users" asp-action="uploadavatar" method="post">
+    <form asp-controller="users" asp-action="uploadavatar" method="post" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
         <section id="testimonials">
             <div class="container">
+                <h4 class="text-center">Upload avatar</h4>
                 <div class="form-group">
                     <div class="testimonial">
                         <div class="avatar-wrapper">
-                            <label for="File">Select Image File:</label>
-                            <img class="profile-pic" src="" />
+                            @if (user.Image is not null)
+                            {
+                                <img class="profile-pic" src="../../Images/@user.Image.FileName.ToString()" />
+                            }
+                            else
+                            {
+                                <img class="profile-pic" src="../wwwroot/static-images/default.jpg" />
+                            }
                             <div class="upload-button">
                                 <i class="fa fa-arrow-circle-up" aria-hidden="true"></i>
                             </div>
@@ -54,13 +35,12 @@
                         </div>
                         <h3 class="text-center">@user.FirstName @user.LastName</h3>
                         <h6 class="text-center">@user.Email</h6>
-                        <br />
                         <h6 class="text-center">@@<span>@user.Username</span></h6>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="text-center">
-                        <input type="submit" value="Save" class="btn btn-primary" />
+                        <br />
+                        <div class="text-center">
+                            <input type="submit" value="Save" class="btn btn-primary" id="saveButton" />
+                            <span id="imageError" class="text-danger"></span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -91,5 +71,20 @@
         $(".upload-button").on('click', function () {
             $(".file-upload").click();
         });
+
+        $("#saveButton").on('click', function (e) {
+            if ($(".file-upload")[0].files.length === 0) {
+                e.preventDefault(); 
+                $("#imageError").text("Image is not uploaded.");
+            } else {
+                $("#imageError").text("");
+            }
+        });
     });
 </script>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
