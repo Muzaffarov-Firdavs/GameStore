@@ -120,8 +120,12 @@
     width: 450px !important;
 }
 
-.h-470px {
-    height: 475px !important;
+.h-500px {
+    height: 500px !important;
+}
+
+.h-530px {
+    height: 530px !important;
 }
 
 .required:after {

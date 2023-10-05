@@ -1,4 +1,5 @@
-﻿using GameStore.Service.DTOs.Accounts;
+﻿using GameStore.Service.Commons.Exceptions;
+using GameStore.Service.DTOs.Accounts;
 using GameStore.Service.Interfaces.Accounts;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,14 +21,22 @@ namespace GameStore.Web.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(AccountRegisterDto dto)
         {
-            if (ModelState.IsValid)
+            try
             {
-                bool result = await _accountService.RegisterAsync(dto);
-                if (result)
-                    return RedirectToAction("login", "accounts");
-            }
+                if (ModelState.IsValid)
+                {
+                    bool result = await _accountService.RegisterAsync(dto);
+                    if (result)
+                        return RedirectToAction("login", "accounts");
+                }
 
-            return Register();
+                return Register();
+            }
+            catch (CustomException ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return View(dto);
+            }
         }
 
         [HttpGet]
@@ -37,18 +46,26 @@ namespace GameStore.Web.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(AccountLoginDto dto)
         {
-            if (ModelState.IsValid)
+            try
             {
-                var token = await _accountService.LoginAsync(dto);
-                HttpContext.Response.Cookies.Append("X-Access-Token", token, new CookieOptions()
+                if (ModelState.IsValid)
                 {
-                    HttpOnly = true,
-                    SameSite = SameSiteMode.Strict
-                });
-                return RedirectToAction("Index", "Home");
-            }
+                    var token = await _accountService.LoginAsync(dto);
+                    HttpContext.Response.Cookies.Append("X-Access-Token", token, new CookieOptions()
+                    {
+                        HttpOnly = true,
+                        SameSite = SameSiteMode.Strict
+                    });
+                    return RedirectToAction("Index", "Home");
+                }
 
-            return Login();
+                return Login();
+            }
+            catch (CustomException ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return View(dto);
+            }
         }
 
         [HttpGet("logout")]

@@ -57,7 +57,7 @@ namespace GameStore.Service.Services.Accounts
             var user = await _repository.SelectAsync(p => !p.IsDeleted
                 && p.Username.ToLower() == accountLoginDto.Username.ToLower());
             if (user is null)
-                throw new CustomException(404, "No user with this email is found!");
+                throw new CustomException(404, "No user with this username is found!");
 
             var verifyResult = PasswordHasher.Verify(accountLoginDto.Password, user.Salt, user.Password);
             if (!verifyResult)

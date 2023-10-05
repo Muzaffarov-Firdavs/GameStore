@@ -9,15 +9,23 @@
 <div>
     <br /><br /><br /><br />
 </div>
-<div class="card w-450px h-470px mt-20 mb-100 " style="margin-left:auto; margin-right:auto; box-shadow: 0px 0px 15px gray; background-color: #D3D3D3">
+<div class="card w-450px h-530px mt-20 mb-100 " style="margin-left:auto; margin-right:auto; box-shadow: 0px 0px 15px gray; background-color: #D3D3D3">
     <!--begin::Form-->
-    <form asp-controller="accounts" asp-action="register" class="container">
+    <form asp-controller="accounts" asp-action="register" class="container h-auto">
         <!--begin::Heading-->
         <div class="text-center mb-11">
             <br />
             <p class="fs-4 fw-bolder mb-3">
                 Please register
             </p>
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert-danger">
+                    <p>
+                        @Html.ValidationSummary()
+                    </p>
+                </div>
+            }
         </div>
         <div class="mt-2">
             <input type="text" asp-for=FirstName placeholder="First Name" autocomplete="off" class="form-control bg-transparent">
