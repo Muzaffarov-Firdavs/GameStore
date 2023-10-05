@@ -44,7 +44,14 @@
                         {
                             
                             <a asp-controller="users" asp-action="uploadavatar">
-                                <img src="~/static-images/default.jpg" alt="Header Image" id="header-image" />
+                                @if (string.IsNullOrEmpty(HttpContextHelper.FileName))
+                                {
+                                    <img src="~/static-images/default.jpg" alt="Header image" id="header-image" />
+                                }
+                                else
+                                {
+                                            <img src="~/Images/@HttpContextHelper.FileName" alt="Header image" id="header-image" />
+                                }
                             </a>
                             <li class="nav-item">
                                 <a asp-controller="users" asp-action="uploadavatar" class="nav-link float-end">
