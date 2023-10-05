@@ -94,7 +94,8 @@ namespace GameStore.Service.Services.Users
 
         public async ValueTask<UserResultDto> RetrieveByIdAsync(long id)
         {
-            var user = await _repository.SelectAsync(p => p.Id == id && !p.IsDeleted);
+            var user = await _repository.SelectAsync(p => p.Id == id && !p.IsDeleted,
+                includes: new string[] { "Image" });
             if (user == null)
                 throw new CustomException(404, "User is not found.");
 
@@ -103,7 +104,8 @@ namespace GameStore.Service.Services.Users
 
         public async ValueTask<UserResultDto> AddImageToProfileAsync(ImageCreationDto imageDto)
         {
-            var user = await _repository.SelectAsync(p => p.Id == HttpContextHelper.UserId && !p.IsDeleted);
+            var user = await _repository.SelectAsync(p => p.Id == HttpContextHelper.UserId && !p.IsDeleted,
+                includes: new string[] { "Image" });
             if (user == null)
                 throw new CustomException(404, "User is not found.");
 
