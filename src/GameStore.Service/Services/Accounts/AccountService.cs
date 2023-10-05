@@ -29,7 +29,7 @@ namespace GameStore.Service.Services.Accounts
 
         public async Task<bool> RegisterAsync(AccountRegisterDto dto)
         {
-            var existAaccount = await _repository.SelectAsync(p => 
+            var existAaccount = await _repository.SelectAsync(p =>
                 p.Email.ToLower() == dto.Email.ToLower()
                 || p.Username.ToLower() == dto.Username.ToLower()
                 && !p.IsDeleted);
@@ -55,7 +55,8 @@ namespace GameStore.Service.Services.Accounts
         public async Task<string> LoginAsync(AccountLoginDto accountLoginDto)
         {
             var user = await _repository.SelectAsync(p => !p.IsDeleted
-                && p.Username.ToLower() == accountLoginDto.Username.ToLower());
+                && p.Username.ToLower() == accountLoginDto.Username.ToLower(),
+                includes: new string[] { "Image" });
             if (user is null)
                 throw new CustomException(404, "No user with this username is found!");
 

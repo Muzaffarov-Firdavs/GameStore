@@ -25,6 +25,7 @@ namespace GameStore.Service.Services.Accounts
                 new Claim("Id", user.Id.ToString()),
                 new Claim("FirstName", user.FirstName),
                 new Claim("LastName", user.LastName),
+                new Claim("FileName", user.ImageId is not null ? user.Image.FileName : string.Empty),
                 new Claim(ClaimTypes.Role, $"{role}")
             };
 
