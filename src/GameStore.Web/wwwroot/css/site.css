@@ -367,3 +367,16 @@
         .avatar-wrapper .upload-button:hover .fa-arrow-circle-up {
             opacity: 0.9;
         }
+
+/*  HEADER IMAGE*/
+
+#header-image {
+    float: right;
+    margin: 0px; 
+    max-width: 60px; 
+    border-radius: 50px; 
+}
+
+.nav-item {
+    margin: auto;
+}

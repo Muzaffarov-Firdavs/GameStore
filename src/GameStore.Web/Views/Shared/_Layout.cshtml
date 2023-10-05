@@ -42,6 +42,10 @@
                     <ul class="navbar-nav float-right">
                         @if (HttpContextHelper.UserId is not null)
                         {
+                            
+                            <a asp-controller="users" asp-action="uploadavatar">
+                                <img src="~/static-images/default.jpg" alt="Header Image" id="header-image" />
+                            </a>
                             <li class="nav-item">
                                 <a asp-controller="users" asp-action="uploadavatar" class="nav-link float-end">
                                     @HttpContextHelper.FirstName @HttpContextHelper.LastName
