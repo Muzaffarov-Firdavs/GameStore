@@ -1,6 +1,8 @@
 ﻿using GameStore.Service.Commons.Exceptions;
 using GameStore.Service.DTOs.Accounts;
 using GameStore.Service.Interfaces.Accounts;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameStore.Web.Controllers
@@ -19,6 +21,7 @@ namespace GameStore.Web.Controllers
         public ViewResult Register() => View("Register");
 
         [HttpPost("register")]
+        [AllowAnonymous]
         public async Task<IActionResult> Register(AccountRegisterDto dto)
         {
             try
@@ -27,7 +30,9 @@ namespace GameStore.Web.Controllers
                 {
                     bool result = await _accountService.RegisterAsync(dto);
                     if (result)
+                    {
                         return RedirectToAction("login", "accounts");
+                    }
                 }
 
                 return Register();
@@ -51,11 +56,21 @@ namespace GameStore.Web.Controllers
                 if (ModelState.IsValid)
                 {
                     var token = await _accountService.LoginAsync(dto);
-                    HttpContext.Response.Cookies.Append("X-Access-Token", token, new CookieOptions()
-                    {
-                        HttpOnly = true,
-                        SameSite = SameSiteMode.Strict
-                    });
+
+                    if (dto.RememberMe)
+                        HttpContext.Response.Cookies.Append("X-Access-Token", token, new CookieOptions()
+                        {
+                            HttpOnly = true,
+                            SameSite = SameSiteMode.Strict,
+                            Expires = DateTime.UtcNow.AddYears(1)
+                        });
+                    else
+                        HttpContext.Response.Cookies.Append("X-Access-Token", token, new CookieOptions()
+                        {
+                            HttpOnly = true,
+                            SameSite = SameSiteMode.Strict
+                        });
+
                     return RedirectToAction("Index", "Home");
                 }
 
@@ -73,7 +88,7 @@ namespace GameStore.Web.Controllers
         {
             HttpContext.Response.Cookies.Append("X-Access-Token", "", new CookieOptions()
             {
-                Expires = DateTime.Now.AddDays(-1)
+                Expires = DateTime.Now.AddYears(-1)
             });
             return RedirectToAction("Index", "Home");
         }
