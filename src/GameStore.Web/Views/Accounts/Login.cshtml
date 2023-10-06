@@ -21,10 +21,16 @@
                 <input type="text" asp-for="Username" class="form-control form-control-solid" />
                 <span asp-validation-for="Username" class="text-danger"></span>
             </div>
-            <div class=" mt-5">
+            <div class=" mt-3">
                 <label class="required form-label">Password</label>
                 <input type="password" asp-for=Password class="form-control form-control-solid" />
                 <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="mt-3">
+                <div class="form-check">
+                    <input asp-for="RememberMe" class="form-check-input" />
+                    <label class="form-check-label" for="RememberMe">Remember me</label>
+                </div>
             </div>
             <br />
             @if (!ViewData.ModelState.IsValid)
