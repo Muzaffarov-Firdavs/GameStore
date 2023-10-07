@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using GameStore.Service.Commons.Attributes;
+using System.ComponentModel.DataAnnotations;
 
 namespace GameStore.Service.DTOs.Accounts
 {
@@ -14,6 +15,7 @@ namespace GameStore.Service.DTOs.Accounts
         public string Username { get; set; }
 
         [Required, DataType(DataType.EmailAddress)]
+        [Email]
         public string Email { get; set; }
 
         [Required]
