@@ -48,3 +48,26 @@
 </div>
 
 <div class="clr"></div>
+
+@foreach (var comment in Model.Comments)
+{
+    <div class="comment">
+        <p class="text-white">@comment.User</p>
+        <p class="text-white">@comment.Text</p>
+        <p class="timestamp text-white">@comment.CreatedAt.ToString("MMMM dd, yyyy HH:mm:ss")</p>
+    </div>
+}
+
+<div class="comment-form">
+    <h3>Add a Comment</h3>
+    <form asp-action="AddComment" asp-controller="Games">
+        <input type="hidden" name="gameId" value="@Model.Id" />
+        <div class="form-group">
+            <label for="commentText">Comment:</label>
+            <textarea class="form-control" id="commentText" name="commentText" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit Comment</button>
+    </form>
+</div>
+
+<div class="clr"></div>
