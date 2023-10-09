@@ -10,5 +10,6 @@ namespace GameStore.Service.DTOs.Comments
         public string Text { get; set; }
 
         public UserResultDto User { get; set; }
+        public DateTime CreatedAt { get; set; }
     }
 }
