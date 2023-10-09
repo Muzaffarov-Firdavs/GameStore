@@ -51,8 +51,9 @@ namespace GameStore.Service.Services.Games
             mappedGame.CreatedAt = DateTime.UtcNow;
 
             // Connect genres with game
-            mappedGame.Genres = await _genreRepository.SelectAll(p =>
-                !p.IsDeleted && dto.GenresIds.Contains(p.Id)).ToListAsync();
+            if (dto.GenresIds != null)
+                mappedGame.Genres = await _genreRepository.SelectAll(p =>
+                    !p.IsDeleted && dto.GenresIds.Contains(p.Id)).ToListAsync();
 
             await _unitOfWork.CreateTransactionAsync();
             var result = await _repository.InsertAsync(mappedGame);
@@ -71,8 +72,9 @@ namespace GameStore.Service.Services.Games
             var mappedGame = _mapper.Map(dto, game);
 
             // Connect genres with exsisting game
-            mappedGame.Genres = await _genreRepository.SelectAll(p =>
-                !p.IsDeleted && dto.GenresIds.Contains(p.Id)).ToListAsync();
+            if (dto.GenresIds != null)
+                mappedGame.Genres = await _genreRepository.SelectAll(p =>
+                    !p.IsDeleted && dto.GenresIds.Contains(p.Id)).ToListAsync();
 
             mappedGame.UpdatedAt = DateTime.UtcNow;
             await _unitOfWork.SaveAsync();
