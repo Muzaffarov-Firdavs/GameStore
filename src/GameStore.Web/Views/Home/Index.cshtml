@@ -88,37 +88,3 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
-@* 
-@section scripts {
-    <script>
-        $(document).ready(function () {
-            // Hide all games initially
-            $(".card").hide();
-
-            // Show all games when the page loads
-            $(".card").fadeIn(500);
-
-            // Handle filter button click
-            $("#filterButton").click(function () {
-                var selectedGenres = [];
-                // Get the selected genre values
-                $("input[name='genres']:checked").each(function () {
-                    selectedGenres.push($(this).val());
-                });
-
-                if (selectedGenres.length === 0) {
-                    // If no genres are selected, show all games
-                    $(".card").fadeIn(500);
-                } else {
-                    // Hide all games
-                    $(".card").hide();
-                    // Show games that match the selected genres
-                    selectedGenres.forEach(function (genreId) {
-                        $(".card[data-genre='" + genreId + "']").fadeIn(500);
-                    });
-                }
-            });
-        });
-    </script>
-}
- *@
