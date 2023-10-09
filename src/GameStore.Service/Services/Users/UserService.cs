@@ -2,7 +2,6 @@
 using GameStore.Data.Repositories;
 using GameStore.Data.UnitOfWorks;
 using GameStore.Domain.Entities.Files;
-using GameStore.Domain.Entities.Games;
 using GameStore.Domain.Entities.Users;
 using GameStore.Service.Commons.Configurations;
 using GameStore.Service.Commons.Exceptions;
