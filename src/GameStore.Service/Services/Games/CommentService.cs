@@ -5,6 +5,7 @@ using GameStore.Domain.Entities.Games;
 using GameStore.Domain.Entities.Users;
 using GameStore.Service.Commons.Exceptions;
 using GameStore.Service.DTOs.Comments;
+using GameStore.Service.DTOs.SubComments;
 using GameStore.Service.Interfaces.Games;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,17 +16,20 @@ namespace GameStore.Service.Services.Games
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IRepository<User> _userRepository;
-        private readonly IRepository<Comment> _repository;
+        private readonly IRepository<Comment> _commentRepository;
+        private readonly IRepository<SubComment> _subCommentRepository;
 
         public CommentService(IMapper mapper,
             IUnitOfWork unitOfWork,
             IRepository<User> userRepository,
-            IRepository<Comment> repository)
+            IRepository<Comment> commentRepository,
+            IRepository<SubComment> subCommentRepository)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
-            _repository = repository;
             _userRepository = userRepository;
+            _commentRepository = commentRepository;
+            _subCommentRepository = subCommentRepository;
         }
 
         public async ValueTask<CommentResultDto> AddAsync(CommentCreationDto dto)
@@ -38,15 +42,35 @@ namespace GameStore.Service.Services.Games
             mappedComment.CreatedAt = DateTime.UtcNow;
 
             await _unitOfWork.CreateTransactionAsync();
-            var result = await _repository.InsertAsync(mappedComment);
+            var result = await _commentRepository.InsertAsync(mappedComment);
             await _unitOfWork.SaveAsync();
             await _unitOfWork.CommitAsync();
             return _mapper.Map<CommentResultDto>(result);
         }
 
+        public async ValueTask<SubCommentResultDto> AddAsync(SubCommentCreationDto dto)
+        {
+            var user = await _userRepository.SelectAsync(u => u.Id == dto.UserId && !u.IsDeleted);
+            if (user == null)
+                throw new CustomException(404, "User is not found");
+
+            var comment = await _commentRepository.SelectAsync(u => u.Id == dto.CommentId && !u.IsDeleted);
+            if (comment == null)
+                throw new CustomException(404, "Comment is not found");
+
+            var mappedComment = _mapper.Map<SubComment>(dto);
+            mappedComment.CreatedAt = DateTime.UtcNow;
+
+            await _unitOfWork.CreateTransactionAsync();
+            var result = await _subCommentRepository.InsertAsync(mappedComment);
+            await _unitOfWork.SaveAsync();
+            await _unitOfWork.CommitAsync();
+            return _mapper.Map<SubCommentResultDto>(result);
+        }
+
         public async ValueTask<CommentResultDto> ModifyAsync(long id, CommentUpdateDto dto)
         {
-            var comment = await _repository.SelectAsync(p => p.Id == id && !p.IsDeleted,
+            var comment = await _commentRepository.SelectAsync(p => p.Id == id && !p.IsDeleted,
                 new string[] { "User" });
             if (comment == null)
                 throw new CustomException(404, "Comment is not found.");
@@ -59,18 +83,18 @@ namespace GameStore.Service.Services.Games
 
         public async ValueTask<bool> RemoveByIdAsync(long id)
         {
-            var comment = await _repository.SelectAsync(p => p.Id == id && !p.IsDeleted);
+            var comment = await _commentRepository.SelectAsync(p => p.Id == id && !p.IsDeleted);
             if (comment == null)
                 throw new CustomException(404, "Comment is not found.");
 
-            await _repository.DeleteAsync(comment);
+            await _commentRepository.DeleteAsync(comment);
             await _unitOfWork.SaveAsync();
             return true;
         }
 
         public async ValueTask<IEnumerable<CommentResultDto>> RetrieveAllAsync(string search = null)
         {
-            var comments = await _repository.SelectAll(p => !p.IsDeleted)
+            var comments = await _commentRepository.SelectAll(p => !p.IsDeleted)
                 .Include(p => p.User)
                 .ToListAsync();
 
@@ -83,7 +107,7 @@ namespace GameStore.Service.Services.Games
 
         public async ValueTask<CommentResultDto> RetrieveByIdAsync(long id)
         {
-            var comment = await _repository.SelectAsync(p => p.Id == id && !p.IsDeleted,
+            var comment = await _commentRepository.SelectAsync(p => p.Id == id && !p.IsDeleted,
                 new string[] { "User" });
             if (comment == null)
                 throw new CustomException(404, "Comment is not found.");

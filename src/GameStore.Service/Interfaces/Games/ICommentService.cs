@@ -1,4 +1,5 @@
 ﻿using GameStore.Service.DTOs.Comments;
+using GameStore.Service.DTOs.SubComments;
 
 namespace GameStore.Service.Interfaces.Games
 {
@@ -9,5 +10,6 @@ namespace GameStore.Service.Interfaces.Games
         ValueTask<bool> RemoveByIdAsync(long id);
         ValueTask<CommentResultDto> RetrieveByIdAsync(long id);
         ValueTask<IEnumerable<CommentResultDto>> RetrieveAllAsync(string search = null);
+        ValueTask<SubCommentResultDto> AddAsync(SubCommentCreationDto dto);
     }
 }
