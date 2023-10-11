@@ -1,4 +1,5 @@
-﻿using GameStore.Service.DTOs.Users;
+﻿using GameStore.Domain.Entities.Games;
+using GameStore.Service.DTOs.Users;
 using System.ComponentModel.DataAnnotations;
 
 namespace GameStore.Service.DTOs.Comments
@@ -11,5 +12,6 @@ namespace GameStore.Service.DTOs.Comments
 
         public UserResultDto User { get; set; }
         public DateTime CreatedAt { get; set; }
+        public List<SubComment> SubComments { get; set; }
     }
 }
