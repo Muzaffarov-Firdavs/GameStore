@@ -89,11 +89,11 @@ namespace GameStore.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddComment(int gameId, string text)
+        public async Task<IActionResult> AddComment(int gameId, string commentText)
         {
             var comment = new CommentCreationDto
             {
-                Text = text,
+                Text = commentText,
                 GameId = gameId,
                 UserId = 1
             };
