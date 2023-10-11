@@ -47,11 +47,13 @@
             @foreach (var comment in Model.Comments)
             {
                 <div class="darker mt-4 text-justify">
-                    <h4> 
-                        <img src="~/static-images/default.jpg" alt="" class="rounded-circle" width="40" height="40">
-                        <strong>Rob Simpson</strong> <span class="h6">- @GetTimeElapsed(comment.CreatedAt)</span>
+                    <h4>
+                        <img src="~/Images/@comment.User.Image.FileName" alt="" class="rounded-circle" width="40" height="40">
+                        <strong>@comment.User.FirstName @comment.User.LastName</strong>
+                        <span class="h6">- @GetTimeElapsed(comment.CreatedAt)</span>
                     </h4>
                     <p><small>@comment.Text</small></p>
+                    <a href="#" class="text-primary" style="font-size:20px"> <small> Reply </small> </a>
                 </div>
             }
             <div class="comment-form">
