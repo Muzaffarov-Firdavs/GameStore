@@ -14,5 +14,7 @@ namespace GameStore.Domain.Entities.Games
 
         public long GameId { get; set; }
         public virtual Game Game { get; set; }
+
+        public virtual ICollection<SubComment> SubComments { get; set; }
     }
 }
