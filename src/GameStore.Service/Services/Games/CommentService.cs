@@ -38,6 +38,9 @@ namespace GameStore.Service.Services.Games
             if (user == null)
                 throw new CustomException(404, "User is not found");
 
+            if (string.IsNullOrWhiteSpace(dto.Text))
+                throw new CustomException(404, "Text should not be whitespace or empty.");
+
             var mappedComment = _mapper.Map<Comment>(dto);
             mappedComment.CreatedAt = DateTime.UtcNow;
 
@@ -58,6 +61,9 @@ namespace GameStore.Service.Services.Games
             if (comment == null)
                 throw new CustomException(404, "Comment is not found");
 
+            if (string.IsNullOrWhiteSpace(dto.Text))
+                throw new CustomException(404, "Text should not be whitespace or empty.");
+
             var mappedComment = _mapper.Map<SubComment>(dto);
             mappedComment.CreatedAt = DateTime.UtcNow;
 
@@ -74,6 +80,9 @@ namespace GameStore.Service.Services.Games
                 new string[] { "User" });
             if (comment == null)
                 throw new CustomException(404, "Comment is not found.");
+
+            if (string.IsNullOrWhiteSpace(dto.Text))
+                throw new CustomException(404, "Text should not be whitespace or empty.");
 
             var mappedComment = _mapper.Map(dto, comment);
             mappedComment.UpdatedAt = DateTime.UtcNow;
