@@ -105,7 +105,7 @@ namespace GameStore.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddComment(int gameId, int commentId, string commentText)
+        public async Task<IActionResult> AddSubComment(int gameId, int commentId, string commentText)
         {
             var comment = new SubCommentCreationDto
             {
