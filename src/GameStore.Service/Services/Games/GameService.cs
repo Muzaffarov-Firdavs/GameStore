@@ -126,7 +126,7 @@ namespace GameStore.Service.Services.Games
         public async ValueTask<GameResultDto> RetrieveByIdAsync(long id)
         {
             var game = await _repository.SelectAsync(p => p.Id == id && !p.IsDeleted,
-                includes: new string[] { "Genres", "Comments", "Image" });
+                includes: new string[] { "Genres", "Comments.User.Image", "Image" });
             if (game == null)
                 throw new CustomException(404, "Game is not found.");
 
