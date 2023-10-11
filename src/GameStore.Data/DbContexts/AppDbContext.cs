@@ -14,15 +14,16 @@ namespace GameStore.Data.DbContexts
         }
 
         public virtual DbSet<User> Users { get; set; }
-        public virtual DbSet<Comment> Comments { get; set; }
         public virtual DbSet<Game> Games { get; set; }
-        public virtual DbSet<Genre> Genres { get; set; }
         public virtual DbSet<Cart> Carts { get; set; }
-        public virtual DbSet<CartItem> CartItems { get; set; }
-        public virtual DbSet<ContactInformation> ContactInformations { get; set; }
+        public virtual DbSet<Genre> Genres { get; set; }
         public virtual DbSet<Order> Orders { get; set; }
-        public virtual DbSet<OrderItem> OrderItems { get; set; }
         public virtual DbSet<Image> Images { get; set; }
+        public virtual DbSet<CartItem> CartItems { get; set; }
+        public virtual DbSet<Comment> Comments { get; set; }
+        public virtual DbSet<OrderItem> OrderItems { get; set; }
+        public virtual DbSet<SubComment> SubComments { get; set; }
+        public virtual DbSet<ContactInformation> ContactInformations { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
