@@ -46,14 +46,48 @@
             <br />
             @foreach (var comment in Model.Comments)
             {
-                <div class="darker mt-4 text-justify">
-                    <h4>
-                        <img src="~/Images/@comment.User.Image.FileName" alt="" class="rounded-circle" width="40" height="40">
-                        <strong>@comment.User.FirstName @comment.User.LastName</strong>
-                        <span class="h6">- @GetTimeElapsed(comment.CreatedAt)</span>
-                    </h4>
-                    <p><small>@comment.Text</small></p>
-                    <a href="#" class="text-primary" style="font-size:20px"> <small> Reply </small> </a>
+                <div class="row">
+                    <div class="col">
+                        <div class="d-flex flex-start mt-4">
+                            <img class="rounded-circle shadow-1-strong me-3"
+                                 src="~/Images/@comment.User.Image.FileName" alt="avatar" width="40"
+                                 height="40" />
+                            <div class="flex-grow-1 flex-shrink-1">
+                                <div>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <p class="mb-1">
+                                            @comment.User.FirstName @comment.User.LastName
+                                            <span class="small">- @GetTimeElapsed(comment.CreatedAt)</span>
+                                        </p>
+                                    </div>
+                                    <p class="small mb-0">@comment.Text</p>
+                                    <a href="#!" class="text-primary" style="font-size:20px"> <small> Reply </small> </a>
+                                </div>
+                                @foreach (var subComment in comment.SubComments)
+                                {
+                                    <div class="d-flex flex-start mt-4">
+                                        <a class="me-3" href="#">
+                                            <img class="rounded-circle shadow-1-strong"
+                                                 src="~/Images/@subComment.User.Image.FileName" alt="avatar"
+                                                 width="40" height="40" />
+                                        </a>
+                                        <div class="flex-grow-1 flex-shrink-1">
+                                            <div>
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <p class="mb-1">
+                                                        @subComment.User.FirstName @subComment.User.LastName
+                                                        <span class="small">- @GetTimeElapsed(subComment.CreatedAt)</span>
+                                                    </p>
+                                                </div>
+                                                <p class="small mb-0">@subComment.Text</p>
+                                                <a href="#!" class="text-primary" style="font-size:20px"> <small> Reply </small> </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
                 </div>
             }
             <div class="comment-form">
@@ -64,6 +98,8 @@
                         <label for="commentText">Comment:</label>
                         <textarea class="form-control" id="commentText" name="commentText" required></textarea>
                     </div>
+                    <span id="error" style="color: red;"></span>
+                    <br />
                     <button type="submit" class="btn btn-primary">Submit Comment</button>
                 </form>
             </div>
@@ -120,3 +156,19 @@
         }
     }
 }
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById("yourFormId").addEventListener("submit", function (event) {
+            var inputField = document.getElementById("commentText");
+            var errorMessage = document.getElementById("error");
+
+            var inputValue = inputField.value.trim(); // Remove leading and trailing whitespace
+
+            if (inputValue === "" || inputValue === null) {
+                errorMessage.textContent = "Field cannot be empty or null.";
+                event.preventDefault();
+            }
+        });
+    });
+</script>

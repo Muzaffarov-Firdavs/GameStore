@@ -1,4 +1,5 @@
-﻿using GameStore.Service.Commons.Extensions;
+﻿using GameStore.Service.Commons.Exceptions;
+using GameStore.Service.Commons.Extensions;
 using GameStore.Service.DTOs.Comments;
 using GameStore.Service.DTOs.Games;
 using GameStore.Service.DTOs.SubComments;
@@ -92,16 +93,24 @@ namespace GameStore.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> AddComment(int gameId, string commentText)
         {
-            var comment = new CommentCreationDto
+            try
             {
-                Text = commentText,
-                GameId = gameId,
-                UserId = 1
-            };
+                var comment = new CommentCreationDto
+                {
+                    Text = commentText,
+                    GameId = gameId,
+                    UserId = 1
+                };
 
-            await _commentService.AddAsync(comment);
+                await _commentService.AddAsync(comment);
 
-            return RedirectToAction("Details", new { id = gameId });
+                return RedirectToAction("Details", new { id = gameId });
+            }
+            catch(CustomException ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return RedirectToAction("Details", new { id = gameId });
+            }
         }
 
         [HttpPost]
@@ -116,7 +125,7 @@ namespace GameStore.Web.Controllers
 
             await _commentService.AddAsync(comment);
 
-            return RedirectToAction("Details", new { id = gameId});
+            return RedirectToAction("Details", new { id = gameId });
         }
 
     }
