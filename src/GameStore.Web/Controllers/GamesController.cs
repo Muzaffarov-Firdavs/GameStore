@@ -114,11 +114,11 @@ namespace GameStore.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddSubComment(int gameId, int commentId, string commentText)
+        public async Task<IActionResult> AddSubComment(int gameId, int commentId, string subcommentText)
         {
             var comment = new SubCommentCreationDto
             {
-                Text = commentText,
+                Text = subcommentText,
                 CommentId = commentId,
                 UserId = 1
             };
@@ -127,6 +127,5 @@ namespace GameStore.Web.Controllers
 
             return RedirectToAction("Details", new { id = gameId });
         }
-
     }
 }

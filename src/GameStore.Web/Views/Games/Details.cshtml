@@ -61,7 +61,24 @@
                                         </p>
                                     </div>
                                     <p class="small mb-0">@comment.Text</p>
-                                    <a href="#!" class="text-primary" style="font-size:20px"> <small> Reply </small> </a>
+                                    <!-- hiding reply -->
+                                    <div id="sub-comment" class="comment-form mt-4" hidden>
+                                        <form asp-action="AddSubComment" asp-controller="Games">
+                                            <input type="hidden" name="gameId" value="@Model.Id" />
+                                            <input type="hidden" name="commentId" id="@comment.Id" value="" />
+                                            <div class="form-group">
+                                                <label for="subcommentText">Comment:</label>
+                                                <textarea class="form-control" id="subcommentText" name="subcommentText" required></textarea>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">Reply</button>
+                                        </form>
+                                    </div>
+                                    <button class="bg-dark text-primary border-0" style="font-size:20px"
+                                                                            onclick="toggleSubComment(this)"
+                                                                            data-comment-id="@comment.Id">
+                                        <small> Reply </small>
+                                    </button>
+                                    <!-- finishing hiding reply -->
                                 </div>
                                 @foreach (var subComment in comment.SubComments)
                                 {
@@ -90,25 +107,51 @@
                     </div>
                 </div>
             }
-            <div class="comment-form">
-                <h3>Add a Comment</h3>
+            <div id="reply-comment" class="comment-form mt-4" hidden>
                 <form asp-action="AddComment" asp-controller="Games">
                     <input type="hidden" name="gameId" value="@Model.Id" />
                     <div class="form-group">
                         <label for="commentText">Comment:</label>
                         <textarea class="form-control" id="commentText" name="commentText" required></textarea>
                     </div>
-                    <span id="error" style="color: red;"></span>
-                    <br />
                     <button type="submit" class="btn btn-primary">Submit Comment</button>
                 </form>
             </div>
+            <button class="btn bg-dark text-primary mt-4" onclick="toggle(this)">Left Comment</button>
 
         </div>
     </div>
 </div>
 
 <div class="clr"></div>
+
+<script>
+    let toggle = button => {
+        let element = document.getElementById("reply-comment");
+        let hidden = element.getAttribute("hidden");
+
+        if (hidden) {
+            element.removeAttribute("hidden");
+            button.innerText = "Cancel";
+        } else {
+            element.setAttribute("hidden", "hidden");
+            button.innerText = "Left Comment";
+        }
+    }
+
+    let toggleSubComment = button => {
+        let element = document.getElementById("sub-comment");
+        let hidden = element.getAttribute("hidden");
+
+        if (hidden) {
+            element.removeAttribute("hidden");
+            button.innerText = "Cancel";
+        } else {
+            element.setAttribute("hidden", "hidden");
+            button.innerText = "Reply";
+        }
+    }
+</script>
 
 
 <!--Code for to display time left-->
@@ -156,19 +199,3 @@
         }
     }
 }
-
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        document.getElementById("yourFormId").addEventListener("submit", function (event) {
-            var inputField = document.getElementById("commentText");
-            var errorMessage = document.getElementById("error");
-
-            var inputValue = inputField.value.trim(); // Remove leading and trailing whitespace
-
-            if (inputValue === "" || inputValue === null) {
-                errorMessage.textContent = "Field cannot be empty or null.";
-                event.preventDefault();
-            }
-        });
-    });
-</script>
