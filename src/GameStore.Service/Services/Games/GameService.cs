@@ -97,8 +97,8 @@ namespace GameStore.Service.Services.Games
         {
             var games = await _repository.SelectAll(p => !p.IsDeleted)
                 .Include(p => p.Genres)
-                .Include(p => p.Comments)
                 .Include(p => p.Image)
+                .Include(p => p.Comments)
                 .ToListAsync();
 
             if (string.IsNullOrWhiteSpace(search))
@@ -126,7 +126,7 @@ namespace GameStore.Service.Services.Games
         public async ValueTask<GameResultDto> RetrieveByIdAsync(long id)
         {
             var game = await _repository.SelectAsync(p => p.Id == id && !p.IsDeleted,
-                includes: new string[] { "Genres", "Comments.User.Image", "Image" });
+                includes: new string[] { "Genres", "Comments.User.Image", "Image", "Comments.SubComments.User.Image" });
             if (game == null)
                 throw new CustomException(404, "Game is not found.");
 
