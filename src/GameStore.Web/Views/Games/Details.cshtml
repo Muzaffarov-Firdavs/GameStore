@@ -4,8 +4,8 @@
 @{
     ViewData["Title"] = "Details";
 }
-<br />
 
+<br />
 <div class="move-margin">
     <div class="card text-white bg-dark border-0 box" style="width: 71rem;">
         <div class="image-container">
@@ -74,7 +74,7 @@
                                     </div>
                                     <p class="small mb-0">@comment.Text</p>
                                     <!-- hiding reply -->
-                                    <div id="sub-comment" class="comment-form mt-4" hidden>
+                                    <div id="sub-comment" class="comment-form mt-4" >
                                         <form asp-action="AddSubComment" asp-controller="Games">
                                             <input type="hidden" name="commentId" id="@comment.Id" value="@comment.Id" />
                                             <input type="hidden" name="gameId" value="@Model.Id" />
@@ -151,6 +151,21 @@
             button.innerText = "Reply";
         }
     }
+
+    $('[data-toggle="collapse"]').on('click', function () {
+        var $this = $(this),
+            $parent = typeof $this.data('parent') !== 'undefined' ? $($this.data('parent')) : undefined;
+        if ($parent === undefined) { /* Just toggle my  */
+            $this.find('.glyphicon').toggleClass('glyphicon-plus glyphicon-minus');
+            return true;
+        }
+
+        /* Open element will be close if parent !== undefined */
+        var currentIcon = $this.find('.glyphicon');
+        currentIcon.toggleClass('glyphicon-plus glyphicon-minus');
+        $parent.find('.glyphicon').not(currentIcon).removeClass('glyphicon-minus').addClass('glyphicon-plus');
+
+    });
 </script>
 
 
