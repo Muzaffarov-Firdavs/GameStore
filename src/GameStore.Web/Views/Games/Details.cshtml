@@ -44,6 +44,18 @@
                 </div>
             </div>
             <br />
+            <div id="reply-comment" class="comment-form mt-4" hidden>
+                <form asp-action="AddComment" asp-controller="Games">
+                    <input type="hidden" name="gameId" value="@Model.Id" />
+                    <div class="form-group">
+                        <label for="commentText">Comment:</label>
+                        <textarea class="form-control" id="commentText" name="commentText" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Comment</button>
+                </form>
+            </div>
+            <button class="btn bg-dark text-primary mt-4" onclick="toggle(this)">Left Comment</button>
+            <br />
             @foreach (var comment in Model.Comments)
             {
                 <div class="row">
@@ -64,8 +76,8 @@
                                     <!-- hiding reply -->
                                     <div id="sub-comment" class="comment-form mt-4" hidden>
                                         <form asp-action="AddSubComment" asp-controller="Games">
+                                            <input type="hidden" name="commentId" id="@comment.Id" value="@comment.Id" />
                                             <input type="hidden" name="gameId" value="@Model.Id" />
-                                            <input type="hidden" name="commentId" id="@comment.Id" value="" />
                                             <div class="form-group">
                                                 <label for="subcommentText">Comment:</label>
                                                 <textarea class="form-control" id="subcommentText" name="subcommentText" required></textarea>
@@ -107,18 +119,6 @@
                     </div>
                 </div>
             }
-            <div id="reply-comment" class="comment-form mt-4" hidden>
-                <form asp-action="AddComment" asp-controller="Games">
-                    <input type="hidden" name="gameId" value="@Model.Id" />
-                    <div class="form-group">
-                        <label for="commentText">Comment:</label>
-                        <textarea class="form-control" id="commentText" name="commentText" required></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Submit Comment</button>
-                </form>
-            </div>
-            <button class="btn bg-dark text-primary mt-4" onclick="toggle(this)">Left Comment</button>
-
         </div>
     </div>
 </div>
