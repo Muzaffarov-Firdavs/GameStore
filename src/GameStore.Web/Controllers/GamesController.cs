@@ -120,7 +120,7 @@ namespace GameStore.Web.Controllers
             {
                 Text = subcommentText,
                 CommentId = commentId,
-                UserId = 1
+                UserId = 5
             };
 
             await _commentService.AddAsync(comment);
