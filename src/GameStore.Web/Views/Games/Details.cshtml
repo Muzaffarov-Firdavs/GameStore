@@ -1,5 +1,6 @@
-﻿@using GameStore.Service.DTOs.Games;
-@model GameResultDto
+﻿@using GameStore.Service.Commons.Helpers;
+@using GameStore.Service.ViewModels;
+@model CommentGameViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -9,13 +10,13 @@
 <div class="move-margin">
     <div class="card text-white bg-dark border-0 box" style="width: 71rem;">
         <div class="image-container">
-            <img class="card-img-top" src="../../Images/@Model.Image.FileName" alt="@Model.Image.FileName">
+            <img class="card-img-top" src="../../Images/@Model.Game.Image.FileName" alt="@Model.Game.Image.FileName">
         </div>
         <div class="card-body">
             <div class="row">
                 <div class="col">
-                    <p class="text-price lead card-text">@Model.Name</p>
-                    <p class="display-6">$@Model.Price</p>
+                    <p class="text-price lead card-text">@Model.Game.Name</p>
+                    <p class="display-6">$@Model.Game.Price</p>
                 </div>
                 <div class="col">
                 </div>
@@ -25,28 +26,28 @@
             </div>
             <hr />
             <p>
-                @foreach (var genre in Model.Genres)
+                @foreach (var genre in Model.Game.Genres)
                 {
                     <button class="hidden-corners-button">@genre.Name</button>
                 }
             </p>
             <br />
             <div class="row">
-                <h6 class="thin-version">@Model.Description</h6>
+                <h6 class="thin-version">@Model.Game.Description</h6>
             </div>
             <br />
             <div class="row">
                 <div class="col">
-                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit Game</a>
+                    <a asp-action="Edit" asp-route-id="@Model.Game.Id" class="btn btn-primary">Edit Game</a>
                 </div>
                 <div class="col">
-                    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Delete Game</a>
+                    <a asp-action="Delete" asp-route-id="@Model.Game.Id" class="btn btn-danger">Delete Game</a>
                 </div>
             </div>
             <br />
             <div id="reply-comment" class="comment-form mt-4" hidden>
                 <form asp-action="AddComment" asp-controller="Games">
-                    <input type="hidden" name="gameId" value="@Model.Id" />
+                    <input type="hidden" name="gameId" value="@Model.Game.Id" />
                     <div class="form-group">
                         <label for="commentText">Comment:</label>
                         <textarea class="form-control" id="commentText" name="commentText" required></textarea>
@@ -54,119 +55,94 @@
                     <button type="submit" class="btn btn-primary">Comment</button>
                 </form>
             </div>
-            <button class="btn bg-dark text-primary mt-4" onclick="toggle(this)">Left Comment</button>
-            <br />
-            @foreach (var comment in Model.Comments)
-            {
-                <div class="row">
-                    <div class="col">
-                        <div class="d-flex flex-start mt-4">
-                            <img class="rounded-circle shadow-1-strong me-3"
-                                 src="~/Images/@comment.User.Image.FileName" alt="avatar" width="40"
-                                 height="40" />
-                            <div class="flex-grow-1 flex-shrink-1">
-                                <div>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <p class="mb-1">
-                                            @comment.User.FirstName @comment.User.LastName
-                                            <span class="small">- @GetTimeElapsed(comment.CreatedAt)</span>
-                                        </p>
-                                    </div>
-                                    <p class="small mb-0">@comment.Text</p>
-                                    <!-- hiding reply -->
-                                    <div id="sub-comment" class="comment-form mt-4" >
-                                        <form asp-action="AddSubComment" asp-controller="Games">
-                                            <input type="hidden" name="commentId" id="@comment.Id" value="@comment.Id" />
-                                            <input type="hidden" name="gameId" value="@Model.Id" />
-                                            <div class="form-group">
-                                                <label for="subcommentText">Comment:</label>
-                                                <textarea class="form-control" id="subcommentText" name="subcommentText" required></textarea>
-                                            </div>
-                                            <button type="submit" class="btn btn-primary">Reply</button>
-                                        </form>
-                                    </div>
-                                    <button class="bg-dark text-primary border-0" style="font-size:20px"
-                                                                            onclick="toggleSubComment(this)"
-                                                                            data-comment-id="@comment.Id">
-                                        <small> Reply </small>
-                                    </button>
-                                    <!-- finishing hiding reply -->
-                                </div>
-                                @foreach (var subComment in comment.Comments)
-                                {
-                                    <div class="d-flex flex-start mt-4">
-                                        <a class="me-3" href="#">
-                                            <img class="rounded-circle shadow-1-strong"
-                                                 src="~/Images/@subComment.User.Image.FileName" alt="avatar"
-                                                 width="40" height="40" />
-                                        </a>
-                                        <div class="flex-grow-1 flex-shrink-1">
-                                            <div>
-                                                <div class="d-flex justify-content-between align-items-center">
-                                                    <p class="mb-1">
-                                                        @subComment.User.FirstName @subComment.User.LastName
-                                                        <span class="small">- @GetTimeElapsed(subComment.CreatedAt)</span>
-                                                    </p>
-                                                </div>
-                                                <p class="small mb-0">@subComment.Text</p>
-                                                <a href="#!" class="text-primary" style="font-size:20px"> <small> Reply </small> </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                }
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            }
         </div>
     </div>
+
+    <div class="row mt-5 text-black bg-white">
+        <div class="col-lg-8 col-md-10 mx-auto">
+            <h3 class="mb-5">@Model.Game.Comments.Count() Comments</h3>
+            <ul class="comment-list  comment-top" list="@Model.Game.Comments" count="0">
+                @foreach (var comment in Model.Game.Comments.Where(comment => comment.Parent is null))
+                {
+                    <li class="comment" style="margin-top: 30px;">
+                        <div class="comment-body">
+                            <h4 class="commenter-name">@comment.User.FirstName @comment.User.LastName</h4>
+                            <div class="comment-date">@comment.CreatedAt.ToString("MMMM d, yyyy hh:mm tt")</div>
+                            <p class="comment-message">@comment.Text</p>
+                            @if (HttpContextHelper.UserId is null)
+                            {
+                                <a class="reply-btn btn" asp-page="/Account/Login" asp-route-ReturnUrl="~/Post/@Model.Game.Id">Login to reply</a>
+                            }
+                            else
+                            {
+                                <a aria-expanded="false" href="@($"#replyComment{comment.Id}")" data-toggle="collapse" class="reply-btn btn">Reply</a>
+                            }
+                        </div>
+                        @if (HttpContextHelper.UserId is not null)
+                        {
+                            <div class="collapse" id="@($"replyComment{comment.Id}")">
+                                <form asp-controller="Games" asp-action="AddComment">
+                                    <input asp-for="Game.Id" readonly hidden />
+                                    <input asp-for="Comment.Parent.Id" value="@comment.Id" readonly hidden />
+                                    <div class="form-group">
+                                        <label for="comment">Write a reply</label>
+                                        <textarea asp-for="Comment.Text" class="form-control" rows="3"></textarea>
+                                        <button type="submit" class="btn btn-outline-primary post-btn">Post</button>
+                                    </div>
+                                </form>
+                            </div>
+                        }
+                        <ul class="comment-list" list="@comment.Comments" count="0" style="margin-left: 30px; margin-top:0;">
+                            @foreach (var reply in comment.Comments)
+                            {
+                                <li class="comment">
+                                    <div class="comment-body">
+                                        <h3 class="commenter-name">@reply.User.FirstName @reply.User.LastName</h3>
+                                        <div class="comment-date">@reply.CreatedAt.ToString("MMMM d, yyyy hh:mm tt")</div>
+                                        <p class="comment-message">@reply.Text</p>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    </li>
+                }
+            </ul>
+
+            <div>
+                <form asp-controller="Games" asp-action="AddComment">
+                    <input asp-for="Game.Id" readonly hidden />
+                    <div class="form-group">
+                        <label for="comment">Comment</label>
+                        <textarea asp-for="Comment.Text" class="form-control" rows="3" required></textarea>
+                        <button type="submit" class="btn btn-outline-primary post-btn">Post</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <div class="clr"></div>
 
-<script>
-    let toggle = button => {
-        let element = document.getElementById("reply-comment");
-        let hidden = element.getAttribute("hidden");
+@section Scripts{
+    <script>
+        $('[data-toggle="collapse"]').on('click', function () {
+            var $this = $(this),
+                $parent = typeof $this.data('parent') !== 'undefined' ? $($this.data('parent')) : undefined;
+            if ($parent === undefined) { /* Just toggle my  */
+                $this.find('.glyphicon').toggleClass('glyphicon-plus glyphicon-minus');
+                return true;
+            }
 
-        if (hidden) {
-            element.removeAttribute("hidden");
-            button.innerText = "Cancel";
-        } else {
-            element.setAttribute("hidden", "hidden");
-            button.innerText = "Left Comment";
-        }
-    }
+            /* Open element will be close if parent !== undefined */
+            var currentIcon = $this.find('.glyphicon');
+            currentIcon.toggleClass('glyphicon-plus glyphicon-minus');
+            $parent.find('.glyphicon').not(currentIcon).removeClass('glyphicon-minus').addClass('glyphicon-plus');
 
-    let toggleSubComment = button => {
-        let element = document.getElementById("sub-comment");
-        let hidden = element.getAttribute("hidden");
-
-        if (hidden) {
-            element.removeAttribute("hidden");
-            button.innerText = "Cancel";
-        } else {
-            element.setAttribute("hidden", "hidden");
-            button.innerText = "Reply";
-        }
-    }
-
-    $('[data-toggle="collapse"]').on('click', function () {
-        var $this = $(this),
-            $parent = typeof $this.data('parent') !== 'undefined' ? $($this.data('parent')) : undefined;
-        if ($parent === undefined) { /* Just toggle my  */
-            $this.find('.glyphicon').toggleClass('glyphicon-plus glyphicon-minus');
-            return true;
-        }
-
-        /* Open element will be close if parent !== undefined */
-        var currentIcon = $this.find('.glyphicon');
-        currentIcon.toggleClass('glyphicon-plus glyphicon-minus');
-        $parent.find('.glyphicon').not(currentIcon).removeClass('glyphicon-minus').addClass('glyphicon-plus');
-
-    });
-</script>
+        });
+    </script>
+}
 
 
 <!--Code for to display time left-->

@@ -1,5 +1,6 @@
 ﻿using GameStore.Domain.Entities.Games;
 using GameStore.Service.Commons.Extensions;
+using GameStore.Service.Commons.Helpers;
 using GameStore.Service.DTOs.Games;
 using GameStore.Service.Interfaces.Games;
 using GameStore.Service.ViewModels;
@@ -24,7 +25,8 @@ namespace GameStore.Web.Controllers
 
         public async Task<IActionResult> Details(int id)
         {
-            return View(await _gameService.RetrieveByIdAsync(id));
+            var game = await _gameService.RetrieveByIdAsync(id);
+            return View(new CommentGameViewModel { Game = game});
         }
 
         public async Task<IActionResult> Create()
@@ -88,12 +90,14 @@ namespace GameStore.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddComment(Comment comment)
+        public async Task<IActionResult> AddComment(CommentGameViewModel model)
         {
+            model.Comment.UserId = (long)HttpContextHelper.UserId;
+            model.Comment.GameId = model.Game.Id;
 
-            await _commentService.AddAsync(comment);
+            await _commentService.AddAsync(model.Comment);
 
-            return RedirectToAction("Details", new { id = comment.GameId });
+            return RedirectToAction("Details", new { id = model.Comment.GameId });
         }
     }
 }
