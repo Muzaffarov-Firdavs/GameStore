@@ -123,14 +123,14 @@ namespace GameStore.Service.Services.Games
             return _mapper.Map<IEnumerable<GameResultDto>>(games);
         }
 
-        public async ValueTask<GameResultDto> RetrieveByIdAsync(long id)
+        public async ValueTask<Game> RetrieveByIdAsync(long id)
         {
             var game = await _repository.SelectAsync(p => p.Id == id && !p.IsDeleted,
-                includes: new string[] { "Genres", "Comments.User.Image", "Image", "Comments.SubComments.User.Image" });
+                includes: new string[] { "Genres", "Comments.User.Image", "Image", "Comments.Comments.User.Image" });
             if (game == null)
                 throw new CustomException(404, "Game is not found.");
 
-            return _mapper.Map<GameResultDto>(game);
+            return /*_mapper.Map<GameResultDto>*/(game);
         }
 
         public async ValueTask<IEnumerable<GameResultDto>> RetrieveAllByGenreAsync(long genreId)

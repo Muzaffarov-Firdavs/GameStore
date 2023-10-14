@@ -31,20 +31,22 @@ namespace GameStore.Service.Services.Games
             _commentRepository = commentRepository;
         }
 
-        public async ValueTask<CommentResultDto> AddAsync(Comment dto)
+        public async ValueTask<CommentResultDto> AddAsync(Comment comment)
         {
-            var user = await _userRepository.SelectAsync(u => u.Id == dto.UserId && !u.IsDeleted);
+            var user = await _userRepository.SelectAsync(u => u.Id == comment.UserId && !u.IsDeleted);
             if (user == null)
                 throw new CustomException(404, "User is not found");
 
-            var game = await _gameRepository.SelectAsync(g => g.Id == dto.GameId && !g.IsDeleted);
+            var game = await _gameRepository.SelectAsync(g => g.Id == comment.GameId && !g.IsDeleted);
             if (game == null)
                 throw new CustomException(404, "Game is not found");
 
-            if (string.IsNullOrWhiteSpace(dto.Text))
+            if (string.IsNullOrWhiteSpace(comment.Text))
                 throw new CustomException(404, "Text should not be whitespace or empty.");
             
-            var mappedComment = _mapper.Map<Comment>(dto);
+            var mappedComment = _mapper.Map<Comment>(comment);
+            mappedComment.User = user;
+            mappedComment.Game = game;
             mappedComment.CreatedAt = DateTime.UtcNow;
 
             if (mappedComment.Parent != null)
@@ -98,14 +100,14 @@ namespace GameStore.Service.Services.Games
             return _mapper.Map<IEnumerable<CommentResultDto>>(comments);
         }
 
-        public async ValueTask<CommentResultDto> RetrieveByIdAsync(long id)
+        public async ValueTask<Comment> RetrieveByIdAsync(long id)
         {
             var comment = await _commentRepository.SelectAsync(p => p.Id == id && !p.IsDeleted,
                 new string[] { "User" });
             if (comment == null)
                 throw new CustomException(404, "Comment is not found.");
 
-            return _mapper.Map<CommentResultDto>(comment);
+            return /*_mapper.Map<CommentResultDto>*/(comment);
         }
     }
 }
