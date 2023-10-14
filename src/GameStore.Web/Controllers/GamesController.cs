@@ -1,10 +1,7 @@
-﻿using GameStore.Service.Commons.Exceptions;
+﻿using GameStore.Domain.Entities.Games;
 using GameStore.Service.Commons.Extensions;
-using GameStore.Service.DTOs.Comments;
 using GameStore.Service.DTOs.Games;
-using GameStore.Service.DTOs.SubComments;
 using GameStore.Service.Interfaces.Games;
-using GameStore.Service.Services.Games;
 using GameStore.Service.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -91,41 +88,12 @@ namespace GameStore.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddComment(int gameId, string commentText)
+        public async Task<IActionResult> AddComment(Comment comment)
         {
-            try
-            {
-                var comment = new CommentCreationDto
-                {
-                    Text = commentText,
-                    GameId = gameId,
-                    UserId = 1
-                };
-
-                await _commentService.AddAsync(comment);
-
-                return RedirectToAction("Details", new { id = gameId });
-            }
-            catch(CustomException ex)
-            {
-                ModelState.AddModelError(string.Empty, ex.Message);
-                return RedirectToAction("Details", new { id = gameId });
-            }
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> AddSubComment(int gameId, int commentId, string subcommentText)
-        {
-            var comment = new SubCommentCreationDto
-            {
-                Text = subcommentText,
-                CommentId = commentId,
-                UserId = 5
-            };
 
             await _commentService.AddAsync(comment);
 
-            return RedirectToAction("Details", new { id = gameId });
+            return RedirectToAction("Details", new { id = comment.GameId });
         }
     }
 }

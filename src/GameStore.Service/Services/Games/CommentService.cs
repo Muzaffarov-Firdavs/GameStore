@@ -5,7 +5,6 @@ using GameStore.Domain.Entities.Games;
 using GameStore.Domain.Entities.Users;
 using GameStore.Service.Commons.Exceptions;
 using GameStore.Service.DTOs.Comments;
-using GameStore.Service.DTOs.SubComments;
 using GameStore.Service.Interfaces.Games;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,62 +15,47 @@ namespace GameStore.Service.Services.Games
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IRepository<User> _userRepository;
+        private readonly IRepository<Game> _gameRepository;
         private readonly IRepository<Comment> _commentRepository;
-        private readonly IRepository<SubComment> _subCommentRepository;
 
         public CommentService(IMapper mapper,
             IUnitOfWork unitOfWork,
             IRepository<User> userRepository,
-            IRepository<Comment> commentRepository,
-            IRepository<SubComment> subCommentRepository)
+            IRepository<Game> gameRepository,
+            IRepository<Comment> commentRepository)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _userRepository = userRepository;
+            _gameRepository = gameRepository;
             _commentRepository = commentRepository;
-            _subCommentRepository = subCommentRepository;
         }
 
-        public async ValueTask<CommentResultDto> AddAsync(CommentCreationDto dto)
+        public async ValueTask<CommentResultDto> AddAsync(Comment dto)
         {
             var user = await _userRepository.SelectAsync(u => u.Id == dto.UserId && !u.IsDeleted);
             if (user == null)
                 throw new CustomException(404, "User is not found");
 
+            var game = await _gameRepository.SelectAsync(g => g.Id == dto.GameId && !g.IsDeleted);
+            if (game == null)
+                throw new CustomException(404, "Game is not found");
+
             if (string.IsNullOrWhiteSpace(dto.Text))
                 throw new CustomException(404, "Text should not be whitespace or empty.");
-
+            
             var mappedComment = _mapper.Map<Comment>(dto);
             mappedComment.CreatedAt = DateTime.UtcNow;
+
+            if (mappedComment.Parent != null)
+                mappedComment.Parent = await _commentRepository.SelectAsync(
+                        c => c.Id == mappedComment.Parent.Id && !c.IsDeleted);
 
             await _unitOfWork.CreateTransactionAsync();
             var result = await _commentRepository.InsertAsync(mappedComment);
             await _unitOfWork.SaveAsync();
             await _unitOfWork.CommitAsync();
             return _mapper.Map<CommentResultDto>(result);
-        }
-
-        public async ValueTask<SubCommentResultDto> AddAsync(SubCommentCreationDto dto)
-        {
-            var user = await _userRepository.SelectAsync(u => u.Id == dto.UserId && !u.IsDeleted);
-            if (user == null)
-                throw new CustomException(404, "User is not found");
-
-            var comment = await _commentRepository.SelectAsync(u => u.Id == dto.CommentId && !u.IsDeleted);
-            if (comment == null)
-                throw new CustomException(404, "Comment is not found");
-
-            if (string.IsNullOrWhiteSpace(dto.Text))
-                throw new CustomException(404, "Text should not be whitespace or empty.");
-
-            var mappedComment = _mapper.Map<SubComment>(dto);
-            mappedComment.CreatedAt = DateTime.UtcNow;
-
-            await _unitOfWork.CreateTransactionAsync();
-            var result = await _subCommentRepository.InsertAsync(mappedComment);
-            await _unitOfWork.SaveAsync();
-            await _unitOfWork.CommitAsync();
-            return _mapper.Map<SubCommentResultDto>(result);
         }
 
         public async ValueTask<CommentResultDto> ModifyAsync(long id, CommentUpdateDto dto)

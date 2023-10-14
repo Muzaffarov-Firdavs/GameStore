@@ -9,7 +9,6 @@ using GameStore.Service.DTOs.Comments;
 using GameStore.Service.DTOs.Files;
 using GameStore.Service.DTOs.Games;
 using GameStore.Service.DTOs.Genres;
-using GameStore.Service.DTOs.SubComments;
 using GameStore.Service.DTOs.Users;
 
 namespace GameStore.Service.Commons.Mappers
@@ -37,10 +36,6 @@ namespace GameStore.Service.Commons.Mappers
             CreateMap<Comment, CommentResultDto>().ReverseMap();
             CreateMap<Comment, CommentUpdateDto>().ReverseMap();
             CreateMap<Comment, CommentCreationDto>().ReverseMap();
-
-            CreateMap<SubComment, SubCommentResultDto>().ReverseMap();
-            CreateMap<SubComment, SubCommentUpdateDto>().ReverseMap();
-            CreateMap<SubComment, SubCommentCreationDto>().ReverseMap();
 
             CreateMap<Cart, CartResultDto>().ReverseMap();
             CreateMap<CartItem, CartItemResultDto>().ReverseMap();
