@@ -58,66 +58,117 @@
         </div>
     </div>
 
-    <div class="row mt-5 text-black bg-white">
+    <div class="row mt-5 text-white bg-dark">
         <div class="col-lg-8 col-md-10 mx-auto">
-            <h3 class="mb-5">@Model.Game.Comments.Count() Comments</h3>
+            <div class="game-comment-container">
+                @if (HttpContextHelper.UserId is null)
+                {
+                    <a class="reply-btn btn text-primary" asp-controller="Accounts" asp-action="Login"
+                                        asp-route-ReturnUrl="~/Post/@Model.Game.Id">Login to comment</a>
+                }
+                else
+                {
+                    <button class="btn btn-outline-primary add-comment-btn">Comment</button>
+                    <form class="comment-form" asp-controller="Games" asp-action="AddComment" method="post">
+                        <input asp-for="Game.Id" readonly hidden />
+                        <div class="form-group">
+                            <textarea asp-for="Comment.Text" class="form-control" rows="3" required maxlength="600"></textarea>
+                            <button type="submit" class="btn btn-outline-primary post-btn">Save</button>
+                            <button type="button" class="btn btn-outline-secondary cancel-btn">Cancel</button>
+                        </div>
+                    </form>
+                }
+            </div>
+            
             <ul class="comment-list  comment-top" list="@Model.Game.Comments" count="0">
                 @foreach (var comment in Model.Game.Comments.Where(comment => comment.Parent is null))
                 {
-                    <li class="comment" style="margin-top: 30px;">
-                        <div class="comment-body">
-                            <h4 class="commenter-name">@comment.User.FirstName @comment.User.LastName</h4>
-                            <div class="comment-date">@comment.CreatedAt.ToString("MMMM d, yyyy hh:mm tt")</div>
-                            <p class="comment-message">@comment.Text</p>
-                            @if (HttpContextHelper.UserId is null)
-                            {
-                                <a class="reply-btn btn" asp-page="/Account/Login" asp-route-ReturnUrl="~/Post/@Model.Game.Id">Login to reply</a>
-                            }
-                            else
-                            {
-                                <a aria-expanded="false" href="@($"#replyComment{comment.Id}")" data-toggle="collapse" class="reply-btn btn">Reply</a>
-                            }
-                        </div>
-                        @if (HttpContextHelper.UserId is not null)
-                        {
-                            <div class="collapse" id="@($"replyComment{comment.Id}")">
-                                <form asp-controller="Games" asp-action="AddComment">
-                                    <input asp-for="Game.Id" readonly hidden />
-                                    <input asp-for="Comment.Parent.Id" value="@comment.Id" readonly hidden />
-                                    <div class="form-group">
-                                        <label for="comment">Write a reply</label>
-                                        <textarea asp-for="Comment.Text" class="form-control" rows="3"></textarea>
-                                        <button type="submit" class="btn btn-outline-primary post-btn">Post</button>
+                    <div class="comment" style="margin-top: 30px;">
+                        <div class="d-flex flex-start mt-4">
+                            <a class="me-3" href="#">
+                                @if (@comment.User.Image is not null)
+                                {
+                                    <img class="rounded-circle shadow-1-strong"
+                                         src="~/Images/@comment.User.Image.FileName" alt="avatar"
+                                         width="40" height="40" />
+                                }
+                                else
+                                {
+                                    <img class="rounded-circle shadow-1-strong"
+                                         src="~/static-images/default.jpg" alt="avatar"
+                                         width="40" height="40" />
+                                }
+                            </a>
+                            <div class="flex-grow-1 flex-shrink-1">
+                                <div>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <p class="mb-1">
+                                            @comment.User.FirstName @comment.User.LastName
+                                            <span class="small">- @GetTimeElapsed(comment.CreatedAt)</span>
+                                        </p>
                                     </div>
-                                </form>
+                                    <p class="small mb-0">@comment.Text</p>
+                                    @if (HttpContextHelper.UserId is null)
+                                    {
+                                        <a class="reply-btn btn text-primary" asp-controller="Accounts" asp-action="Login"
+                                                            asp-route-ReturnUrl="~/Post/@Model.Game.Id">Login to reply</a>
+                                    }
+                                    else
+                                    {
+                                        <a aria-expanded="false" href="@($"#replyComment{comment.Id}")" data-toggle="collapse" class="reply-btn btn text-primary">Reply</a>
+                                    }
+                                    @if (HttpContextHelper.UserId is not null)
+                                    {
+                                        <div class="collapse" id="@($"replyComment{comment.Id}")">
+                                            <form asp-controller="Games" asp-action="AddComment">
+                                                <input asp-for="Game.Id" readonly hidden />
+                                                <input asp-for="Comment.Parent.Id" value="@comment.Id" readonly hidden />
+                                                <div class="form-group">
+                                                    <label for="comment">Write a reply</label>
+                                                    <textarea asp-for="Comment.Text" class="form-control" rows="3"></textarea>
+                                                    <button type="submit" class="btn btn-outline-primary post-btn">Post</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    }
+                                </div>
                             </div>
-                        }
+                        </div>
                         <ul class="comment-list" list="@comment.Comments" count="0" style="margin-left: 30px; margin-top:0;">
                             @foreach (var reply in comment.Comments)
                             {
-                                <li class="comment">
-                                    <div class="comment-body">
-                                        <h3 class="commenter-name">@reply.User.FirstName @reply.User.LastName</h3>
-                                        <div class="comment-date">@reply.CreatedAt.ToString("MMMM d, yyyy hh:mm tt")</div>
-                                        <p class="comment-message">@reply.Text</p>
+                                <div class="d-flex flex-start mt-4">
+                                    <a class="me-3" href="#">
+                                        @if (@reply.User.Image is not null)
+                                        {
+                                            <img class="rounded-circle shadow-1-strong"
+                                                 src="~/Images/@reply.User.Image.FileName" alt="avatar"
+                                                 width="40" height="40" />
+                                        }
+                                        else
+                                        {
+                                            <img class="rounded-circle shadow-1-strong"
+                                                 src="~/static-images/default.jpg" alt="avatar"
+                                                 width="40" height="40" />
+                                        }
+                                    </a>
+                                    <div class="flex-grow-1 flex-shrink-1">
+                                        <div>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <p class="mb-1">
+                                                    @reply.User.FirstName @reply.User.LastName
+                                                    <span class="small">- @GetTimeElapsed(reply.CreatedAt)</span>
+                                                </p>
+                                            </div>
+                                            <p class="small mb-0">@reply.Text</p>
+                                        </div>
                                     </div>
-                                </li>
+                                </div>
                             }
                         </ul>
-                    </li>
+                    </div>
                 }
             </ul>
-
-            <div>
-                <form asp-controller="Games" asp-action="AddComment">
-                    <input asp-for="Game.Id" readonly hidden />
-                    <div class="form-group">
-                        <label for="comment">Comment</label>
-                        <textarea asp-for="Comment.Text" class="form-control" rows="3" required></textarea>
-                        <button type="submit" class="btn btn-outline-primary post-btn">Post</button>
-                    </div>
-                </form>
-            </div>
         </div>
     </div>
 
@@ -135,11 +186,46 @@
                 return true;
             }
 
-            /* Open element will be close if parent !== undefined */
             var currentIcon = $this.find('.glyphicon');
             currentIcon.toggleClass('glyphicon-plus glyphicon-minus');
             $parent.find('.glyphicon').not(currentIcon).removeClass('glyphicon-minus').addClass('glyphicon-plus');
 
+        });
+
+        $(document).ready(function () {
+            $('.add-comment-btn').click(function () {
+                var $container = $(this).closest('.game-comment-container');
+                $container.find('.comment-form').show();
+                $container.find('.comment-text').hide();
+            });
+
+            $('.cancel-btn').click(function () {
+                var $container = $(this).closest('.game-comment-container');
+                $container.find('.comment-form').hide();
+                $container.find('.comment-form textarea').val('');
+                $container.find('.comment-text').hide();
+            });
+
+            $('.post-btn').click(function () {
+                var $container = $(this).closest('.game-comment-container');
+                var $form = $container.find('.comment-form');
+                $form.submit(); 
+            });
+
+            $('textarea[asp-for="Comment.Text"]').on('input', function () {
+                var maxLength = 600;
+                var currentLength = $(this).val().length;
+                var remaining = maxLength - currentLength;
+
+                var $counter = $(this).closest('.form-group').find('.character-counter span');
+                $counter.text(remaining);
+
+                if (remaining < 0) {
+                    $counter.addClass('text-danger');
+                } else {
+                    $counter.removeClass('text-danger');
+                }
+            });
         });
     </script>
 }
