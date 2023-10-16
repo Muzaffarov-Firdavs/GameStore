@@ -116,6 +116,8 @@
                                     else
                                     {
                                         <a aria-expanded="false" href="@($"#replyComment{comment.Id}")" data-toggle="collapse" class="reply-btn btn text-primary">Reply</a>
+                                        <a aria-expanded="false" href="@($"#editComment{comment.Id}")" data-toggle="collapse" class="reply-btn btn text-primary">Edit</a>
+                                        <a aria-expanded="false" href="@($"#deleteComment{comment.Id}")" data-toggle="collapse" class="reply-btn btn text-danger">Delete</a>
                                     }
                                     @if (HttpContextHelper.UserId is not null)
                                     {
@@ -126,23 +128,27 @@
                                                 <div class="form-group">
                                                     <label for="comment">Write a reply</label>
                                                     <textarea asp-for="Comment.Text" class="form-control" rows="3"></textarea>
-                                                    <button type="submit" class="btn btn-outline-primary post-btn">Post</button>
+                                                    <button type="submit" class="btn btn-outline-primary post-btn">Save</button>
                                                 </div>
                                             </form>
                                         </div>
-                                        <form asp-controller="Games" asp-action="EditComment" asp-route-commentId="@comment.Id"
-                                                                                   asp-route-gameId="@Model.Game.Id" method="post">
-                                            <div class="form-group">
-                                                <label asp-for="Comment.Text" class="control-label text-white">Edit Comment</label>
-                                                <input asp-for="Comment.Text" name="text" class="form-control" />
-                                                <span asp-validation-for="Comment.Text" class="text-danger"></span>
-                                            </div>
-                                            <button type="submit" class="btn btn-outline-primary border-0">Edit</button>
-                                        </form>
-                                        <form asp-controller="Games" asp-action="DeleteComment" asp-route-commentId="@comment.Id"
-                                                                                    asp-route-gameId="@Model.Game.Id" method="post">
-                                            <button type="submit" class="btn btn-outline-danger border-0">Delete</button>
-                                        </form>
+                                        <div class="collapse" id="@($"editComment{comment.Id}")">
+                                            <form asp-controller="Games" asp-action="EditComment" asp-route-commentId="@comment.Id"
+                                                  asp-route-gameId="@Model.Game.Id" method="post">
+                                                <div class="form-group">
+                                                    <label asp-for="Comment.Text" class="control-label text-white">Edit Comment</label>
+                                                    <input asp-for="Comment.Text" name="text" class="form-control" />
+                                                    <span asp-validation-for="Comment.Text" class="text-danger"></span>
+                                                </div>
+                                                <button type="submit" class="btn btn-outline-primary border-0">Edit</button>
+                                            </form>
+                                        </div>
+                                        <div class="collapse" id="@($"deleteComment{comment.Id}")">
+                                            <form asp-controller="Games" asp-action="DeleteComment" asp-route-commentId="@comment.Id"
+                                                                                        asp-route-gameId="@Model.Game.Id" method="post">
+                                                <button type="submit" class="btn btn-outline-danger border-0">Delete</button>
+                                            </form>
+                                        </div>
                                     }
                                 </div>
                             </div>
@@ -240,6 +246,8 @@
                 }
             });
         });
+
+        
     </script>
 }
 
