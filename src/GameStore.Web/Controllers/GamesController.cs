@@ -100,20 +100,17 @@ namespace GameStore.Web.Controllers
             return RedirectToAction("Details", new { id = model.Comment.GameId });
         }
 
-        [HttpPut]
-        public async Task<IActionResult> EditComment(CommentGameViewModel model)
+        [HttpPost]
+        public async Task<IActionResult> EditComment(long commentId, long gameId, string text)
         {
-            model.Comment.UserId = (long)HttpContextHelper.UserId;
-            model.Comment.GameId = model.Game.Id;
-
             var dto = new CommentUpdateDto
             {
-                Text = model.Comment.Text,
+                Text = text
             };
 
-            await _commentService.ModifyAsync(model.Comment.Id, dto);
+            await _commentService.ModifyAsync(commentId, dto);
 
-            return RedirectToAction("Details", new { id = model.Comment.GameId });
+            return RedirectToAction("Details", new { id = gameId });
         }
 
         [HttpPost]
