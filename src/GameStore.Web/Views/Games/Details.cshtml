@@ -85,7 +85,7 @@
                 {
                     <div class="comment" style="margin-top: 30px;">
                         <div class="d-flex flex-start mt-4">
-                            <a class="me-3" href="#">
+                            <a class="me-3" href="#!">
                                 @if (@comment.User.Image is not null)
                                 {
                                     <img class="rounded-circle shadow-1-strong"
@@ -130,15 +130,21 @@
                                                 </div>
                                             </form>
                                         </div>
+                                        <a class="btn btn-outline-primary border-0">Edit</a>
+                                        <form asp-controller="Games" asp-action="DeleteComment" asp-route-commentId="@comment.Id"
+                                                                                    asp-route-gameId="@Model.Game.Id" method="post">
+                                            <button type="submit" class="btn btn-outline-danger border-0">Delete</button>
+                                        </form>
                                     }
                                 </div>
                             </div>
                         </div>
+                        
                         <ul class="comment-list" list="@comment.Comments" count="0" style="margin-left: 30px; margin-top:0;">
                             @foreach (var reply in comment.Comments)
                             {
                                 <div class="d-flex flex-start mt-4">
-                                    <a class="me-3" href="#">
+                                    <a class="me-3" href="#!">
                                         @if (@reply.User.Image is not null)
                                         {
                                             <img class="rounded-circle shadow-1-strong"
@@ -171,7 +177,6 @@
             </ul>
         </div>
     </div>
-
 </div>
 
 <div class="clr"></div>
@@ -181,7 +186,7 @@
         $('[data-toggle="collapse"]').on('click', function () {
             var $this = $(this),
                 $parent = typeof $this.data('parent') !== 'undefined' ? $($this.data('parent')) : undefined;
-            if ($parent === undefined) { /* Just toggle my  */
+            if ($parent === undefined) { 
                 $this.find('.glyphicon').toggleClass('glyphicon-plus glyphicon-minus');
                 return true;
             }

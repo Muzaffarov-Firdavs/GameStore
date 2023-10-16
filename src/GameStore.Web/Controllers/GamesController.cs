@@ -1,6 +1,6 @@
-﻿using GameStore.Domain.Entities.Games;
-using GameStore.Service.Commons.Extensions;
+﻿using GameStore.Service.Commons.Extensions;
 using GameStore.Service.Commons.Helpers;
+using GameStore.Service.DTOs.Comments;
 using GameStore.Service.DTOs.Games;
 using GameStore.Service.Interfaces.Games;
 using GameStore.Service.ViewModels;
@@ -26,7 +26,7 @@ namespace GameStore.Web.Controllers
         public async Task<IActionResult> Details(int id)
         {
             var game = await _gameService.RetrieveByIdAsync(id);
-            return View(new CommentGameViewModel { Game = game});
+            return View(new CommentGameViewModel { Game = game });
         }
 
         public async Task<IActionResult> Create()
@@ -98,6 +98,30 @@ namespace GameStore.Web.Controllers
             await _commentService.AddAsync(model.Comment);
 
             return RedirectToAction("Details", new { id = model.Comment.GameId });
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> EditComment(CommentGameViewModel model)
+        {
+            model.Comment.UserId = (long)HttpContextHelper.UserId;
+            model.Comment.GameId = model.Game.Id;
+
+            var dto = new CommentUpdateDto
+            {
+                Text = model.Comment.Text,
+            };
+
+            await _commentService.ModifyAsync(model.Comment.Id, dto);
+
+            return RedirectToAction("Details", new { id = model.Comment.GameId });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteComment(long commentId, long gameId)
+        {
+            await _commentService.RemoveByIdAsync(commentId);
+
+            return RedirectToAction("Details", new { id = gameId });
         }
     }
 }
