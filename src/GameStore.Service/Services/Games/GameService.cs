@@ -3,7 +3,6 @@ using GameStore.Data.Repositories;
 using GameStore.Data.UnitOfWorks;
 using GameStore.Domain.Entities.Files;
 using GameStore.Domain.Entities.Games;
-using GameStore.Domain.Entities.Users;
 using GameStore.Service.Commons.Exceptions;
 using GameStore.Service.DTOs.Files;
 using GameStore.Service.DTOs.Games;
@@ -130,7 +129,8 @@ namespace GameStore.Service.Services.Games
             if (game == null)
                 throw new CustomException(404, "Game is not found.");
 
-            return /*_mapper.Map<GameResultDto>*/(game);
+            game.Comments = game.Comments.Where(game => !game.IsDeleted).ToList();
+            return (game);
         }
 
         public async ValueTask<IEnumerable<GameResultDto>> RetrieveAllByGenreAsync(long genreId)
