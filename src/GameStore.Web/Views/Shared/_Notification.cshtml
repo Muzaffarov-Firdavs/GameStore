@@ -1,0 +1,43 @@
+﻿<script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+
+
+@if (TempData["success"] is not null)
+
+{
+
+    Console.WriteLine("text");
+
+    <script type="text/javascript">
+
+        toastr.success('@TempData["success"]')
+
+    </script>
+
+}
+
+else if (TempData["error"] is not null)
+
+{
+
+    <script type="text/javascript">
+
+        toastr.error('@TempData["error"]')
+
+    </script>
+
+}
+
+else if (TempData["warning"] is not null)
+
+{
+
+    <script type="text/javascript">
+
+        toastr.warning('@TempData["warning"]')
+
+    </script>
+
+}
