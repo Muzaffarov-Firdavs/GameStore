@@ -83,153 +83,184 @@
             <ul class="comment-list  comment-top" list="@Model.Game.Comments" count="0">
                 @foreach (var comment in Model.Game.Comments.Where(comment => comment.Parent is null))
                 {
-                    <div class="comment" style="margin-top: 30px;">
-                        <div class="d-flex flex-start mt-4">
-                            <a class="me-3" href="#!">
-                                @if (@comment.User.Image is not null)
-                                {
-                                    <img class="rounded-circle shadow-1-strong"
-                                         src="~/Images/@comment.User.Image.FileName" alt="avatar"
-                                         width="40" height="40" />
-                                }
-                                else
-                                {
-                                    <img class="rounded-circle shadow-1-strong"
-                                         src="~/static-images/default.jpg" alt="avatar"
-                                         width="40" height="40" />
-                                }
-                            </a>
-                            <div class="flex-grow-1 flex-shrink-1">
-                                <div>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <p class="mb-1">
-                                            @comment.User.FirstName @comment.User.LastName
-                                            <span class="small">- @GetTimeElapsed(comment.CreatedAt)</span>
-                                        </p>
-                                    </div>
-                                    <p class="small mb-0">@comment.Text</p>
-                                    @if (HttpContextHelper.UserId is null)
+                    @if(!comment.IsDeleted || comment.UserId == HttpContextHelper.UserId)
+                    {
+                        <div class="comment" style="margin-top: 30px;">
+                            <div class="d-flex flex-start mt-4">
+                                <a class="me-3" href="#!">
+                                    @if (@comment.User.Image is not null)
                                     {
-                                        <a class="reply-btn btn text-primary" asp-controller="Accounts" asp-action="Login"
-                                                            asp-route-ReturnUrl="~/Post/@Model.Game.Id">Login to reply</a>
+                                        <img class="rounded-circle shadow-1-strong"
+                                                src="~/Images/@comment.User.Image.FileName" alt="avatar"
+                                                width="40" height="40" />
                                     }
                                     else
                                     {
-                                        <a aria-expanded="false" href="@($"#replyComment{comment.Id}")" data-toggle="collapse" class="reply-btn btn text-primary">Reply</a>
-                                        <a aria-expanded="false" href="@($"#editComment{comment.Id}")" data-toggle="collapse" class="reply-btn btn text-warning">Edit</a>
-                                        <a aria-expanded="false" href="@($"#deleteComment{comment.Id}")" data-toggle="collapse"
-                                                class="reply-btn btn text-danger" id="@($"deleteCommentButton{comment.Id}")">Delete</a>
+                                        <img class="rounded-circle shadow-1-strong"
+                                                src="~/static-images/default.jpg" alt="avatar"
+                                                width="40" height="40" />
                                     }
-                                    @if (HttpContextHelper.UserId is not null)
-                                    {
-                                        <div class="collapse" id="@($"replyComment{comment.Id}")">
-                                            <form asp-controller="Games" asp-action="AddComment">
-                                                <input asp-for="Game.Id" readonly hidden />
-                                                <input asp-for="Comment.Parent.Id" value="@comment.Id" readonly hidden />
-                                                <div class="form-group">
-                                                    <textarea asp-for="Comment.Text" class="form-control" rows="3" required maxlength="600"></textarea>
-                                                    <button type="submit" class="btn btn-outline-primary post-btn">Save</button>
-                                                </div>
-                                            </form>
+                                </a>
+                                <div class="flex-grow-1 flex-shrink-1">
+                                    <div>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <p class="mb-1">
+                                                @comment.User.FirstName @comment.User.LastName
+                                                <span class="small">- @GetTimeElapsed(comment.CreatedAt)</span>
+                                            </p>
                                         </div>
-                                        <div class="collapse" id="@($"editComment{comment.Id}")">
-                                            <form asp-controller="Games" asp-action="EditComment" asp-route-commentId="@comment.Id"
-                                                  asp-route-gameId="@Model.Game.Id" method="post">
-                                                <div class="form-group">
-                                                    <textarea name="text" class="form-control" rows="3" required maxlength="600">@comment.Text</textarea>
-                                                </div>
-                                                <button type="submit" class="btn btn-outline-primary border-0">Save</button>
-                                            </form>
-                                        </div>
-                                        <div class="collapse" id="@($"deleteComment{comment.Id}")">
-                                            <form asp-controller="Games" asp-action="DeleteComment" asp-route-commentId="@comment.Id"
-                                                                                        asp-route-gameId="@Model.Game.Id" method="post">
-                                                <button type="submit" class="btn btn-outline-danger border-0">Save</button>
-                                            </form>
-                                        </div>
-                                    }
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <ul class="comment-list" list="@comment.Comments" count="0" style="margin-left: 30px; margin-top:0;">
-                            @foreach (var reply in comment.Comments.Where(c => !c.IsDeleted))
-                            {
-                                <div class="d-flex flex-start mt-4">
-                                    <a class="me-3" href="#!">
-                                        @if (@reply.User.Image is not null)
+                                        @if (!comment.IsDeleted)
                                         {
-                                            <img class="rounded-circle shadow-1-strong"
-                                                 src="~/Images/@reply.User.Image.FileName" alt="avatar"
-                                                 width="40" height="40" />
+                                            <p class="small mb-0">@comment.Text</p>
                                         }
                                         else
                                         {
-                                            <img class="rounded-circle shadow-1-strong"
-                                                 src="~/static-images/default.jpg" alt="avatar"
-                                                 width="40" height="40" />
+                                            <a class="restore-btn btn text-danger">Restore</a>
                                         }
-                                    </a>
-                                    <div class="flex-grow-1 flex-shrink-1">
-                                        <div>
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <p class="mb-1">
-                                                    @reply.User.FirstName @reply.User.LastName
-                                                    <span class="small">- @GetTimeElapsed(reply.CreatedAt)</span>
-                                                </p>
+                                        @if (HttpContextHelper.UserId is null)
+                                        {
+                                            <a class="reply-btn btn text-primary" asp-controller="Accounts" asp-action="Login"
+                                            asp-route-ReturnUrl="~/Post/@Model.Game.Id">Login to reply</a>
+                                        }
+                                        else
+                                        {
+                                            @if (!comment.IsDeleted)
+                                            {
+                                                <a aria-expanded="false" href="@($"#replyComment{comment.Id}")" data-toggle="collapse" class="reply-btn btn text-primary">Reply</a>
+                                                @if (HttpContextHelper.UserId == comment.UserId)
+                                                {
+                                                    <a aria-expanded="false" href="@($"#editComment{comment.Id}")" data-toggle="collapse" class="reply-btn btn text-warning">Edit</a>
+                                                    <a aria-expanded="false" href="@($"#deleteComment{comment.Id}")" data-toggle="collapse" class="reply-btn btn text-danger">Delete</a>
+                                                }
+                                            }
+                                        }
+                                        @if (HttpContextHelper.UserId is not null)
+                                        {
+                                            <div class="collapse" id="@($"replyComment{comment.Id}")">
+                                                <form asp-controller="Games" asp-action="AddComment">
+                                                    <input asp-for="Game.Id" readonly hidden />
+                                                    <input asp-for="Comment.Parent.Id" value="@comment.Id" readonly hidden />
+                                                    <div class="form-group">
+                                                        <textarea asp-for="Comment.Text" class="form-control" rows="3" required maxlength="600"></textarea>
+                                                        <button type="submit" class="btn btn-outline-primary post-btn">Save</button>
+                                                    </div>
+                                                </form>
                                             </div>
-                                            <p class="small mb-0">@reply.Text</p>
-                                        </div>
+                                            <div class="collapse" id="@($"editComment{comment.Id}")">
+                                                <form asp-controller="Games" asp-action="EditComment" asp-route-commentId="@comment.Id"
+                                                        asp-route-gameId="@Model.Game.Id" method="post">
+                                                    <div class="form-group">
+                                                        <textarea name="text" class="form-control" rows="3" required maxlength="600">@comment.Text</textarea>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-outline-primary border-0">Save</button>
+                                                </form>
+                                            </div>
+                                            <div class="collapse" id="@($"deleteComment{comment.Id}")">
+                                                <form asp-controller="Games" asp-action="DeleteComment" asp-route-commentId="@comment.Id"
+                                                                                            asp-route-gameId="@Model.Game.Id" method="post">
+                                                    <button type="submit" class="btn btn-outline-danger border-0">Save</button>
+                                                </form>
+                                            </div>
+                                        }
                                     </div>
                                 </div>
-                                @if (HttpContextHelper.UserId is null)
+                            </div>
+                        
+                            <ul class="comment-list" list="@comment.Comments" count="0" style="margin-left: 30px; margin-top:0;">
+                                @if (!comment.IsDeleted)
                                 {
-                                    <a class="reply-btn btn text-primary" asp-controller="Accounts" asp-action="Login"
-                                        asp-route-ReturnUrl="~/Post/@Model.Game.Id">Login to reply</a>
-                                }
-                                else
-                                {
-                                    <a aria-expanded="false" href="@($"#replyReply{reply.Id}")" data-toggle="collapse" class="reply-btn btn text-primary">Reply</a>
-                                    <a aria-expanded="false" href="@($"#editReply{reply.Id}")" data-toggle="collapse" class="reply-btn btn text-warning">Edit</a>
-                                    <a aria-expanded="false" href="@($"#deleteReply{reply.Id}")" data-toggle="collapse" class="reply-btn btn text-danger">Delete</a>
-                                }
-                                @if (HttpContextHelper.UserId is not null)
-                                {
-                                    <div class="collapse" id="@($"replyReply{reply.Id}")">
-                                        <form asp-controller="Games" asp-action="AddComment">
-                                            <input asp-for="Game.Id" readonly hidden />
-                                            <input asp-for="Comment.Parent.Id" value="@reply.Id" readonly hidden />
-                                            <div class="form-group">
-                                                <textarea asp-for="Comment.Text" class="form-control" rows="3" required maxlength="600"></textarea>
-                                                <button type="submit" class="btn btn-outline-primary post-btn">Save</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                    <div class="collapse" id="@($"editReply{reply.Id}")">
-                                        <form asp-controller="Games" asp-action="EditComment" asp-route-commentId="@reply.Id"
-                                                asp-route-gameId="@Model.Game.Id" method="post">
-                                            <div class="form-group">
-                                                <textarea name="text" class="form-control" rows="3" required maxlength="600">@reply.Text</textarea>
-                                            </div>
-                                            <button type="submit" class="btn btn-outline-primary border-0">Save</button>
-                                        </form>
-                                    </div>
-                                    <div class="collapse" id="@($"deleteReply{reply.Id}")">
-                                        <form asp-controller="Games" asp-action="DeleteComment" asp-route-commentId="@reply.Id"
-                                                asp-route-gameId="@Model.Game.Id" method="post">
-                                            <button type="submit" class="btn btn-outline-danger border-0">Save</button>
-                                        </form>
-                                    </div>
-                                }
-                                <ul class="comment-list" list="@comment.Comments" count="0" style="margin-left: 30px; margin-top:0;">
-                                    @foreach (var hirarchary in reply.Comments.Where(c => !c.IsDeleted))
+                                    @foreach (var reply in comment.Comments)
                                     {
-                                        <p>@hirarchary.Text</p>
+                                        <div class="d-flex flex-start mt-4">
+                                            <a class="me-3" href="#!">
+                                                @if (@reply.User.Image is not null)
+                                                {
+                                                    <img class="rounded-circle shadow-1-strong"
+                                                            src="~/Images/@reply.User.Image.FileName" alt="avatar"
+                                                            width="40" height="40" />
+                                                }
+                                                else
+                                                {
+                                                    <img class="rounded-circle shadow-1-strong"
+                                                            src="~/static-images/default.jpg" alt="avatar"
+                                                            width="40" height="40" />
+                                                }
+                                            </a>
+                                            <div class="flex-grow-1 flex-shrink-1">
+                                                <div>
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <p class="mb-1">
+                                                            @reply.User.FirstName @reply.User.LastName
+                                                            <span class="small">- @GetTimeElapsed(reply.CreatedAt)</span>
+                                                        </p>
+                                                    </div>
+                                                    @if (!reply.IsDeleted)
+                                                    {
+                                                        <p class="small mb-0">@reply.Text</p>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a class="restore-btn btn text-danger">Restore</a>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @if (HttpContextHelper.UserId is null)
+                                        {
+                                            <a class="reply-btn btn text-primary" asp-controller="Accounts" asp-action="Login"
+                                            asp-route-ReturnUrl="~/Post/@Model.Game.Id">Login to reply</a>
+                                        }
+                                        else
+                                        {
+                                            @if (!reply.IsDeleted)
+                                            {
+                                                <a aria-expanded="false" href="@($"#replyReply{reply.Id}")" data-toggle="collapse" class="reply-btn btn text-primary">Reply</a>
+                                                @if (HttpContextHelper.UserId == reply.UserId)
+                                                {
+                                                    <a aria-expanded="false" href="@($"#editReply{reply.Id}")" data-toggle="collapse" class="reply-btn btn text-warning">Edit</a>
+                                                    <a aria-expanded="false" href="@($"#deleteReply{reply.Id}")" data-toggle="collapse" class="reply-btn btn text-danger">Delete</a>
+                                                }
+                                            }
+                                        }
+                                        @if (HttpContextHelper.UserId is not null)
+                                        {
+                                            <div class="collapse" id="@($"replyReply{reply.Id}")">
+                                                <form asp-controller="Games" asp-action="AddComment">
+                                                    <input asp-for="Game.Id" readonly hidden />
+                                                    <input asp-for="Comment.Parent.Id" value="@reply.Id" readonly hidden />
+                                                    <div class="form-group">
+                                                        <textarea asp-for="Comment.Text" class="form-control" rows="3" required maxlength="600"></textarea>
+                                                        <button type="submit" class="btn btn-outline-primary post-btn">Save</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            <div class="collapse" id="@($"editReply{reply.Id}")">
+                                                <form asp-controller="Games" asp-action="EditComment" asp-route-commentId="@reply.Id"
+                                                        asp-route-gameId="@Model.Game.Id" method="post">
+                                                    <div class="form-group">
+                                                        <textarea name="text" class="form-control" rows="3" required maxlength="600">@reply.Text</textarea>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-outline-primary border-0">Save</button>
+                                                </form>
+                                            </div>
+                                            <div class="collapse" id="@($"deleteReply{reply.Id}")">
+                                                <form asp-controller="Games" asp-action="DeleteComment" asp-route-commentId="@reply.Id"
+                                                        asp-route-gameId="@Model.Game.Id" method="post">
+                                                    <button type="submit" class="btn btn-outline-danger border-0">Save</button>
+                                                </form>
+                                            </div>
+                                        }
+                                        @* <ul class="comment-list" list="@comment.Comments" count="0" style="margin-left: 30px; margin-top:0;">
+                                            @foreach (var hirarchary in reply.Comments.Where(c => !c.IsDeleted))
+                                            {
+                                                <p>@hirarchary.Text</p>
+                                            }
+                                        </ul> *@
                                     }
-                                </ul>
-                            }
-                        </ul>
-                    </div>
+                                }
+                            </ul>
+                        </div>
+                    }
                 }
             </ul>
         </div>
@@ -275,22 +306,6 @@
                 }
             });
         });
-
-        // Prevent empty or whitespace
-        document.addEventListener("DOMContentLoaded", function () {
-            const commentText = document.getElementById("commentText");
-
-            commentText.addEventListener("input", function () {
-                const trimmedValue = commentText.value.trim();
-
-                if (trimmedValue === "") {
-                    commentText.setCustomValidity("Please enter a non-empty comment.");
-                } else {
-                    commentText.setCustomValidity("");
-                }
-            });
-        });
-        
     </script>
 }
 

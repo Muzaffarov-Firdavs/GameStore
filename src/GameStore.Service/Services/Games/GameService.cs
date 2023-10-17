@@ -129,8 +129,7 @@ namespace GameStore.Service.Services.Games
             if (game == null)
                 throw new CustomException(404, "Game is not found.");
 
-            game.Comments = game.Comments.Where(game => !game.IsDeleted).ToList();
-            return (game);
+            return game;
         }
 
         public async ValueTask<IEnumerable<GameResultDto>> RetrieveAllByGenreAsync(long genreId)
