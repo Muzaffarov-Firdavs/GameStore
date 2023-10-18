@@ -117,7 +117,10 @@
                                         }
                                         else
                                         {
-                                            <a class="restore-btn btn text-danger">Restore</a>
+                                            <form asp-controller="Games" asp-action="RestoreComment" asp-route-commentId="@comment.Id"
+                                                  asp-route-gameId="@Model.Game.Id" method="post">
+                                                <button type="submit" class="restore-btn btn text-danger border-0">Restore</button>
+                                            </form>
                                         }
                                         @if (HttpContextHelper.UserId is null)
                                         {
@@ -206,7 +209,10 @@
                                                         }
                                                         else
                                                         {
-                                                            <a class="restore-btn btn text-danger">Restore</a>
+                                                            <form asp-controller="Games" asp-action="RestoreComment" asp-route-commentId="@reply.Id"
+                                                                  asp-route-gameId="@Model.Game.Id" method="post">
+                                                                <button type="submit" class="restore-btn btn text-danger border-0">Restore</button>
+                                                            </form>
                                                         }
                                                     </div>
                                                 </div>

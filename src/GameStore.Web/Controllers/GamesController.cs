@@ -129,5 +129,13 @@ namespace GameStore.Web.Controllers
 
             return RedirectToAction("Details", new { id = gameId });
         }
+
+        [HttpPost]
+        public async Task<IActionResult> RestoreComment(long commentId, long gameId)
+        {
+            await _commentService.RestoreByIdAsync(commentId);
+
+            return RedirectToAction("Details", new { id = gameId });
+        }
     }
 }
