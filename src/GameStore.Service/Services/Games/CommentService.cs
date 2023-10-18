@@ -87,6 +87,18 @@ namespace GameStore.Service.Services.Games
             return true;
         }
 
+        public async ValueTask<bool> RestoreByIdAsync(long id)
+        {
+            var comment = await _commentRepository.SelectAsync(p => p.Id == id);
+            if (comment == null)
+                throw new CustomException(404, "Comment is not found.");
+
+            comment.IsDeleted = false;
+            comment.UpdatedAt = DateTime.UtcNow;
+            await _unitOfWork.SaveAsync();
+            return true;
+        }
+
         public async ValueTask<IEnumerable<CommentResultDto>> RetrieveAllAsync(string search = null)
         {
             var comments = await _commentRepository.SelectAll(p => !p.IsDeleted)

@@ -8,6 +8,7 @@ namespace GameStore.Service.Interfaces.Games
         ValueTask<CommentResultDto> AddAsync(Comment dto);
         ValueTask<CommentResultDto> ModifyAsync(long id, CommentUpdateDto dto);
         ValueTask<bool> RemoveByIdAsync(long id);
+        ValueTask<bool> RestoreByIdAsync(long id);
         ValueTask<Comment> RetrieveByIdAsync(long id);
         ValueTask<IEnumerable<CommentResultDto>> RetrieveAllAsync(string search = null);
     }
