@@ -2,7 +2,6 @@
 using GameStore.Service.DTOs.Accounts;
 using GameStore.Service.Interfaces.Accounts;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameStore.Web.Controllers
