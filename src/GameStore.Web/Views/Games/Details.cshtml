@@ -139,43 +139,6 @@
                                                 }
                                             }
                                         }
-                                        <script>
-                                            $(document).ready(function () {
-                                                //  Hide buttons for Delete, Reply and Edit functions
-                                                $('@($"#CommentDeleteButton{comment.Id}")').click(function () {
-
-                                                    $('@($"#hideComment{comment.Id}")').toggle();
-
-                                                    $('@($"#CommentDeleteButton{comment.Id}")').hide();
-                                                    $('@($"#CommentReplyButton{comment.Id}")').hide();
-                                                    $('@($"#CommentEditButton{comment.Id}")').hide();
-                                                });
-
-                                                $('@($"#CommentEditButton{comment.Id}")').click(function () {
-
-                                                    $('@($"#hideComment{comment.Id}")').toggle();
-
-                                                    $('@($"#CommentDeleteButton{comment.Id}")').hide();
-                                                    $('@($"#CommentReplyButton{comment.Id}")').hide();
-                                                    $('@($"#CommentEditButton{comment.Id}")').hide();
-                                                });
-
-                                                $('@($"#CommentReplyButton{comment.Id}")').click(function () {
-
-                                                    $('@($"#CommentDeleteButton{comment.Id}")').hide();
-                                                    $('@($"#CommentReplyButton{comment.Id}")').hide();
-                                                    $('@($"#CommentEditButton{comment.Id}")').hide();
-                                                });
-
-                                                //  Back and show buttons for Delete, Reply and Edit functions
-                                                $('@($"#CommentCanelButton{comment.Id}")').click(function () {
-
-                                                    $('@($"#CommentDeleteButton{comment.Id}")').hide();
-                                                    $('@($"#CommentReplyButton{comment.Id}")').hide();
-                                                    $('@($"#CommentEditButton{comment.Id}")').hide();
-                                                });
-                                            });
-                                        </script>
                                         @if (HttpContextHelper.UserId is not null)
                                         {
                                             <div class="collapse" id="@($"replyComment{comment.Id}")">
@@ -185,6 +148,7 @@
                                                     <div class="form-group">
                                                         <textarea asp-for="Comment.Text" class="form-control" rows="3" required maxlength="600"></textarea>
                                                         <button type="submit" class="btn btn-outline-primary post-btn">Save</button>
+                                                        <button type="button" class="btn btn-outline-secondary" onclick="location.reload();">Cancel</button>
                                                     </div>
                                                 </form>
                                             </div>
@@ -195,16 +159,47 @@
                                                         <textarea name="text" class="form-control" rows="3" required maxlength="600">@comment.Text</textarea>
                                                     </div>
                                                     <button type="submit" class="btn btn-outline-primary border-0">Save</button>
+                                                    <button type="button" class="btn btn-outline-secondary" onclick="location.reload();">Cancel</button>
                                                 </form>
                                             </div>
                                             <div class="collapse" id="@($"deleteComment{comment.Id}")">
                                                 <form asp-controller="Games" asp-action="DeleteComment" asp-route-commentId="@comment.Id"
                                                                                             asp-route-gameId="@Model.Game.Id" method="post">
                                                     <button type="submit" class="btn btn-outline-danger border-0">Save</button>
+                                                    <button type="button" class="btn btn-outline-secondary" onclick="location.reload();">Cancel</button>
                                                     <br />
                                                 </form>
                                             </div>
                                         }
+                                        <script>
+                                            $(document).ready(function () {
+                                                //  Hide buttons for Delete, Reply and Edit functions
+                                                $('@($"#CommentDeleteButton{comment.Id}")').click(function () {
+
+                                                    $('@($"#hideComment{comment.Id}")').toggle();
+
+                                                    $('@($"#CommentDeleteButton{comment.Id}")').toggle();
+                                                    $('@($"#CommentReplyButton{comment.Id}")').toggle();
+                                                    $('@($"#CommentEditButton{comment.Id}")').toggle();
+                                                });
+
+                                                $('@($"#CommentEditButton{comment.Id}")').click(function () {
+
+                                                    $('@($"#hideComment{comment.Id}")').toggle();
+
+                                                    $('@($"#CommentDeleteButton{comment.Id}")').toggle();
+                                                    $('@($"#CommentReplyButton{comment.Id}")').toggle();
+                                                    $('@($"#CommentEditButton{comment.Id}")').toggle();
+                                                });
+
+                                                $('@($"#CommentReplyButton{comment.Id}")').click(function () {
+
+                                                    $('@($"#CommentDeleteButton{comment.Id}")').toggle();
+                                                    $('@($"#CommentReplyButton{comment.Id}")').toggle();
+                                                    $('@($"#CommentEditButton{comment.Id}")').toggle();
+                                                });
+                                            });
+                                        </script>
                                     </div>
                                 </div>
                             </div>
@@ -244,7 +239,7 @@
                                                         </div>
                                                         @if (!reply.IsDeleted)
                                                         {
-                                                            <pp id="@($"hideWhenDelteForReply{reply.Id}")" class="small mb-0">@reply.Text</pp>
+                                                            <p id="@($"hideWhenDelteForReply{reply.Id}")" class="small mb-0">@reply.Text</p>
                                                         }
                                                         else
                                                         {
@@ -297,6 +292,7 @@
                                                     <div class="form-group">
                                                         <textarea asp-for="Comment.Text" class="form-control" rows="3" required maxlength="600"></textarea>
                                                         <button type="submit" class="btn btn-outline-primary post-btn">Save</button>
+                                                        <button type="button" class="btn btn-outline-secondary" onclick="location.reload();">Cancel</button>
                                                     </div>
                                                 </form>
                                             </div>
@@ -307,12 +303,14 @@
                                                         <textarea name="text" class="form-control" rows="3" required maxlength="600">@reply.Text</textarea>
                                                     </div>
                                                     <button type="submit" class="btn btn-outline-primary border-0">Save</button>
+                                                    <button type="button" class="btn btn-outline-secondary" onclick="location.reload();">Cancel</button>
                                                 </form>
                                             </div>
                                             <div class="collapse" id="@($"deleteReply{reply.Id}")">
                                                 <form asp-controller="Games" asp-action="DeleteComment" asp-route-commentId="@reply.Id"
                                                         asp-route-gameId="@Model.Game.Id" method="post">
                                                     <button type="submit" class="btn btn-outline-danger border-0">Save</button>
+                                                    <button type="button" class="btn btn-outline-secondary" onclick="location.reload();">Cancel</button>
                                                 </form>
                                             </div>
                                         }
