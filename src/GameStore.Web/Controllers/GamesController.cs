@@ -11,6 +11,7 @@ namespace GameStore.Web.Controllers
 {
     public class GamesController : Controller
     {
+        private string errorMessage = string.Empty;
         private readonly IGameService _gameService;
         private readonly IGenreService _genreService;
         private readonly ICommentService _commentService;
@@ -27,7 +28,13 @@ namespace GameStore.Web.Controllers
         public async Task<IActionResult> Details(int id)
         {
             var game = await _gameService.RetrieveByIdAsync(id);
-            return View(new CommentGameViewModel { Game = game });
+
+            var viewModel = new CommentGameViewModel { Game = game };
+
+            if (!string.IsNullOrEmpty(errorMessage))
+                ModelState.AddModelError(string.Empty, errorMessage);
+
+            return View(viewModel);
         }
 
         public async Task<IActionResult> Create()
@@ -97,29 +104,41 @@ namespace GameStore.Web.Controllers
             {
                 model.Comment.UserId = (long)HttpContextHelper.UserId;
                 model.Comment.GameId = model.Game.Id;
-
                 await _commentService.AddAsync(model.Comment);
-
                 return RedirectToAction("Details", new { id = model.Comment.GameId });
             }
             catch (CustomException ex)
             {
-                ModelState.AddModelError(string.Empty, ex.Message);
-                return View("details",model);
+                var game = await _gameService.RetrieveByIdAsync(model.Comment.GameId);
+
+                var viewModel = new CommentGameViewModel { Game = game };
+                this.TempData["error"] = "Not saved - " + ex.Message;
+                return View("Details", viewModel);
             }
         }
 
         [HttpPost]
         public async Task<IActionResult> EditComment(long commentId, long gameId, string text)
         {
-            var dto = new CommentUpdateDto
+            try
             {
-                Text = text
-            };
+                var dto = new CommentUpdateDto
+                {
+                    Text = text
+                };
 
-            await _commentService.ModifyAsync(commentId, dto);
+                await _commentService.ModifyAsync(commentId, dto);
 
-            return RedirectToAction("Details", new { id = gameId });
+                return RedirectToAction("Details", new { id = gameId });
+            }
+            catch (CustomException ex)
+            {
+                var game = await _gameService.RetrieveByIdAsync(gameId);
+
+                var viewModel = new CommentGameViewModel { Game = game };
+                this.TempData["error"] = "Not edited - " + ex.Message;
+                return View("Details", viewModel);
+            }
         }
 
         [HttpPost]

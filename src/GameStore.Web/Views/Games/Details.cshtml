@@ -74,7 +74,7 @@
                     <form class="comment-form" asp-controller="Games" asp-action="AddComment" method="post">
                         <input asp-for="Game.Id" readonly hidden />
                         <div class="form-group">
-                            <textarea asp-for="Comment.Text" id="commentText" class="form-control" required maxlength="600"></textarea>
+                            <textarea asp-for="Comment.Text" id="commentText" class="form-control" required pattern="\S(.*\S)?" maxlength="600"></textarea>
                             <button type="submit" class="btn btn-outline-primary post-btn">Save</button>
                             <button type="button" class="btn btn-outline-secondary cancel-btn">Cancel</button>
                         </div>
@@ -330,6 +330,10 @@
 <div class="clr"></div>
 
 @section Scripts{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
     <script>
         $(document).ready(function () {
             $('.add-comment-btn').click(function () {
