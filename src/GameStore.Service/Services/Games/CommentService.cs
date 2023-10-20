@@ -42,7 +42,7 @@ namespace GameStore.Service.Services.Games
                 throw new CustomException(404, "Game is not found");
 
             if (string.IsNullOrWhiteSpace(comment.Text))
-                throw new CustomException(404, "Text should not be whitespace or empty.");
+                throw new CustomException(422, "Text should not be whitespace or empty.");
             
             comment.User = user;
             comment.Game = game;
