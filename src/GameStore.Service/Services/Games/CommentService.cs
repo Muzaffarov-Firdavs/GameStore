@@ -119,7 +119,7 @@ namespace GameStore.Service.Services.Games
             if (comment == null)
                 throw new CustomException(404, "Comment is not found.");
 
-            return /*_mapper.Map<CommentResultDto>*/(comment);
+            return comment;
         }
     }
 }

@@ -35,7 +35,6 @@ namespace GameStore.Service.Commons.Mappers
 
             CreateMap<Comment, CommentResultDto>().ReverseMap();
             CreateMap<Comment, CommentUpdateDto>().ReverseMap();
-            CreateMap<Comment, CommentCreationDto>().ReverseMap();
 
             CreateMap<Cart, CartResultDto>().ReverseMap();
             CreateMap<CartItem, CartItemResultDto>().ReverseMap();
