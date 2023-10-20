@@ -11,7 +11,6 @@ namespace GameStore.Web.Controllers
 {
     public class GamesController : Controller
     {
-        private string errorMessage = string.Empty;
         private readonly IGameService _gameService;
         private readonly IGenreService _genreService;
         private readonly ICommentService _commentService;
@@ -29,12 +28,7 @@ namespace GameStore.Web.Controllers
         {
             var game = await _gameService.RetrieveByIdAsync(id);
 
-            var viewModel = new CommentGameViewModel { Game = game };
-
-            if (!string.IsNullOrEmpty(errorMessage))
-                ModelState.AddModelError(string.Empty, errorMessage);
-
-            return View(viewModel);
+            return View(new CommentGameViewModel { Game = game });
         }
 
         public async Task<IActionResult> Create()
@@ -122,10 +116,7 @@ namespace GameStore.Web.Controllers
         {
             try
             {
-                var dto = new CommentUpdateDto
-                {
-                    Text = text
-                };
+                var dto = new CommentUpdateDto { Text = text };
 
                 await _commentService.ModifyAsync(commentId, dto);
 
