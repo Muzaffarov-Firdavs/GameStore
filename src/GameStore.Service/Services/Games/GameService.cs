@@ -35,7 +35,7 @@ namespace GameStore.Service.Services.Games
 
         public async ValueTask<GameResultDto> AddAsync(GameCreationDto dto, ImageCreationDto imageDto)
         {
-            // TODO: 3rd module requirement.
+            // TODO: Ckech user identity.
             //var user = await _userRepository.SelectAsync(u => u.Id == dto.UserId && !u.IsDeleted);
             //if (user == null)
             //    throw new CustomException(404, "User is not found");
@@ -130,17 +130,6 @@ namespace GameStore.Service.Services.Games
                 throw new CustomException(404, "Game is not found.");
 
             return game;
-        }
-
-        public async ValueTask<IEnumerable<GameResultDto>> RetrieveAllByGenreAsync(long genreId)
-        {
-            var genre = await _genreRepository.SelectAsync(p => !p.IsDeleted && p.Id == genreId,
-                new string[] { "Games", "Games.Image" });
-            if (genre == null)
-                throw new CustomException(404, "Genre is not found.");
-
-            var results = genre.Games.Where(p => !p.IsDeleted);
-            return _mapper.Map<IEnumerable<GameResultDto>>(results);
         }
     }
 }

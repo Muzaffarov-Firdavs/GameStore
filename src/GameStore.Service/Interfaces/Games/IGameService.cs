@@ -11,6 +11,5 @@ namespace GameStore.Service.Interfaces.Games
         ValueTask<bool> RemoveByIdAsync(long id);
         ValueTask<Game> RetrieveByIdAsync(long id);
         ValueTask<IEnumerable<GameResultDto>> RetrieveAllAsync(string search = null, long genreId = 0);
-        ValueTask<IEnumerable<GameResultDto>> RetrieveAllByGenreAsync(long genreId);
     }
 }
