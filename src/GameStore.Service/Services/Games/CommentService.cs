@@ -44,17 +44,16 @@ namespace GameStore.Service.Services.Games
             if (string.IsNullOrWhiteSpace(comment.Text))
                 throw new CustomException(404, "Text should not be whitespace or empty.");
             
-            var mappedComment = _mapper.Map<Comment>(comment);
-            mappedComment.User = user;
-            mappedComment.Game = game;
-            mappedComment.CreatedAt = DateTime.UtcNow;
+            comment.User = user;
+            comment.Game = game;
+            comment.CreatedAt = DateTime.UtcNow;
 
-            if (mappedComment.Parent != null)
-                mappedComment.Parent = await _commentRepository.SelectAsync(
-                        c => c.Id == mappedComment.Parent.Id && !c.IsDeleted);
+            if (comment.Parent != null)
+                comment.Parent = await _commentRepository.SelectAsync(
+                        c => c.Id == comment.Parent.Id && !c.IsDeleted);
 
             await _unitOfWork.CreateTransactionAsync();
-            var result = await _commentRepository.InsertAsync(mappedComment);
+            var result = await _commentRepository.InsertAsync(comment);
             await _unitOfWork.SaveAsync();
             await _unitOfWork.CommitAsync();
             return _mapper.Map<CommentResultDto>(result);
