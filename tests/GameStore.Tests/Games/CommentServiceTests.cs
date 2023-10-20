@@ -5,13 +5,10 @@ using GameStore.Domain.Entities.Games;
 using GameStore.Domain.Entities.Users;
 using GameStore.Service.Commons.Exceptions;
 using GameStore.Service.DTOs.Comments;
-using GameStore.Service.DTOs.Games;
 using GameStore.Service.DTOs.Users;
 using GameStore.Service.Interfaces.Games;
 using GameStore.Service.Services.Games;
-using MockQueryable.Moq;
 using System.Linq.Expressions;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace GameStore.Tests.Games
 {
@@ -197,6 +194,68 @@ namespace GameStore.Tests.Games
             Assert.Equal(expectedResult.Id, result.Id);
             Assert.Equal(expectedResult.Text, result.Text);
             Assert.Equal(expectedResult.User.Id, result.User.Id);
+        }
+
+        [Fact]
+        public async Task RemoveByIdAsync_ShouldThrowException()
+        {
+            // Arrange
+            var commentId = 1;
+
+            _commentRepositoryMock
+                .Setup(r => r.SelectAsync(
+                    It.IsAny<Expression<Func<Comment, bool>>>(), It.IsAny<string[]>()))
+                .ReturnsAsync((Expression<Func<Comment, bool>> predicate, string[] includes) => null);
+
+            // Act
+            var exception = await Assert.ThrowsAsync<CustomException>(
+                async () => await _commentService.RemoveByIdAsync(commentId));
+
+            // Assert
+            Assert.Equal(404, exception.Code);
+            Assert.Equal("Comment is not found.", exception.Message);
+        }
+
+        [Fact]
+        public async Task RemoveByIdAsync_ShouldReturnTrue()
+        {
+            var existComment = new Comment { Id = 1, Text = "This is great game!" };
+            var commentId = 1;
+
+            _commentRepositoryMock
+                .Setup(r => r.SelectAsync(
+                    It.IsAny<Expression<Func<Comment, bool>>>(), It.IsAny<string[]>()))
+                .ReturnsAsync((Expression<Func<Comment, bool>> predicate, string[] includes) => existComment);
+
+            _commentRepositoryMock.Setup(r => r.DeleteAsync(existComment));
+            _unitOfWorkMock.Setup(u => u.SaveAsync());
+
+            // Act
+            var result = await _commentService.RemoveByIdAsync(commentId);
+
+            // Assert
+            Assert.True(result);
+        }
+
+        [Fact]
+        public async Task RestoreByIdAsync_ShouldRestoreCommentAndReturnTrue()
+        {
+            var existComment = new Comment { Id = 1, Text = "This is great game!", IsDeleted = true };
+            var commentId = 1;
+
+            _commentRepositoryMock
+                .Setup(r => r.SelectAsync(
+                    It.IsAny<Expression<Func<Comment, bool>>>(), It.IsAny<string[]>()))
+                .ReturnsAsync((Expression<Func<Comment, bool>> predicate, string[] includes) => existComment);
+
+            _commentRepositoryMock.Setup(r => r.DeleteAsync(existComment));
+            _unitOfWorkMock.Setup(u => u.SaveAsync());
+
+            // Act
+            var result = await _commentService.RemoveByIdAsync(commentId);
+
+            // Assert
+            Assert.True(result);
         }
     }
 }
