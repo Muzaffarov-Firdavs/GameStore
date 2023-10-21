@@ -5,9 +5,11 @@ using GameStore.Domain.Entities.Games;
 using GameStore.Domain.Entities.Users;
 using GameStore.Service.Commons.Exceptions;
 using GameStore.Service.DTOs.Comments;
+using GameStore.Service.DTOs.Games;
 using GameStore.Service.DTOs.Users;
 using GameStore.Service.Interfaces.Games;
 using GameStore.Service.Services.Games;
+using MockQueryable.Moq;
 using System.Linq.Expressions;
 
 namespace GameStore.Tests.Games
@@ -248,14 +250,147 @@ namespace GameStore.Tests.Games
                     It.IsAny<Expression<Func<Comment, bool>>>(), It.IsAny<string[]>()))
                 .ReturnsAsync((Expression<Func<Comment, bool>> predicate, string[] includes) => existComment);
 
-            _commentRepositoryMock.Setup(r => r.DeleteAsync(existComment));
             _unitOfWorkMock.Setup(u => u.SaveAsync());
 
             // Act
-            var result = await _commentService.RemoveByIdAsync(commentId);
+            var result = await _commentService.RestoreByIdAsync(commentId);
 
             // Assert
             Assert.True(result);
+        }
+
+        [Fact]
+        public async Task RetrieveAllAsync_ShouldReturnAllResults()
+        {
+            // Arrange
+            var expectedResults = new List<CommentResultDto>
+            {
+                new CommentResultDto { Id = 1, Text = "Cool!" },
+                new CommentResultDto { Id = 2, Text = "This game is great!" },
+                new CommentResultDto { Id = 3, Text = "This is awfull game." }
+            };
+
+            var comments = new List<Comment>
+            {
+                new Comment { Id = 1, Text = "Cool!" },
+                new Comment { Id = 2, Text = "This game is great!" },
+                new Comment { Id = 3, Text = "This is awfull game." }
+            };
+
+            var mockComments = comments.AsQueryable().BuildMock();
+            _commentRepositoryMock.Setup(r => r.SelectAll(
+                It.IsAny<Expression<Func<Comment, bool>>>(), It.IsAny<string[]>()))
+            .Returns(mockComments);
+
+            _mapperMock.Setup(m => m.Map<IEnumerable<CommentResultDto>>(It.IsAny<IEnumerable<Comment>>()))
+                .Returns(expectedResults);
+
+            // Act
+            var results = await _commentService.RetrieveAllAsync();
+
+            // Assert
+            Assert.NotNull(results);
+            Assert.Equal(expectedResults.Count(), results.Count());
+            Assert.Equal(expectedResults, results);
+        }
+
+        [Fact]
+        public async Task RetrieveAllAsync_ShouldReturnFilteredResults()
+        {
+            // Arrange
+            var expectedResults = new List<CommentResultDto>
+            {
+                new CommentResultDto { Id = 2, Text = "This game is great!" },
+                new CommentResultDto { Id = 3, Text = "This is awfull game." }
+            };
+
+            var search = "game";
+
+            var comments = new List<Comment>
+            {
+                new Comment { Id = 1, Text = "Cool!" },
+                new Comment { Id = 2, Text = "This game is great!" },
+                new Comment { Id = 3, Text = "This is awfull game." }
+            };
+
+            var mockComments = comments.AsQueryable().BuildMock();
+            _commentRepositoryMock.Setup(r => r.SelectAll(
+                It.IsAny<Expression<Func<Comment, bool>>>(), It.IsAny<string[]>()))
+            .Returns(mockComments);
+
+            _mapperMock.Setup(m => m.Map<IEnumerable<CommentResultDto>>(It.IsAny<IEnumerable<Comment>>()))
+                .Returns(expectedResults);
+
+            // Act
+            var results = await _commentService.RetrieveAllAsync(search);
+
+            // Assert
+            Assert.NotNull(results);
+            Assert.Equal(expectedResults.Count(), results.Count());
+            Assert.Equal(expectedResults, results);
+        }
+
+        [Fact]
+        public async Task RetrieveByIdAsync_ShouldThrowException()
+        {
+            // Arrange
+            long id = 1;
+
+            _commentRepositoryMock
+                .Setup(r => r.SelectAsync(
+                    It.IsAny<Expression<Func<Comment, bool>>>(), It.IsAny<string[]>()))
+                .ReturnsAsync((Expression<Func<Comment, bool>> predicate, string[] includes) => null);
+
+            // Act
+            var exception = await Assert.ThrowsAsync<CustomException>(
+                async () => await _commentService.RetrieveByIdAsync(id));
+
+            // Assert
+            Assert.Equal(404, exception.Code);
+            Assert.Equal("Comment is not found.", exception.Message);
+        }
+
+        [Fact]
+        public async Task RetrieveByIdAsync_ShouldReturnResult()
+        {
+            var expectedResult = new CommentResultDto
+            {
+                Id = 1,
+                Text = "Cool!",
+                User = new UserResultDto { Id = 1, FirstName = "Firdavs", LastName = "Muzaffarov" }
+            };
+            long id = 1;
+
+            var user = new User { Id = 1, FirstName = "Firdavs", LastName = "Muzaffarov" };
+            var existComment = new Comment
+            {
+                Id = 1,
+                Text = "Cool!",
+                User = user
+            };
+
+            _commentRepositoryMock
+                .Setup(r => r.SelectAsync(
+                    It.IsAny<Expression<Func<Comment, bool>>>(), It.IsAny<string[]>()))
+                .ReturnsAsync((Expression<Func<Comment, bool>> predicate, string[] includes) => existComment);
+
+            _mapperMock.Setup(m => m.Map<CommentResultDto>(It.IsAny<Comment>()))
+               .Returns(
+                    new CommentResultDto
+                    {
+                        Id = 1, 
+                        Text = "Cool!",
+                        User = new UserResultDto { Id = 1, FirstName = "Firdavs", LastName = "Muzaffarov" }
+                    });
+
+            // Act 
+            var result = await _commentService.RetrieveByIdAsync(id);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(existComment.Id, result.Id);
+            Assert.Equal(existComment.Text, result.Text);
+            Assert.Equal(existComment.User.Id, result.User.Id);
         }
     }
 }
