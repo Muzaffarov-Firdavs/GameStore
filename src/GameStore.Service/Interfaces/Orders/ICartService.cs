@@ -7,8 +7,8 @@ namespace GameStore.Service.Interfaces.Orders
         ValueTask<CartItemResultDto> AddItemAsync(CartItemCreationDto dto);
         ValueTask<CartItemResultDto> ModifyItemAsync(CartItemUpdateDto dto);
         ValueTask<bool> RemoveItemAsync(long id);
-        ValueTask<CartItemResultDto> RetrieveByItemIdAsync(long id);
+        ValueTask<CartItemResultDto> RetrieveItemByIdAsync(long id);
         ValueTask<IEnumerable<CartItemResultDto>> RetrieveAllAsync();
-        ValueTask<CartResultDto> RetrieveByClientIdAsync();
+        ValueTask<CartResultDto> RetrieveCartByUserIdAsync();
     }
 }

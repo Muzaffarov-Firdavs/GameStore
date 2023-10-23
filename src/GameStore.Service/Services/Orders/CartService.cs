@@ -1,38 +1,123 @@
-﻿using GameStore.Service.DTOs.Carts;
+﻿using AutoMapper;
+using GameStore.Data.Repositories;
+using GameStore.Data.UnitOfWorks;
+using GameStore.Domain.Entities.Games;
+using GameStore.Domain.Entities.Orders;
+using GameStore.Service.Commons.Exceptions;
+using GameStore.Service.Commons.Helpers;
+using GameStore.Service.DTOs.Carts;
 using GameStore.Service.Interfaces.Orders;
+using Microsoft.EntityFrameworkCore;
 
 namespace GameStore.Service.Services.Orders
 {
     public class CartService : ICartService
     {
-        public ValueTask<CartItemResultDto> AddItemAsync(CartItemCreationDto dto)
+        private readonly IMapper _mapper;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IRepository<Cart> _cartRepository;
+        private readonly IRepository<Game> _gameRepository;
+        private readonly IRepository<CartItem> _cartItemRepository;
+
+        public CartService(IMapper mapper,
+            IUnitOfWork unitOfWork,
+            IRepository<Cart> cartRepository,
+            IRepository<Game> gameRepository,
+            IRepository<CartItem> cartItemRepository)
         {
-            throw new NotImplementedException();
+            _mapper = mapper;
+            _unitOfWork = unitOfWork;
+            _cartRepository = cartRepository;
+            _gameRepository = gameRepository;
+            _cartItemRepository = cartItemRepository;
         }
 
-        public ValueTask<CartItemResultDto> ModifyItemAsync(CartItemUpdateDto dto)
+        public async ValueTask<CartItemResultDto> AddItemAsync(CartItemCreationDto dto)
         {
-            throw new NotImplementedException();
+            var game = await _gameRepository.SelectAsync(p => p.Id == dto.GameId && !p.IsDeleted);
+            if (game == null)
+                throw new CustomException(404, "Game is not found.");
+
+            var cart = await _cartRepository.SelectAsync(c =>
+                c.UserId == HttpContextHelper.UserId && !c.IsDeleted);
+            if (cart == null)
+                throw new CustomException(404, "Cart is not found");
+
+            var cartItem = new CartItem
+            {
+                //CartId = cart.Id,
+                Cart = cart,
+                Amount = dto.Amount,
+                GameId = dto.GameId,
+                TotalPrice = game.Price * dto.Amount,
+                CreatedAt = DateTime.UtcNow,
+            };
+
+            var result = await _cartItemRepository.InsertAsync(cartItem);
+            await _unitOfWork.SaveAsync();
+
+            return _mapper.Map<CartItemResultDto>(result);
         }
 
-        public ValueTask<bool> RemoveItemAsync(long id)
+        public async ValueTask<CartItemResultDto> ModifyItemAsync(CartItemUpdateDto dto)
         {
-            throw new NotImplementedException();
+            var cartItem = await _cartItemRepository.SelectAsync(item =>    
+                    !item.IsDeleted && item.Id == dto.Id,
+                    includes: new string[] { "Game" });
+            if (cartItem == null)
+                throw new CustomException(404, "Cart item is not found.");
+
+            cartItem.Amount = dto.Amount;
+            cartItem.TotalPrice = cartItem.Game.Price * dto.Amount;
+            cartItem.UpdatedAt = DateTime.UtcNow;
+            var result = _cartItemRepository.UpdateAsync(cartItem);
+            await _unitOfWork.SaveAsync();
+
+            return _mapper.Map<CartItemResultDto>(result);
+
         }
 
-        public ValueTask<IEnumerable<CartItemResultDto>> RetrieveAllAsync()
+        public async ValueTask<bool> RemoveItemAsync(long id)
         {
-            throw new NotImplementedException();
+            var cartItem = await _cartItemRepository.SelectAsync(item =>
+                    !item.IsDeleted && item.Id == id);
+            if (cartItem == null)
+                throw new CustomException(404, "Cart item is not found.");
+
+            await _cartItemRepository.DeleteAsync(cartItem);
+            await _unitOfWork.SaveAsync();
+            return true;
         }
 
-        public ValueTask<CartResultDto> RetrieveByClientIdAsync()
+        public async ValueTask<IEnumerable<CartItemResultDto>> RetrieveAllAsync()
         {
-            throw new NotImplementedException();
+            var items = await _cartItemRepository.SelectAll(item => !item.IsDeleted,
+                includes: new string[] { "Game" })
+                .ToListAsync();
+
+            return _mapper.Map<IEnumerable<CartItemResultDto>>(items);
         }
 
-        public ValueTask<CartItemResultDto> RetrieveByItemIdAsync(long id)
+        public async ValueTask<CartResultDto> RetrieveCartByUserIdAsync()
         {
-            throw new NotImplementedException();
+            var cart = await _cartRepository.SelectAsync(c =>
+                !c.IsDeleted && c.UserId == HttpContextHelper.UserId,
+                includes: new string[] { "Items" });
+            if (cart == null)
+                throw new CustomException(404, "Cart is not found.");
+
+            return _mapper.Map<CartResultDto>(cart);
+        }
+
+        public async ValueTask<CartItemResultDto> RetrieveItemByIdAsync(long id)
+        {
+            var cartItem = await _cartItemRepository.SelectAsync(item =>
+                !item.IsDeleted && item.Id == id,
+                includes: new string[] { "Game" });
+            if (cartItem == null)
+                throw new CustomException(404, "Cart item is not found.");
+
+            return _mapper.Map<CartItemResultDto>(cartItem);
         }
     }
 }
