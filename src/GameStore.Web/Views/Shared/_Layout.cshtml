@@ -8,6 +8,7 @@
     <title>@ViewData["Title"] - Game Store</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    @* <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css" /> *@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
     <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" />
@@ -18,64 +19,67 @@
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
 </head>
 <body class="bg-black">
-    <div class="container">
-        <nav class="navbar navbar-expand-sm navbar-dark bg-black">
-            <div class="container">
-                <a asp-controller="Home" asp-action="Index" class="navbar-brand">Games Store</a>
-                <button class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarCollapse">
-                    <ul class="navbar-nav ml-auto">
-                        <li class="nav-item">
-                            <a asp-controller="Home" asp-action="Index" class="nav-link">Games</a>
-                        </li>
-                        <li class="nav-item active">
-                            <a href="#" class="nav-link">Community</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">About</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">Support</a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="collapse navbar-collapse" id="navbarCollapse">
-                    <ul class="navbar-nav float-right">
-                        @if (HttpContextHelper.UserId is not null)
-                        {
-                            
-                            <a asp-controller="users" asp-action="uploadavatar">
-                                @if (string.IsNullOrEmpty(HttpContextHelper.FileName))
-                                {
-                                    <img src="~/static-images/default.jpg" alt="Header image" id="header-image" />
-                                }
-                                else
-                                {
-                                    <img src="~/Images/@HttpContextHelper.FileName" alt="Header image" id="header-image" />
-                                }
-                            </a>
-                            <li class="nav-item">
-                                <a asp-controller="users" asp-action="uploadavatar" class="nav-link float-end">
-                                    @HttpContextHelper.FirstName @HttpContextHelper.LastName
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a asp-controller="accounts" asp-action="logout" class="nav-link float-end">SIGN OUT</a>
-                            </li>
-                        }
-                        @if (HttpContextHelper.UserId is null)
-                        {
-                            <li class="nav-item">
-                                <a href="@Url.Action("Login", "Accounts")" class="nav-link float-end">Sign in</a>
-                            </li>
-                        }
-                    </ul>
-                </div>
+    <nav class="navbar navbar-expand-sm navbar-dark bg-black">
+        <div class="container">
+            <a asp-controller="Home" asp-action="Index" class="navbar-brand">Games Store</a>
+            <button class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a asp-controller="Home" asp-action="Index" class="nav-link">Games</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a href="#" class="nav-link">Community</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">Support</a>
+                    </li>
+                </ul>
             </div>
-        </nav>
-    </div>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav float-right">
+                    @if (HttpContextHelper.UserId is not null)
+                    {
+                            
+                        <a asp-controller="users" asp-action="uploadavatar">
+                            @if (string.IsNullOrEmpty(HttpContextHelper.FileName))
+                            {
+                                <img src="~/static-images/default.jpg" alt="Header image" id="header-image" />
+                            }
+                            else
+                            {
+                                <img src="~/Images/@HttpContextHelper.FileName" alt="Header image" id="header-image" />
+                            }
+                        </a>
+                        <li class="nav-item" style="padding-right: 10px">
+                            <a asp-controller="users" asp-action="uploadavatar" class="nav-link float-end">
+                                @HttpContextHelper.FirstName @HttpContextHelper.LastName
+                            </a>
+                        </li>
+                        <li class="nav-item" style="padding-right: 10px">
+                            <a asp-controller="users" asp-action="uploadavatar">
+                                <i class="fa fa-shopping-cart fa-2x" style="color: #444" aria-hidden="true"></i>
+                            </a>
+                        </li>
+                        <li class="nav-item" style="padding-right: 0px">
+                            <a asp-controller="accounts" asp-action="logout" class="nav-link float-end">SIGN OUT</a>
+                        </li>
+                    }
+                    @if (HttpContextHelper.UserId is null)
+                    {
+                        <li class="nav-item">
+                            <a href="@Url.Action("Login", "Accounts")" class="nav-link float-end">Sign in</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </nav>
 
     <div class="clr"></div>
 
