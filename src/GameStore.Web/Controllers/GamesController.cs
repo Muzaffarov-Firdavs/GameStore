@@ -79,8 +79,8 @@ namespace GameStore.Web.Controllers
 
         public async Task<IActionResult> Delete(int id)
         {
-            var viewResult = await _gameService.RetrieveByIdAsync(id);
-            return View(viewResult);
+            var game = await _gameService.RetrieveByIdAsync(id);
+            return View(game);
         }
 
         [HttpPost]
