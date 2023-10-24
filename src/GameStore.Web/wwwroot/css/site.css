@@ -388,3 +388,54 @@
 .comment-text {
     display: none;
 }
+
+
+/* Cart page */
+
+#cart-text-color h2, h4, h5, h6 {
+    color: white;
+}
+
+#cart-text-color p {
+    color: white;
+    font-size: 30px;
+    font-weight: lighter;
+}
+
+#border-color-setting .card {
+    border-width: 3px;
+    border-color: black;
+    height: auto;
+}
+
+.button-blr {
+    background-color: green;
+    color: #fff;
+    border: none;
+    padding: 10px 30px;
+    border-top-left-radius: 50px;
+    border-bottom-left-radius: 50px;
+    margin-bottom: 0px;
+    font-size: 30px;
+}
+
+.btn-middle {
+    background-color: green;
+    color: #fff;
+    border: none;
+    padding: 2px 30px;
+    margin: 0px;
+    font-size: 40px;
+    font-weight: lighter;
+}
+
+.button-brr {
+    background-color: green;
+    color: #fff;
+    border: none;
+    padding: 10px 30px;
+    border-top-right-radius: 50px;
+    border-bottom-right-radius: 50px;
+    margin-bottom: 0px;
+    font-size: 30px;
+}
