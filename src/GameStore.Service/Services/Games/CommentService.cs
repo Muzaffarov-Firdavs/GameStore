@@ -7,6 +7,7 @@ using GameStore.Service.Commons.Exceptions;
 using GameStore.Service.DTOs.Comments;
 using GameStore.Service.Interfaces.Games;
 using Microsoft.EntityFrameworkCore;
+using System.Text.RegularExpressions;
 
 namespace GameStore.Service.Services.Games
 {
@@ -44,6 +45,7 @@ namespace GameStore.Service.Services.Games
             if (string.IsNullOrWhiteSpace(comment.Text))
                 throw new CustomException(422, "Text should not be whitespace or empty.");
             
+            comment.Text = Regex.Replace(comment.Text.Trim(), @"\s+", " ");
             comment.User = user;
             comment.Game = game;
             comment.CreatedAt = DateTime.UtcNow;
@@ -69,6 +71,7 @@ namespace GameStore.Service.Services.Games
             if (string.IsNullOrWhiteSpace(dto.Text))
                 throw new CustomException(404, "Text should not be whitespace or empty.");
 
+            dto.Text = Regex.Replace(dto.Text.Trim(), @"\s+", " ");
             var mappedComment = _mapper.Map(dto, comment);
             mappedComment.UpdatedAt = DateTime.UtcNow;
             await _unitOfWork.SaveAsync();
