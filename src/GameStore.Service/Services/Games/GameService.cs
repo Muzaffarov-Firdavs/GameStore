@@ -74,6 +74,8 @@ namespace GameStore.Service.Services.Games
             if (dto.GenresIds != null)
                 mappedGame.Genres = await _genreRepository.SelectAll(p =>
                     !p.IsDeleted && dto.GenresIds.Contains(p.Id)).ToListAsync();
+            else
+                mappedGame.Genres = null;
 
             mappedGame.UpdatedAt = DateTime.UtcNow;
             await _unitOfWork.SaveAsync();
