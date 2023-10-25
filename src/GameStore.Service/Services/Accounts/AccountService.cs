@@ -6,7 +6,6 @@ using GameStore.Service.Commons.Exceptions;
 using GameStore.Service.Commons.Security;
 using GameStore.Service.DTOs.Accounts;
 using GameStore.Service.Interfaces.Accounts;
-using GameStore.Service.Interfaces.Orders;
 
 namespace GameStore.Service.Services.Accounts
 {
@@ -14,20 +13,17 @@ namespace GameStore.Service.Services.Accounts
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ICartService _cartService;
         private readonly IAuthService _authService;
         private readonly IRepository<User> _repository;
 
-        public AccountService(IMapper mapper,
+        public AccountService(IMapper mapper, 
             IUnitOfWork unitOfWork,
-            ICartService cartService,
             IAuthService authService,
             IRepository<User> repository)
         {
             this._mapper = mapper;
             this._unitOfWork = unitOfWork;
             this._repository = repository;
-            this._cartService = cartService;
             this._authService = authService;
         }
 
@@ -53,10 +49,6 @@ namespace GameStore.Service.Services.Accounts
             account.CreatedAt = DateTime.UtcNow;
             var result = await _repository.InsertAsync(account);
             await _unitOfWork.SaveAsync();
-
-            // Create cart for new User
-            var cart = await _cartService.AddCartAsync(result);
-
             return result != null;
         }
 

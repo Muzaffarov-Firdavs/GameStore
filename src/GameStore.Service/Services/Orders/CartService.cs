@@ -3,7 +3,6 @@ using GameStore.Data.Repositories;
 using GameStore.Data.UnitOfWorks;
 using GameStore.Domain.Entities.Games;
 using GameStore.Domain.Entities.Orders;
-using GameStore.Domain.Entities.Users;
 using GameStore.Service.Commons.Exceptions;
 using GameStore.Service.Commons.Helpers;
 using GameStore.Service.DTOs.Carts;
@@ -31,19 +30,6 @@ namespace GameStore.Service.Services.Orders
             _cartRepository = cartRepository;
             _gameRepository = gameRepository;
             _cartItemRepository = cartItemRepository;
-        }
-
-        public async ValueTask<Cart> AddCartAsync(User user)
-        {
-            var cart = new Cart()
-            {
-                UserId = user.Id,
-                User = user
-            };
-
-            var result = await _cartRepository.InsertAsync(cart);
-            await _unitOfWork.SaveAsync();
-            return result;
         }
 
         public async ValueTask<CartItemResultDto> AddItemAsync(CartItemCreationDto dto)
