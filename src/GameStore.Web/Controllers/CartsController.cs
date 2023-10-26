@@ -18,10 +18,5 @@ namespace GameStore.Web.Controllers
         }
 
         public async Task<IActionResult> Cart() => View();
-
-        //public async Task<IActionResult> AddItem(GameResultDto game)
-        //{
-        //    var result = 
-        //}
     }
 }
