@@ -49,9 +49,6 @@
                                                     <p>
                                                     </p><div class="input-group">
                                                         <span class="input-group-prepend">
-                                                            @* <button type="button" class="btn button-blr btn-number" data-type="minus" data-field="quant[1]">
-                                                                <span class="fa fa-minus"></span>
-                                                            </button> *@
                                                             <form asp-controller="Carts" asp-action="SubtractItem" asp-route-gameId="@item.Game.Id" method="post">
                                                                 <button type="submit" class="btn button-blr btn-number" data-type="minus" data-field="quant[1]">
                                                                     <span class="fa fa-minus"></span>
@@ -61,7 +58,8 @@
                                                         <button class="btn-middle disabled">@item.Amount</button>
                                                         <!-- <input type="text" name="quant[1]" class="form-control input-number" value="1" min="1" max="10"> -->
                                                         <span class="input-group-append">
-                                                            <form asp-controller="Carts" asp-action="AddItem" asp-route-gameId="@item.Game.Id" method="post">
+                                                            <form asp-controller="Carts" asp-action="AddItem" asp-route-gameId="@item.Game.Id" method="post"
+                                                                                                asp-route-ReturnUrl="~/carts/cart">
                                                                 <button type="submit" class="btn button-brr btn-number" data-type="plus" data-field="quant[1]">
                                                                     <span class="fa fa-plus"></span>
                                                                 </button>
