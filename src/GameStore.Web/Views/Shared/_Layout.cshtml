@@ -62,8 +62,9 @@
                             </a>
                         </li>
                         <li class="nav-item" style="padding-right: 10px">
-                            <a asp-controller="carts" asp-action="cart">
-                                <i class="fa fa-shopping-cart fa-2x" style="color: white" aria-hidden="true"></i>
+                            <a asp-controller="carts" asp-action="cart" class="text-black">
+                                <i class="fa fa-shopping-cart fa-1x" style="color: white" aria-hidden="true"></i>
+                                <span id="cartCount" class="badge text-bg-info">0</span>
                             </a>
                         </li>
                         <li class="nav-item" style="padding-right: 0px">
@@ -122,6 +123,24 @@
     <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
     <script src="~/Assets/datatables-demo.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+    <script>
+        loadCartCount();
+        async function loadCartCount() {
+            try {
+                var response = await fetch(`/carts/retrieveItemCount`);
+                console.log(response)
+                if (response.status == 200) {
+                    var result = await response.json();
+                    var cartCountEl = document.getElementById("cartCount");
+                    cartCountEl.innerHTML = result;
+                }
+            }
+            catch (err) {
+                console.log(err);
+            }
+        }
+    </script>
     <script>$('#year').text(new Date().getFullYear());</script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

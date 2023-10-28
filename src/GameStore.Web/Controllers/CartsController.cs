@@ -12,15 +12,24 @@ namespace GameStore.Web.Controllers
             _cartService = cartService;
         }
 
+        public async Task<ActionResult<int>> RetrieveItemCount()
+        {
+            return await _cartService.RetrieveCartItemsCountAsync();
+        }
+
         public async Task<IActionResult> Cart()
         {
             var cart = await _cartService.RetrieveCartByUserIdAsync();
             return View(cart);
         }
 
-        public async Task<IActionResult> AddItem(long gameId)
+        public async Task<IActionResult> AddItem(long gameId, string? returnUrl = null)
         {
             await _cartService.AddItemAsync(gameId);
+
+            if (returnUrl != null)
+                return Redirect(returnUrl);
+
             return RedirectToAction("Index", "Home");
         }
         public async Task<IActionResult> SubtractItem(long gameId)
