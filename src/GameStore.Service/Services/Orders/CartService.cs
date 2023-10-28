@@ -46,9 +46,9 @@ namespace GameStore.Service.Services.Orders
             return result;
         }
 
-        public async ValueTask<CartItemResultDto> AddItemAsync(CartItemCreationDto dto)
+        public async ValueTask<CartItemResultDto> AddItemAsync(long gameId)
         {
-            var game = await _gameRepository.SelectAsync(p => p.Id == dto.GameId && !p.IsDeleted);
+            var game = await _gameRepository.SelectAsync(p => p.Id == gameId && !p.IsDeleted);
             if (game == null)
                 throw new CustomException(404, "Game is not found.");
 
@@ -57,38 +57,60 @@ namespace GameStore.Service.Services.Orders
             if (cart == null)
                 throw new CustomException(404, "Cart is not found");
 
-            var cartItem = new CartItem
+            var cartItem = await _cartItemRepository.SelectAsync(p => p.GameId == gameId && !p.IsDeleted);
+            if (cartItem == null)
             {
-                //CartId = cart.Id,
-                Cart = cart,
-                Amount = dto.Amount,
-                GameId = dto.GameId,
-                TotalPrice = game.Price * dto.Amount,
-                CreatedAt = DateTime.UtcNow,
-            };
+                var newCartItem = new CartItem
+                {
+                    CartId = cart.Id,
+                    Cart = cart,
+                    GameId = gameId,
+                    Game = game,
+                    Amount = 1,
+                    TotalPrice = game.Price,
+                    CreatedAt = DateTime.UtcNow,
+                };
 
-            var result = await _cartItemRepository.InsertAsync(cartItem);
-            await _unitOfWork.SaveAsync();
+                var result = await _cartItemRepository.InsertAsync(newCartItem);
+                await _unitOfWork.SaveAsync();
+                return _mapper.Map<CartItemResultDto>(result);
+            }
+            else
+            {
+                cartItem.Amount += 1;
+                cartItem.TotalPrice += game.Price;
+                cartItem.UpdatedAt = DateTime.UtcNow;
 
-            return _mapper.Map<CartItemResultDto>(result);
+                var result = await _cartItemRepository.UpdateAsync(cartItem);
+                await _unitOfWork.SaveAsync();
+                return _mapper.Map<CartItemResultDto>(result);
+            }
         }
 
-        public async ValueTask<CartItemResultDto> ModifyItemAsync(CartItemUpdateDto dto)
+        public async ValueTask<CartItemResultDto> SubtractItemAsync(long gameId)
         {
             var cartItem = await _cartItemRepository.SelectAsync(item =>    
-                    !item.IsDeleted && item.Id == dto.Id,
+                    !item.IsDeleted && item.GameId == gameId,
                     includes: new string[] { "Game" });
             if (cartItem == null)
                 throw new CustomException(404, "Cart item is not found.");
 
-            cartItem.Amount = dto.Amount;
-            cartItem.TotalPrice = cartItem.Game.Price * dto.Amount;
-            cartItem.UpdatedAt = DateTime.UtcNow;
-            var result = _cartItemRepository.UpdateAsync(cartItem);
-            await _unitOfWork.SaveAsync();
+            if (cartItem.Amount > 1)
+            {
+                cartItem.Amount -= 1;
+                cartItem.TotalPrice -= cartItem.Game.Price;
+                cartItem.UpdatedAt = DateTime.UtcNow;
 
-            return _mapper.Map<CartItemResultDto>(result);
-
+                var result = await _cartItemRepository.UpdateAsync(cartItem);
+                await _unitOfWork.SaveAsync();
+                return _mapper.Map<CartItemResultDto>(result); 
+            }
+            else
+            {
+                await _cartItemRepository.DeleteAsync(cartItem);
+                await _unitOfWork.SaveAsync();
+                return null;
+            }
         }
 
         public async ValueTask<bool> RemoveItemAsync(long id)
@@ -106,7 +128,8 @@ namespace GameStore.Service.Services.Orders
         public async ValueTask<IEnumerable<CartItemResultDto>> RetrieveAllAsync()
         {
             var items = await _cartItemRepository.SelectAll(item => !item.IsDeleted,
-                includes: new string[] { "Game" })
+                includes: new string[] { "Game.Image" })
+                .OrderBy(item => item.CreatedAt)
                 .ToListAsync();
 
             return _mapper.Map<IEnumerable<CartItemResultDto>>(items);
@@ -116,9 +139,12 @@ namespace GameStore.Service.Services.Orders
         {
             var cart = await _cartRepository.SelectAsync(c =>
                 !c.IsDeleted && c.UserId == HttpContextHelper.UserId,
-                includes: new string[] { "Items" });
+                includes: new string[] { "Items.Game.Image" });
             if (cart == null)
                 throw new CustomException(404, "Cart is not found.");
+
+            cart.Items = cart.Items.Where(item => !item.IsDeleted && !item.Game.IsDeleted).ToList();
+            cart.GrandTotalPrice = cart.Items.Sum(p => p.TotalPrice);
 
             return _mapper.Map<CartResultDto>(cart);
         }
