@@ -1,22 +1,38 @@
-﻿using GameStore.Service.DTOs.Games;
-using GameStore.Service.Interfaces.Games;
-using GameStore.Service.Interfaces.Orders;
+﻿using GameStore.Service.Interfaces.Orders;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameStore.Web.Controllers
 {
     public class CartsController : Controller
     {
-        public int CountGames = 5;
-
         private readonly ICartService _cartService;
-        private readonly IGameService _gameService;
-        public CartsController(ICartService cartService, IGameService gameService)
+
+        public CartsController(ICartService cartService)
         {
             _cartService = cartService;
-            _gameService = gameService;
         }
 
-        public async Task<IActionResult> Cart() => View();
+        public async Task<IActionResult> Cart()
+        {
+            var cart = await _cartService.RetrieveCartByUserIdAsync();
+            return View(cart);
+        }
+
+        public async Task<IActionResult> AddItem(long gameId)
+        {
+            await _cartService.AddItemAsync(gameId);
+            return RedirectToAction("Index", "Home");
+        }
+        public async Task<IActionResult> SubtractItem(long gameId)
+        {
+            await _cartService.SubtractItemAsync(gameId);
+            return RedirectToAction("Cart", "Carts");
+        }
+
+        public async Task<IActionResult> DeleteItem(long itemId)
+        {
+            await _cartService.RemoveItemAsync(itemId);
+            return RedirectToAction("Cart", "Carts");
+        }
     }
 }

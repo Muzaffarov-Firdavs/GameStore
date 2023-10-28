@@ -64,7 +64,10 @@
                     <h3></h3>
                 </div>
                 <div class="col">
-                    <a href="#" class="btn btn-success">BUY</a>
+                    <form asp-controller="Carts" asp-action="AddItem" asp-route-gameId="@item.Id" method="post">
+                        <button type="submit" class="btn btn-success">BUY</button>
+                        <br />
+                    </form>
                 </div>
             </div>
             <div class="row">

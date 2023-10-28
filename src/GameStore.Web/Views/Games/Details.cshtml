@@ -23,7 +23,10 @@
                 <div class="col">
                 </div>
                 <div class="col">
-                    <a href="#" class="btn btn-success ms-5">BUY</a>
+                    <form asp-controller="Carts" asp-action="AddItem" asp-route-gameId="@Model.Game.Id" method="post">
+                        <button type="submit" class="btn btn-success ms-5">BUY</button>
+                        <br />
+                    </form>
                 </div>
             </div>
             <hr />
