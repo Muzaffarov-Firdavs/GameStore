@@ -7,8 +7,8 @@ namespace GameStore.Service.Interfaces.Orders
     public interface ICartService
     {
         ValueTask<Cart> AddCartAsync(User user);
-        ValueTask<CartItemResultDto> AddItemAsync(CartItemCreationDto dto);
-        ValueTask<CartItemResultDto> ModifyItemAsync(CartItemUpdateDto dto);
+        ValueTask<CartItemResultDto> AddItemAsync(long gameId);
+        ValueTask<CartItemResultDto> SubtractItemAsync(long gameId);
         ValueTask<bool> RemoveItemAsync(long id);
         ValueTask<CartItemResultDto> RetrieveItemByIdAsync(long id);
         ValueTask<IEnumerable<CartItemResultDto>> RetrieveAllAsync();
