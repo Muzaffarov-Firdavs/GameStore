@@ -11,7 +11,7 @@ namespace GameStore.Service.Interfaces.Orders
         ValueTask<CartItemResultDto> SubtractItemAsync(long gameId);
         ValueTask<bool> RemoveItemAsync(long id);
         ValueTask<CartItemResultDto> RetrieveItemByIdAsync(long id);
-        ValueTask<IEnumerable<CartItemResultDto>> RetrieveAllAsync();
+        ValueTask<int> RetrieveCartItemsCountAsync();
         ValueTask<CartResultDto> RetrieveCartByUserIdAsync();
     }
 }

@@ -125,14 +125,16 @@ namespace GameStore.Service.Services.Orders
             return true;
         }
 
-        public async ValueTask<IEnumerable<CartItemResultDto>> RetrieveAllAsync()
+        public async ValueTask<int> RetrieveCartItemsCountAsync()
         {
-            var items = await _cartItemRepository.SelectAll(item => !item.IsDeleted,
-                includes: new string[] { "Game.Image" })
-                .OrderBy(item => item.CreatedAt)
-                .ToListAsync();
+            var cart = await _cartRepository.SelectAsync(c =>
+                !c.IsDeleted && c.UserId == HttpContextHelper.UserId,
+                includes: new string[] { "Items.Game" });
+            if (cart == null)
+                throw new CustomException(404, "Cart is not found.");
 
-            return _mapper.Map<IEnumerable<CartItemResultDto>>(items);
+            cart.Items = cart.Items.Where(item => !item.IsDeleted && !item.Game.IsDeleted).ToList();
+            return cart.Items.Sum(p => p.Amount);
         }
 
         public async ValueTask<CartResultDto> RetrieveCartByUserIdAsync()
