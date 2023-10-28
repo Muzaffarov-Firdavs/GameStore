@@ -38,8 +38,6 @@ namespace GameStore.Service.Commons.Mappers
 
             CreateMap<Cart, CartResultDto>().ReverseMap();
             CreateMap<CartItem, CartItemResultDto>().ReverseMap();
-            CreateMap<CartItem, CartItemUpdateDto>().ReverseMap();
-            CreateMap<CartItem, CartItemCreationDto>().ReverseMap();
         }
     }
 }
