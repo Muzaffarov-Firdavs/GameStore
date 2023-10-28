@@ -150,16 +150,5 @@ namespace GameStore.Service.Services.Orders
 
             return _mapper.Map<CartResultDto>(cart);
         }
-
-        public async ValueTask<CartItemResultDto> RetrieveItemByIdAsync(long id)
-        {
-            var cartItem = await _cartItemRepository.SelectAsync(item =>
-                !item.IsDeleted && item.Id == id,
-                includes: new string[] { "Game" });
-            if (cartItem == null)
-                throw new CustomException(404, "Cart item is not found.");
-
-            return _mapper.Map<CartItemResultDto>(cartItem);
-        }
     }
 }
