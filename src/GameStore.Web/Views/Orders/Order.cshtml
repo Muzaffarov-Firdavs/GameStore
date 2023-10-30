@@ -43,7 +43,11 @@
 
         <div class="form-group mt-2">
             <label asp-for="PaymentType" class="control-label text-white">Payment type</label>
-            <input asp-for="PaymentType" class="form-control" />
+            <select asp-for="PaymentType" class="form-control">
+                <option value=""><i class="fa-solid fa-arrow-down" style="color: black"></i></option>
+                <option value="PaymentType.Cash">Cash</option>
+                <option value="PaymentType.Card">Card</option>
+            </select>
             <span asp-validation-for="PaymentType" class="text-danger"></span>
         </div>
 
