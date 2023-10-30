@@ -25,6 +25,7 @@ namespace GameStore.Web.Configurations
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IGameService, GameService>();
             services.AddScoped<ICartService, CartService>();
+            services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IGenreService, GenreService>();
             services.AddScoped<IImageService, ImageService>();
             services.AddScoped<IAccountService, AccountService>();
