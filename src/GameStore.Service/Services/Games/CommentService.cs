@@ -69,7 +69,7 @@ namespace GameStore.Service.Services.Games
                 throw new CustomException(404, "Comment is not found.");
 
             if (string.IsNullOrWhiteSpace(dto.Text))
-                throw new CustomException(404, "Text should not be whitespace or empty.");
+                throw new CustomException(422, "Text should not be whitespace or empty.");
 
             dto.Text = Regex.Replace(dto.Text.Trim(), @"\s+", " ");
             var mappedComment = _mapper.Map(dto, comment);
