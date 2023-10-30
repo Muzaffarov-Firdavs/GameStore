@@ -6,6 +6,7 @@ using GameStore.Domain.Entities.Users;
 using GameStore.Service.DTOs.Accounts;
 using GameStore.Service.DTOs.Carts;
 using GameStore.Service.DTOs.Comments;
+using GameStore.Service.DTOs.ContactInformations;
 using GameStore.Service.DTOs.Files;
 using GameStore.Service.DTOs.Games;
 using GameStore.Service.DTOs.Genres;
@@ -38,6 +39,8 @@ namespace GameStore.Service.Commons.Mappers
 
             CreateMap<Cart, CartResultDto>().ReverseMap();
             CreateMap<CartItem, CartItemResultDto>().ReverseMap();
+
+            CreateMap<ContactInformation, ContactInformationDto>().ReverseMap();
         }
     }
 }
