@@ -11,6 +11,7 @@ namespace GameStore.Domain.Entities.Orders
         public int Amount { get; set; }
         public decimal TotalPrice { get; set; }
 
+        public virtual long OrderId { get; set; }
         public virtual Order Order { get; set; }
     }
 }
