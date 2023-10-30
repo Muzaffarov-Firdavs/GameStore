@@ -1,0 +1,71 @@
+﻿@using GameStore.Service.DTOs.ContactInformations;
+@model ContactInformationDto
+
+@{
+    ViewData["Title"] = "Order";
+}
+
+<p class="text-white" style="padding-top: 10px; padding-left: 10px; font-size: 25px; margin-bottom: 0">Completing your order</p>
+
+<form asp-action="Order" method="post" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="box" style="margin-left: 33%">
+        <div class="form-group mt-2">
+            <label asp-for="FirstName" class="control-label text-white">Firstname</label>
+            <input asp-for="FirstName" class="form-control" />
+            <span asp-validation-for="FirstName" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mt-2">
+            <label asp-for="LastName" class="control-label text-white">LastName</label>
+            <input asp-for="LastName" class="form-control" />
+            <span asp-validation-for="LastName" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mt-2">
+            <label asp-for="Username" class="control-label text-white">Username</label>
+            <input asp-for="Username" class="form-control" />
+            <span asp-validation-for="Username" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mt-2">
+            <label asp-for="Email" class="control-label text-white">Email</label>
+            <input asp-for="Email" class="form-control" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mt-2">
+            <label asp-for="Phone" class="control-label text-white">Phone</label>
+            <input asp-for="Phone" class="form-control" />
+            <span asp-validation-for="Phone" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mt-2">
+            <label asp-for="PaymentType" class="control-label text-white">Payment type</label>
+            <input asp-for="PaymentType" class="form-control" />
+            <span asp-validation-for="PaymentType" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mt-2">
+            <label asp-for="Comment" class="control-label text-white">Comment (optional)</label>
+            <textarea asp-for="Comment" class="form-control" rows="5" required maxlength="600"></textarea>
+        </div>
+
+        <br />
+        <div class="text-center">
+            <button type="submit" class="btn btn-registan" style="background-color: green; padding: 5px 20px">
+                <span class="indicator-label">
+                    Order
+                </span>
+            </button>
+        </div>
+    </div>
+
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
