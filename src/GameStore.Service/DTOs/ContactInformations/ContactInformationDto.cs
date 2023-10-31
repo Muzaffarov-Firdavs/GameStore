@@ -17,11 +17,11 @@ namespace GameStore.Service.DTOs.ContactInformations
         [Email]
         public string Email { get; set; }
         [Required]
+        [RegularExpression("^(?!0+$)(\\+\\d{1,3}[- ]?)?(?!0+$)\\d{10,15}$", ErrorMessage = "Please enter valid phone number.")]
         public string Phone { get; set; }
         [Required]
         public PaymentType PaymentType { get; set; }
 
-        [MaxLength(600)]
         public string Comment { get; set; }
     }
 }
