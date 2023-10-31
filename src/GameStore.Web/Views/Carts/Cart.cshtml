@@ -42,7 +42,7 @@
                                                                  class="img-fluid rounded-3" alt="Shopping item" style="width: 150px;">
                                                         </div>
                                                         <div class="m-3">
-                                                            <h5>@item.Game.Name </h5>
+                                                            <h5 style="max-width: 150px; word-wrap: break-word;">@item.Game.Name</h5>
                                                             <p class="small mb-0">$@item.Game.Price</p>
                                                         </div>
                                                     </div>
@@ -57,7 +57,6 @@
                                                                 </form>
                                                             </span>
                                                             <button class="btn-middle disabled">@item.Amount</button>
-                                                            <!-- <input type="text" name="quant[1]" class="form-control input-number" value="1" min="1" max="10"> -->
                                                             <span class="input-group-append">
                                                                 <form asp-controller="Carts" asp-action="AddItem" asp-route-gameId="@item.Game.Id" method="post"
                                                                       asp-route-ReturnUrl="~/carts/cart">
