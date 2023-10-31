@@ -22,8 +22,10 @@ namespace GameStore.Web.Controllers
 
             var info = await _orderService.AddContactInformationAsync(contactInfo);
             await _orderService.ConfirmOrderAsync(info);
-            return View();
+            return View("Confirm");
         }
+
+        public async Task<IActionResult> Confirm() => View();
     }
 }
  
