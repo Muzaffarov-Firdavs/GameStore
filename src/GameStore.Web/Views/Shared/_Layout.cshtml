@@ -8,7 +8,6 @@
     <title>@ViewData["Title"] - Game Store</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    @* <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css" /> *@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
     <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" />
@@ -45,16 +44,11 @@
                 <ul class="navbar-nav float-right">
                     @if (HttpContextHelper.UserId is not null)
                     {
-                            
+                        
                         <a asp-controller="users" asp-action="uploadavatar">
-                            @if (string.IsNullOrEmpty(HttpContextHelper.FileName))
-                            {
-                                <img src="~/static-images/default.jpg" alt="Header image" id="header-image" />
-                            }
-                            else
-                            {
-                                <img src="~/Images/@HttpContextHelper.FileName" alt="Header image" id="header-image" />
-                            }
+                            <span id="image">
+                                <img src="" alt="Header image" id="header-image" />
+                            </span>
                         </a>
                         <li class="nav-item" style="padding-right: 10px">
                             <a asp-controller="users" asp-action="uploadavatar" class="nav-link float-end">
@@ -137,6 +131,24 @@
                 }
             }
             catch (err) {
+                console.log(err);
+            }
+        }
+
+        loadImage();
+        async function loadImage() {
+            try {
+                var response = await fetch(`/users/GetUserImageFileName`);
+                if (response.status == 200) {
+                    var result = await response.text();
+                    var imageEl = document.getElementById("header-image");
+                    imageEl.src = `/Images/${result}`; 
+                }
+                else {
+                    var imageEl = document.getElementById("header-image");
+                    imageEl.src = `/static-images/default.jpg`;
+                }
+            } catch (err) {
                 console.log(err);
             }
         }
