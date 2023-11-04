@@ -32,6 +32,7 @@ namespace GameStore.Web.Controllers
 
             return RedirectToAction("Index", "Home");
         }
+
         public async Task<IActionResult> SubtractItem(long gameId)
         {
             await _cartService.SubtractItemAsync(gameId);
