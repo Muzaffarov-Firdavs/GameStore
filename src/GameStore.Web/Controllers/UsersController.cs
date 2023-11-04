@@ -30,5 +30,12 @@ namespace GameStore.Web.Controllers
 
             return RedirectToAction("uploadavatar", "users");
         }
+
+        public async Task<ActionResult<string>> GetUserImageFileName()
+        {
+            long userId = (long)HttpContextHelper.UserId;
+            var user = await _userService.RetrieveByIdAsync(userId);
+            return user.Image.FileName;
+        }
     }
 }
