@@ -25,7 +25,7 @@ namespace GameStore.Service.Services.Accounts
                 new Claim("Id", user.Id.ToString()),
                 new Claim("FirstName", user.FirstName),
                 new Claim("LastName", user.LastName),
-                new Claim(ClaimTypes.Role, $"{role}")
+                new Claim("Role", $"{role}")
             };
 
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["SecretKey"]));
