@@ -82,6 +82,7 @@ namespace GameStore.Web.Controllers
             }
         }
 
+        [Authorize]
         [HttpGet("logout")]
         public IActionResult LogOut()
         {

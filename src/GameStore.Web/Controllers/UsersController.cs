@@ -2,10 +2,12 @@
 using GameStore.Service.Commons.Helpers;
 using GameStore.Service.DTOs.Files;
 using GameStore.Service.Interfaces.Users;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameStore.Web.Controllers
 {
+    [Authorize]
     public class UsersController : Controller
     {
         private readonly IUserService _userService;

@@ -5,10 +5,12 @@ using GameStore.Service.DTOs.Comments;
 using GameStore.Service.DTOs.Games;
 using GameStore.Service.Interfaces.Games;
 using GameStore.Service.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameStore.Web.Controllers
 {
+    [Authorize]
     public class GamesController : Controller
     {
         private readonly IGameService _gameService;
@@ -24,6 +26,7 @@ namespace GameStore.Web.Controllers
             _commentService = commentService;
         }
 
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int id)
         {
             var game = await _gameService.RetrieveByIdAsync(id);
