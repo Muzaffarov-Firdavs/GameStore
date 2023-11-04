@@ -147,6 +147,9 @@
                                                 @if (HttpContextHelper.UserId == comment.UserId)
                                                 {
                                                     <a id="@($"CommentEditButton{comment.Id}")" aria-expanded="false" href="@($"#editComment{comment.Id}")" data-toggle="collapse" class="reply-btn btn text-warning">Edit</a>
+                                                }
+                                                @if (HttpContextHelper.UserId == comment.UserId || HttpContextHelper.UserRole == "Manager")
+                                                {
                                                     <a id="@($"CommentDeleteButton{comment.Id}")" aria-expanded="false" href="@($"#deleteComment{comment.Id}")" data-toggle="collapse" class="reply-btn btn text-danger">Delete</a>
                                                 }
                                             }
@@ -270,6 +273,9 @@
                                             @if (HttpContextHelper.UserId == reply.UserId)
                                             {
                                                 <a id="@($"replyEditButton{reply.Id}")" aria-expanded="false" href="@($"#editReply{reply.Id}")" data-toggle="collapse" class="reply-btn btn text-warning">Edit</a>
+                                            }
+                                            @if (HttpContextHelper.UserId == reply.UserId || HttpContextHelper.UserRole == "Manager")
+                                            {
                                                 <a id="@($"replyDeleteButton{reply.Id}")" aria-expanded="false" href="@($"#deleteReply{reply.Id}")" data-toggle="collapse" class="reply-btn btn text-danger">Delete</a>
                                             }
                                         }
