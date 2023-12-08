@@ -57,7 +57,10 @@ namespace GameStore.Service.Services.Orders
             if (cart == null)
                 throw new CustomException(404, "Cart is not found");
 
-            var cartItem = await _cartItemRepository.SelectAsync(p => p.GameId == gameId && !p.IsDeleted);
+            var cartItem = await _cartItemRepository.SelectAsync(p => 
+                p.GameId == gameId 
+                && p.CartId == cart.Id
+                && !p.IsDeleted);
             if (cartItem == null)
             {
                 var newCartItem = new CartItem
